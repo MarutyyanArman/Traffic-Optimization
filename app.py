@@ -1,5 +1,10 @@
-from flask import Flask, render_template, request, jsonify
-import traffic_core as tc
+from flask import Flask, render_template, request, jsonify, send_from_directory
+from traffic_core import (
+    G, enhanced_simulate_congestion, get_road_data, 
+    get_traffic_statistics, get_multiple_routes, get_ml_route,
+    smart_travel_planner, get_best_travel_times, get_traffic_patterns,
+    get_heatmap_data, get_road_types_available
+)
 from shapely.geometry import Point
 from functools import lru_cache
 import logging
@@ -19,9 +24,6 @@ app.config['JSON_SORT_KEYS'] = False
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
-# Use the optimized Yerevan road graph from traffic_core
-G = tc.G
-
 # Response cache
 response_cache = {}
 CACHE_TIMEOUT = 300  # 5 minutes
@@ -33,6 +35,11 @@ def home():
 @app.route('/map')
 def map_page():
     return render_template('map.html')
+
+# Serve static files
+@app.route('/static/<path:path>')
+def serve_static(path):
+    return send_from_directory('static', path)
 
 @app.route('/roads')
 def roads():
@@ -63,8 +70,8 @@ def roads():
 def get_congestion_data(hour=None, day_type="weekday"):
     """Cache congestion data for each hour and day type"""
     G_copy = G.copy()
-    tc.enhanced_simulate_congestion(G_copy, hour, day_type)
-    return tc.get_road_data(G_copy)
+    enhanced_simulate_congestion(G_copy, hour, day_type)
+    return get_road_data(G_copy)
 
 @app.route('/route', methods=['POST'])
 def route():
@@ -91,7 +98,7 @@ def route():
         hour = data.get('hour', 8)
         day_type = data.get('day_type', 'weekday')
         
-        route_coords, total_time_s, route_details = tc.get_ml_route(G, start_point, end_point, hour, day_type)
+        route_coords, total_time_s, route_details = get_ml_route(G, start_point, end_point, hour, day_type)
         
         if not route_coords:
             return jsonify({"error": "No route found between the selected points"}), 404
@@ -136,7 +143,7 @@ def multi_route():
         hour = data.get('hour', 8)
         day_type = data.get('day_type', 'weekday')
         
-        route_options = tc.get_multiple_routes(G, start_point, end_point, hour, day_type)
+        route_options = get_multiple_routes(G, start_point, end_point, hour, day_type)
         
         if not route_options:
             return jsonify({"error": "No routes found between the selected points"}), 404
@@ -169,8 +176,8 @@ def traffic_stats():
         day_type = request.args.get("day_type", "weekday")
         
         G_copy = G.copy()
-        tc.enhanced_simulate_congestion(G_copy, hour, day_type)
-        stats = tc.get_traffic_statistics(G_copy)
+        enhanced_simulate_congestion(G_copy, hour, day_type)
+        stats = get_traffic_statistics(G_copy)
         
         # Cache the response
         response_cache[cache_key] = (stats, time.time())
@@ -180,7 +187,6 @@ def traffic_stats():
         logger.error(f"Error in /traffic-data: {str(e)}")
         return jsonify({"error": "Failed to get traffic statistics"}), 500
 
-# New endpoints for traffic prediction and pattern analysis
 @app.route('/traffic-prediction', methods=['GET'])
 def traffic_prediction():
     """Get traffic predictions for future times"""
@@ -193,7 +199,7 @@ def traffic_prediction():
         start_hour = hour
         end_hour = min(23, hour + 12)
         
-        recommendations = tc.get_best_travel_times(start_hour, end_hour, day_type)
+        recommendations = get_best_travel_times(start_hour, end_hour, day_type)
         
         return jsonify({
             "current_time": f"{hour:02d}:00",
@@ -204,14 +210,12 @@ def traffic_prediction():
     except Exception as e:
         logger.error(f"Error in /traffic-prediction: {str(e)}")
         return jsonify({"error": "Failed to get traffic predictions"}), 500
-    
-
 
 @app.route('/traffic-patterns', methods=['GET'])
 def traffic_patterns():
     """Get traffic pattern analysis"""
     try:
-        patterns = tc.get_traffic_patterns()
+        patterns = get_traffic_patterns()
         return jsonify(patterns)
     except Exception as e:
         logger.error(f"Error in /traffic-patterns: {str(e)}")
@@ -225,13 +229,87 @@ def heatmap_data():
         day_type = request.args.get("day_type", "weekday")
         
         G_copy = G.copy()
-        tc.enhanced_simulate_congestion(G_copy, hour, day_type)
-        heatmap_data = tc.get_heatmap_data(G_copy, hour, day_type)
+        enhanced_simulate_congestion(G_copy, hour, day_type)
+        heatmap_data = get_heatmap_data(G_copy, hour, day_type)
         
         return jsonify(heatmap_data)
     except Exception as e:
         logger.error(f"Error in /heatmap-data: {str(e)}")
         return jsonify({"error": "Failed to get heatmap data"}), 500
+
+@app.route('/smart-travel-plan', methods=['POST'])
+def smart_travel_plan():
+    """Smart travel planning with multiple constraints"""
+    start_time = time.time()
+    
+    try:
+        data = request.get_json()
+        if not data or 'start' not in data or 'end' not in data:
+            return jsonify({"error": "Invalid input: start and end points required"}), 400
+            
+        start = data['start']
+        end = data['end']
+        
+        # Validate coordinates
+        if not (-90 <= start['lat'] <= 90) or not (-180 <= start['lng'] <= 180):
+            return jsonify({"error": "Invalid start coordinates"}), 400
+        if not (-90 <= end['lat'] <= 90) or not (-180 <= end['lng'] <= 180):
+            return jsonify({"error": "Invalid end coordinates"}), 400
+            
+        start_point = Point(start['lng'], start['lat'])
+        end_point = Point(end['lng'], end['lat'])
+
+        # Extract constraints
+        constraints = {
+            'max_travel_time': data.get('max_travel_time'),
+            'avoid_road_types': data.get('avoid_road_types', []),
+            'time_window_start': data.get('time_window_start', 0),
+            'time_window_end': data.get('time_window_end', 23),
+            'day_type': data.get('day_type', 'weekday')
+        }
+        
+        # Validate time window
+        if constraints['time_window_start'] >= constraints['time_window_end']:
+            return jsonify({"error": "Invalid time window: start must be before end"}), 400
+        
+        # Call the smart planner
+        result = smart_travel_planner(G, start_point, end_point, constraints)
+        
+        response_time = round((time.time() - start_time) * 1000, 2)
+        logger.info(f"Smart travel plan calculated in {response_time}ms")
+        
+        # Add response time to result
+        result['response_time_ms'] = response_time
+        
+        return jsonify(result)
+        
+    except Exception as e:
+        logger.error(f"Error in /smart-travel-plan: {str(e)}")
+        return jsonify({"error": f"Smart planning failed: {str(e)}"}), 500
+
+@app.route('/available-road-types', methods=['GET'])
+def available_road_types():
+    """Get available road types for constraint system"""
+    try:
+        road_types = get_road_types_available()
+        road_types_with_descriptions = []
+        
+        from traffic_core.smart_planner import ROAD_TYPE_DESCRIPTIONS
+        from traffic_core.utils import SPEED_LIMITS
+        
+        for road_type in road_types:
+            road_types_with_descriptions.append({
+                'type': road_type,
+                'description': ROAD_TYPE_DESCRIPTIONS.get(road_type, 'Unknown road type'),
+                'speed_limit': SPEED_LIMITS.get(road_type, 30)
+            })
+        
+        return jsonify({
+            'road_types': road_types_with_descriptions
+        })
+    except Exception as e:
+        logger.error(f"Error in /available-road-types: {str(e)}")
+        return jsonify({"error": "Failed to get road types"}), 500
 
 @app.route('/health', methods=['GET'])
 def health_check():
@@ -247,24 +325,6 @@ def health_check():
 @app.route('/debug')
 def debug():
     return "Flask is running correctly!"
-
-# Clear cache periodically
-def clear_old_cache():
-    """Clear old cache entries"""
-    current_time = time.time()
-    keys_to_remove = []
-    
-    for key, (data, timestamp) in response_cache.items():
-        if current_time - timestamp > CACHE_TIMEOUT:
-            keys_to_remove.append(key)
-    
-    for key in keys_to_remove:
-        del response_cache[key]
-    
-    if keys_to_remove:
-        logger.info(f"Cleared {len(keys_to_remove)} old cache entries")
-
-# Add these routes BEFORE the clear_old_cache function
 
 @app.route('/download-traffic-data', methods=['GET'])
 def download_traffic_data():
@@ -288,7 +348,9 @@ def download_traffic_data():
         
         # Get current traffic data
         G_copy = G.copy()
-        tc.enhanced_simulate_congestion(G_copy, hour, day_type)
+        enhanced_simulate_congestion(G_copy, hour, day_type)
+        
+        from traffic_core.utils import get_realistic_speed, SPEED_LIMITS
         
         # Write road data
         for i, (u, v, data) in enumerate(G_copy.edges(data=True)):
@@ -299,8 +361,8 @@ def download_traffic_data():
             congestion_percent = round(congestion * 100, 2)
             
             # Calculate speed information
-            speed_limit = tc.SPEED_LIMITS.get(road_type, 30)
-            estimated_speed = tc.get_realistic_speed(data, congestion) * 3.6
+            speed_limit = SPEED_LIMITS.get(road_type, 30)
+            estimated_speed = get_realistic_speed(data, congestion) * 3.6
             
             # Get coordinates
             if 'geometry' in data:
@@ -404,6 +466,22 @@ def download_route_data():
         logger.error(f"Error generating route CSV: {str(e)}")
         return jsonify({"error": "Failed to generate route data export"}), 500
 
+# Clear cache periodically
+def clear_old_cache():
+    """Clear old cache entries"""
+    current_time = time.time()
+    keys_to_remove = []
+    
+    for key, (data, timestamp) in response_cache.items():
+        if current_time - timestamp > CACHE_TIMEOUT:
+            keys_to_remove.append(key)
+    
+    for key in keys_to_remove:
+        del response_cache[key]
+    
+    if keys_to_remove:
+        logger.info(f"Cleared {len(keys_to_remove)} old cache entries")
+
 # Cache cleanup on startup
 clear_old_cache()
 
@@ -419,6 +497,8 @@ if __name__ == "__main__":
     print("  /traffic-prediction - Traffic prediction API")
     print("  /traffic-patterns - Traffic pattern analysis API")
     print("  /heatmap-data - Heatmap data API")
+    print("  /smart-travel-plan - Smart travel planner with constraints")
+    print("  /available-road-types - Get road types for constraints")
     print("  /health    - Health check")
     print("  /debug     - Debug endpoint")
     

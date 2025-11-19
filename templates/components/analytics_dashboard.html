@@ -1,0 +1,64 @@
+<div id="analyticsDashboard" class="analytics-dashboard">
+    <div class="dashboard-header">
+        <h2 class="dashboard-title">
+            <i class="fas fa-chart-bar"></i>
+            Traffic Analytics Dashboard
+        </h2>
+        <button class="close-dashboard" onclick="hideAnalyticsDashboard()">&times;</button>
+    </div>
+
+    <div style="margin-bottom: 20px; text-align: center;">
+        <button onclick="downloadComprehensiveData()" class="btn" style="background: var(--success);">
+            <i class="fas fa-download"></i>
+            Download Comprehensive Traffic Report
+        </button>
+        <p style="margin-top: 10px; font-size: 0.9rem; color: var(--text-secondary);">
+            Export complete traffic analysis data as CSV
+        </p>
+    </div>
+
+    <div class="analytics-stats">
+        <div class="analytics-stat">
+            <div class="value" id="dashboard-total-roads">...</div>
+            <div class="label">Total Roads Monitored</div>
+        </div>
+        <div class="analytics-stat" style="background: var(--success);">
+            <div class="value" id="dashboard-avg-speed">...</div>
+            <div class="label">Average Speed (km/h)</div>
+        </div>
+        <div class="analytics-stat" style="background: var(--warning);">
+            <div class="value" id="dashboard-avg-congestion">...</div>
+            <div class="label">Average Congestion</div>
+        </div>
+        <div class="analytics-stat" style="background: var(--danger);">
+            <div class="value" id="dashboard-peak-congestion">...</div>
+            <div class="label">Peak Hour Congestion</div>
+        </div>
+    </div>
+
+    <div class="charts-grid">
+        <div class="chart-container">
+            <div class="chart-title">Congestion Distribution</div>
+            <canvas id="congestionChart"></canvas>
+        </div>
+        <div class="chart-container">
+            <div class="chart-title">Traffic Patterns by Hour</div>
+            <canvas id="hourlyPatternChart"></canvas>
+        </div>
+        <div class="chart-container">
+            <div class="chart-title">Road Types Analysis</div>
+            <canvas id="roadTypeChart"></canvas>
+        </div>
+        <div class="chart-container">
+            <div class="chart-title">Weekly Traffic Trends</div>
+            <canvas id="weeklyTrendChart"></canvas>
+        </div>
+    </div>
+
+    <div class="peak-hours">
+        <h3>🚦 Peak Traffic Hours</h3>
+        <div id="peakHoursList">
+            <!-- Peak hours will be populated here -->
+        </div>
+    </div>
+</div>

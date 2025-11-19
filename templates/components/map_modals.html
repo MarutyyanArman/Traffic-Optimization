@@ -1,0 +1,120 @@
+<!-- Stats Modal -->
+<div class="modal" id="statsModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title"><i class="fas fa-chart-bar"></i> Traffic Statistics</h2>
+            <button class="close-modal" onclick="closeModal('statsModal')">&times;</button>
+        </div>
+        <div id="statsContent">
+            <!-- Stats content will be loaded here -->
+        </div>
+    </div>
+</div>
+
+<!-- Speed Chart Modal -->
+<div class="modal" id="speedModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title"><i class="fas fa-tachometer-alt"></i> Speed vs Congestion</h2>
+            <button class="close-modal" onclick="closeModal('speedModal')">&times;</button>
+        </div>
+        <div id="speedContent">
+            <!-- Speed chart content will be loaded here -->
+        </div>
+    </div>
+</div>
+
+<!-- Traffic Prediction Modal -->
+<div class="modal" id="predictionModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title"><i class="fas fa-clock"></i> Traffic Predictions</h2>
+            <button class="close-modal" onclick="closeModal('predictionModal')">&times;</button>
+        </div>
+        <div id="predictionContent">
+            <!-- Prediction content will be loaded here -->
+        </div>
+    </div>
+</div>
+
+<!-- Pattern Analysis Modal -->
+<div class="modal" id="patternModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title"><i class="fas fa-chart-line"></i> Traffic Pattern Analysis</h2>
+            <button class="close-modal" onclick="closeModal('patternModal')">&times;</button>
+        </div>
+        <div id="patternContent">
+            <!-- Pattern analysis content will be loaded here -->
+        </div>
+    </div>
+</div>
+
+<!-- Smart Travel Planner Modal -->
+<div class="modal" id="smartPlannerModal">
+    <div class="modal-content" style="max-width: 500px;">
+        <div class="modal-header">
+            <h2 class="modal-title"><i class="fas fa-brain"></i> Smart Travel Planner</h2>
+            <button class="close-modal" onclick="closeModal('smartPlannerModal')">&times;</button>
+        </div>
+
+        <div style="padding: 20px;">
+            <div class="time-info" style="margin-bottom: 20px; text-align: center;">
+                <i class="fas fa-lightbulb"></i>
+                <span>Set constraints for optimal travel planning</span>
+            </div>
+
+            <!-- Max Travel Time -->
+            <div style="margin-bottom: 20px;">
+                <label style="font-size: 0.9rem; display: block; margin-bottom: 8px; font-weight: 600;">
+                    <i class="fas fa-clock"></i> Maximum Travel Time (minutes)
+                </label>
+                <input type="number" id="maxTravelTime" placeholder="e.g., 30" min="5" max="180"
+                    style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-primary); font-size: 1rem;">
+                <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 5px;">
+                    Leave empty for no time limit
+                </div>
+            </div>
+
+            <!-- Time Window -->
+            <div style="margin-bottom: 20px;">
+                <label style="font-size: 0.9rem; display: block; margin-bottom: 8px; font-weight: 600;">
+                    <i class="fas fa-calendar-alt"></i> Travel Between
+                </label>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <input type="time" id="timeWindowStart" style="flex: 1; padding: 10px;">
+                    <span style="color: var(--text-secondary); font-weight: 600;">and</span>
+                    <input type="time" id="timeWindowEnd" style="flex: 1; padding: 10px;">
+                </div>
+            </div>
+
+            <!-- Road Types to Avoid -->
+            <div style="margin-bottom: 25px;">
+                <label style="font-size: 0.9rem; display: block; margin-bottom: 10px; font-weight: 600;">
+                    <i class="fas fa-road"></i> Road Types to Avoid
+                </label>
+                <div id="roadTypesList"
+                    style="max-height: 200px; overflow-y: auto; background: var(--card-bg); padding: 15px; border-radius: 8px; border: 1px solid var(--input-border);">
+                    <div style="text-align: center; color: var(--text-secondary); font-size: 0.9rem;">
+                        <i class="fas fa-spinner fa-spin"></i> Loading road types...
+                    </div>
+                </div>
+                <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 5px;">
+                    Select road types you want to avoid in your route
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div style="display: flex; gap: 10px;">
+                <button onclick="closeModal('smartPlannerModal')" class="secondary" style="flex: 1; padding: 12px;">
+                    <i class="fas fa-times"></i>
+                    Cancel
+                </button>
+                <button onclick="generateSmartPlan()" class="success" style="flex: 1; padding: 12px;">
+                    <i class="fas fa-rocket"></i>
+                    Generate Smart Plan
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

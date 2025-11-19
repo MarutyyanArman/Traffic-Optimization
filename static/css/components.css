@@ -1,0 +1,448 @@
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 2000;
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--modal-bg);
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    max-width: 500px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    color: var(--modal-text);
+    border: 1px solid var(--border-color);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--primary);
+}
+
+.modal-title {
+    font-size: 1.5rem;
+    color: var(--modal-text);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.close-modal {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 5px;
+}
+
+.close-modal:hover {
+    background: var(--card-bg);
+    color: var(--danger);
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.stat-card {
+    background: var(--card-bg);
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+    border-left: 4px solid var(--primary);
+}
+
+.stat-number {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: var(--primary);
+    margin-bottom: 5px;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.congestion-bars {
+    margin: 20px 0;
+}
+
+.congestion-bar {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    gap: 10px;
+}
+
+.congestion-color {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+}
+
+.congestion-label {
+    width: 100px;
+    font-size: 0.9rem;
+    color: var(--modal-text);
+}
+
+.congestion-count {
+    flex: 1;
+    font-weight: bold;
+    color: var(--modal-text);
+}
+
+.road-type-stats {
+    margin-top: 20px;
+}
+
+.road-type-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.road-type-name {
+    color: var(--modal-text);
+}
+
+.road-type-value {
+    color: var(--text-secondary);
+    font-weight: 600;
+}
+
+.speed-chart {
+    margin: 20px 0;
+}
+
+.speed-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    background: var(--card-bg);
+    margin-bottom: 8px;
+    border-radius: 8px;
+    border-left: 4px solid var(--success);
+}
+
+.speed-congestion {
+    font-weight: 600;
+    color: var(--modal-text);
+}
+
+.speed-value {
+    color: var(--primary);
+    font-weight: bold;
+}
+
+/* Prediction and Pattern Analysis Styles */
+.prediction-card {
+    background: var(--route-option-bg);
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-left: 4px solid #4CAF50;
+    box-shadow: 0 2px 8px var(--shadow-color);
+}
+
+.prediction-card.poor {
+    border-left-color: #ef4444;
+}
+
+.prediction-card.fair {
+    border-left-color: #f59e0b;
+}
+
+.prediction-card.good {
+    border-left-color: #3b82f6;
+}
+
+.prediction-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.prediction-time {
+    font-weight: bold;
+    color: var(--modal-text);
+}
+
+.prediction-rating {
+    padding: 4px 8px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: white;
+}
+
+.prediction-description {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
+}
+
+.pattern-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin: 15px 0;
+}
+
+.pattern-card {
+    background: var(--card-bg);
+    padding: 12px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.pattern-value {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--primary);
+}
+
+.pattern-label {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.hotspot-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.hotspot-name {
+    color: var(--modal-text);
+    font-weight: 500;
+}
+
+.hotspot-congestion {
+    color: var(--danger);
+    font-weight: bold;
+}
+
+.trend-up {
+    color: var(--danger);
+}
+
+.trend-down {
+    color: var(--success);
+}
+
+.trend-stable {
+    color: var(--warning);
+}
+
+.chart-container {
+    margin: 20px 0;
+    position: relative;
+    height: 200px;
+}
+
+/* Tutorial Styles */
+.tutorial-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--primary);
+}
+
+.tutorial-title {
+    font-size: 1.3rem;
+    color: var(--modal-text);
+    flex: 1;
+    margin-right: 15px;
+}
+
+.close-tutorial {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    transition: all 0.3s ease;
+}
+
+.close-tutorial:hover {
+    background: var(--card-bg);
+    color: var(--danger);
+    transform: scale(1.1);
+}
+
+.tutorial-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.tutorial-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 80px;
+}
+
+.tutorial-btn.prev {
+    background: var(--secondary);
+    color: white;
+}
+
+.tutorial-btn.next {
+    background: var(--primary);
+    color: white;
+}
+
+.tutorial-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.tutorial-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 3000;
+    display: none;
+}
+
+.tutorial-step {
+    position: absolute;
+    background: var(--modal-bg);
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    max-width: 400px;
+    z-index: 3001;
+    animation: slideIn 0.3s ease-out;
+    color: var(--modal-text);
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.tutorial-highlight {
+    position: absolute;
+    border: 3px solid var(--primary);
+    border-radius: 10px;
+    box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);
+    z-index: 3000;
+    pointer-events: none;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        border-color: var(--primary);
+    }
+    50% {
+        border-color: var(--primary-dark);
+    }
+    100% {
+        border-color: var(--primary);
+    }
+}
+
+.tutorial-tooltip {
+    position: absolute;
+    background: var(--primary);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    z-index: 3002;
+    white-space: nowrap;
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-5px);
+    }
+    60% {
+        transform: translateY(-3px);
+    }
+}
+
+.tutorial-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: var(--primary);
+}
+
+/* Responsive for modals */
+@media (max-width: 768px) {
+    .modal-content {
+        width: 95%;
+        padding: 20px;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .tutorial-step {
+        max-width: 90%;
+        margin: 0 auto;
+    }
+}

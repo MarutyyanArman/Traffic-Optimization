@@ -1,0 +1,120 @@
+<!-- Control Panel -->
+<div id="controls" class="visible">
+    <div class="panel-header">
+        <i class="fas fa-traffic-light"></i>
+        <h2>Traffic Controls</h2>
+    </div>
+
+    <div class="control-group">
+        <label><i class="fas fa-clock"></i> Time Settings</label>
+        <div class="time-info">
+            <i class="fas fa-clock"></i>
+            <span id="current-time-map">Using current time</span>
+        </div>
+        <div class="control-row">
+            <input type="time" id="timeInput" value="">
+            <select id="dayType">
+                <option value="weekday">Weekday</option>
+                <option value="weekend">Weekend</option>
+            </select>
+        </div>
+        <div class="control-row">
+            <button onclick="useCurrentTime()" class="success" style="flex: 1;">
+                <i class="fas fa-sync-alt"></i>
+                Use Current Time
+            </button>
+            <button onclick="simulateTime()" class="purple" style="flex: 1;">
+                <i class="fas fa-play"></i>
+                Simulate Time
+            </button>
+        </div>
+    </div>
+
+    <div class="control-group">
+        <label><i class="fas fa-route"></i> Route Planning</label>
+        <div class="control-row">
+            <button onclick="clearRoute()" class="secondary">
+                <i class="fas fa-trash"></i>
+                Clear
+            </button>
+            <button onclick="switchStartEnd()" class="secondary">
+                <i class="fas fa-exchange-alt"></i>
+                Swap
+            </button>
+        </div>
+        <button onclick="calculateMultiRoute()" class="btn-full purple">
+            <i class="fas fa-route"></i>
+            Compare Routes
+        </button>
+    </div>
+
+    <div class="route-options" id="routeOptions" style="display: none;">
+        <h4 style="margin-bottom: 10px; color: var(--text-primary);">Route Options:</h4>
+        <!-- Route options will be populated here -->
+    </div>
+
+    <div id="selectedRouteInfo" class="route-info" style="display: none;">
+        <h4><i class="fas fa-info-circle"></i> Selected Route Details</h4>
+        <div id="selectedRouteDetails" class="route-details-panel"></div>
+    </div>
+
+    <div class="control-group">
+        <label><i class="fas fa-chart-bar"></i> Analytics</label>
+        <div class="control-row">
+            <button onclick="showStats()" class="success" style="flex: 1;">
+                <i class="fas fa-chart-pie"></i>
+                Traffic Stats
+            </button>
+            <button onclick="showSpeedCongestionChart()" class="secondary" style="flex: 1;">
+                <i class="fas fa-tachometer-alt"></i>
+                Speed Chart
+            </button>
+        </div>
+        <div class="control-row">
+            <button onclick="showTrafficPredictions()" class="purple" style="flex: 1;">
+                <i class="fas fa-clock"></i>
+                Predictions
+            </button>
+            <button onclick="showPatternAnalysis()" class="secondary" style="flex: 1;">
+                <i class="fas fa-chart-line"></i>
+                Patterns
+            </button>
+        </div>
+    </div>
+
+    <!-- Data Export Section -->
+    <div class="control-group">
+        <label><i class="fas fa-download"></i> Data Export</label>
+        <div class="control-row">
+            <button onclick="downloadTrafficData()" class="success" style="flex: 1;">
+                <i class="fas fa-file-csv"></i>
+                Traffic Data
+            </button>
+            <button onclick="downloadRouteData()" class="secondary" style="flex: 1;" id="downloadRouteBtn" disabled>
+                <i class="fas fa-route"></i>
+                Route Data
+            </button>
+        </div>
+    </div>
+
+    <!-- Smart Travel Planner Button -->
+    <div class="control-group">
+        <label><i class="fas fa-brain"></i> Advanced Planning</label>
+        <button onclick="openSmartPlanner()" class="btn-full purple">
+            <i class="fas fa-magic"></i>
+            Smart Travel Planner
+        </button>
+        <div style="font-size: 0.8rem; color: var(--text-secondary); text-align: center; margin-top: 8px;">
+            Set constraints for optimal travel
+        </div>
+    </div>
+
+    <!-- Tutorial Button in Control Panel -->
+    <div class="control-group">
+        <label><i class="fas fa-graduation-cap"></i> Learning</label>
+        <button onclick="startTutorial()" class="btn-full success">
+            <i class="fas fa-play-circle"></i>
+            Start Interactive Tutorial
+        </button>
+    </div>
+</div>

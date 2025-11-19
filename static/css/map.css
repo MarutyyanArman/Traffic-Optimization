@@ -1,0 +1,551 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary: #2563eb;
+    --primary-dark: #1d4ed8;
+    --secondary: #64748b;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --purple: #8b5cf6;
+    --dark: #1e293b;
+    --light: #f8fafc;
+
+    /* Light Theme (Default) */
+    --bg-primary: rgba(255, 255, 255, 0.95);
+    --bg-secondary: rgba(255, 255, 255, 0.9);
+    --text-primary: #1e293b;
+    --text-secondary: #64748b;
+    --border-color: rgba(255, 255, 255, 0.2);
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --modal-bg: white;
+    --modal-text: #1e293b;
+    --card-bg: #f8fafc;
+    --input-bg: white;
+    --input-border: #e2e8f0;
+    --route-option-bg: white;
+    --route-option-border: #e2e8f0;
+    --legend-bg: rgba(255, 255, 255, 0.95);
+}
+
+[data-theme="dark"] {
+    --bg-primary: rgba(15, 23, 42, 0.95);
+    --bg-secondary: rgba(30, 41, 59, 0.9);
+    --text-primary: #f1f5f9;
+    --text-secondary: #cbd5e1;
+    --border-color: rgba(255, 255, 255, 0.1);
+    --shadow-color: rgba(0, 0, 0, 0.3);
+    --modal-bg: #1e293b;
+    --modal-text: #f1f5f9;
+    --card-bg: #334155;
+    --input-bg: #334155;
+    --input-border: #475569;
+    --route-option-bg: #334155;
+    --route-option-border: #475569;
+    --legend-bg: rgba(15, 23, 42, 0.95);
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    height: 100vh;
+    overflow: hidden;
+    background: var(--card-bg);
+    color: var(--text-primary);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+#map {
+    height: 100vh;
+    width: 100%;
+}
+
+/* Theme Switcher */
+.theme-switcher {
+    position: absolute;
+    top: 20px;
+    right: 80px;
+    z-index: 1001;
+}
+
+.theme-btn {
+    background: var(--bg-primary);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px var(--shadow-color);
+}
+
+.theme-btn:hover {
+    transform: scale(1.1) rotate(15deg);
+    background: var(--bg-secondary);
+}
+
+.theme-btn .fa-sun {
+    display: none;
+}
+
+[data-theme="dark"] .theme-btn .fa-moon {
+    display: none;
+}
+
+[data-theme="dark"] .theme-btn .fa-sun {
+    display: block;
+}
+
+/* Control Panel */
+#controls {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: var(--bg-primary);
+    backdrop-filter: blur(10px);
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 8px 32px var(--shadow-color);
+    z-index: 1000;
+    max-width: 380px;
+    border: 1px solid var(--border-color);
+    max-height: 90vh;
+    overflow-y: auto;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    color: var(--text-primary);
+}
+
+#controls.hidden {
+    transform: translateX(-100%);
+    opacity: 0;
+    pointer-events: none;
+}
+
+#controls.visible {
+    transform: translateX(0);
+    opacity: 1;
+    pointer-events: all;
+}
+
+.panel-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--primary);
+}
+
+.panel-header i {
+    color: var(--primary);
+    font-size: 1.5rem;
+}
+
+.panel-header h2 {
+    color: var(--text-primary);
+    font-size: 1.4rem;
+}
+
+.control-group {
+    margin-bottom: 20px;
+}
+
+.control-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+}
+
+.control-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+input, select, button {
+    padding: 12px;
+    border: 1px solid var(--input-border);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    background: var(--input-bg);
+    color: var(--text-primary);
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+input, select {
+    flex: 1;
+}
+
+button {
+    background: var(--primary);
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+button:hover {
+    background: var(--primary-dark);
+    transform: translateY(-1px);
+}
+
+button.secondary {
+    background: var(--secondary);
+}
+
+button.secondary:hover {
+    background: #475569;
+}
+
+button.success {
+    background: var(--success);
+}
+
+button.success:hover {
+    background: #059669;
+}
+
+button.purple {
+    background: var(--purple);
+}
+
+button.purple:hover {
+    background: #7c3aed;
+}
+
+.btn-full {
+    width: 100%;
+}
+
+.time-info {
+    background: var(--card-bg);
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    text-align: center;
+    border-left: 3px solid var(--primary);
+}
+
+/* Edge triggers for showing panels */
+.edge-trigger {
+    position: absolute;
+    top: 0;
+    width: 50px;
+    height: 100%;
+    z-index: 999;
+    transition: background-color 0.3s ease;
+}
+
+.left-edge-trigger {
+    left: 0;
+}
+
+.right-edge-trigger {
+    right: 0;
+}
+
+.edge-trigger:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Route Options */
+.route-options {
+    margin-top: 15px;
+}
+
+.route-option {
+    background: var(--route-option-bg);
+    border: 2px solid var(--route-option-border);
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: var(--text-primary);
+}
+
+.route-option:hover {
+    border-color: var(--primary);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px var(--shadow-color);
+}
+
+.route-option.active {
+    border-color: var(--primary);
+    background: var(--card-bg);
+}
+
+.route-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.route-icon {
+    font-size: 1.2rem;
+}
+
+.route-name {
+    font-weight: 600;
+    color: var(--text-primary);
+    flex: 1;
+}
+
+.route-time {
+    font-weight: bold;
+    color: var(--text-primary);
+}
+
+.route-details {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
+}
+
+.route-detail-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4px;
+}
+
+.route-stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin-top: 8px;
+    font-size: 0.75rem;
+}
+
+.stat-item {
+    background: var(--card-bg);
+    padding: 6px;
+    border-radius: 6px;
+    text-align: center;
+}
+
+.stat-value {
+    font-weight: bold;
+    color: var(--text-primary);
+}
+
+.stat-label {
+    color: var(--text-secondary);
+    font-size: 0.7rem;
+}
+
+/* Route Info */
+.route-info {
+    background: var(--card-bg);
+    padding: 15px;
+    border-radius: 10px;
+    margin-top: 15px;
+    border-left: 4px solid var(--primary);
+    color: var(--text-primary);
+}
+
+.route-info h4 {
+    color: var(--text-primary);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.route-details-panel {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: var(--text-secondary);
+}
+
+.route-details-panel strong {
+    color: var(--text-primary);
+}
+
+/* Info Panel */
+#info {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: var(--legend-bg);
+    backdrop-filter: blur(10px);
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 8px 32px var(--shadow-color);
+    z-index: 1000;
+    max-width: 280px;
+    border: 1px solid var(--border-color);
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    color: var(--text-primary);
+}
+
+#info.hidden {
+    transform: translateX(100%);
+    opacity: 0;
+    pointer-events: none;
+}
+
+#info.visible {
+    transform: translateX(0);
+    opacity: 1;
+    pointer-events: all;
+}
+
+.info-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+    color: var(--text-primary);
+}
+
+.instructions {
+    background: var(--card-bg);
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: var(--text-secondary);
+}
+
+#legend {
+    margin-top: 15px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+}
+
+.legend-color {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+}
+
+/* Back to Home */
+.back-home {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    z-index: 1000;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.back-home.hidden {
+    transform: translateX(-100%);
+    opacity: 0;
+    pointer-events: none;
+}
+
+.back-home.visible {
+    transform: translateX(0);
+    opacity: 1;
+    pointer-events: all;
+}
+
+.back-home a {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    box-shadow: 0 4px 15px var(--shadow-color);
+    transition: all 0.3s ease;
+    border: 1px solid var(--border-color);
+}
+
+.back-home a:hover {
+    background: var(--bg-secondary);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px var(--shadow-color);
+}
+
+/* Loading indicator */
+.loading {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--bg-primary);
+    padding: 20px;
+    border-radius: 10px;
+    z-index: 1001;
+    box-shadow: 0 4px 12px var(--shadow-color);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+/* Leaflet Map Theme Adjustments */
+[data-theme="dark"] .leaflet-container {
+    background: #1a202c;
+}
+
+[data-theme="dark"] .leaflet-control-attribution {
+    background: rgba(15, 23, 42, 0.8);
+    color: #cbd5e1;
+}
+
+[data-theme="dark"] .leaflet-control-attribution a {
+    color: #60a5fa;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    #controls, #info {
+        position: relative;
+        max-width: none;
+        margin: 10px;
+    }
+
+    #map {
+        height: calc(100vh - 400px);
+    }
+
+    .edge-trigger {
+        display: none;
+    }
+
+    .theme-switcher {
+        top: 10px;
+        right: 70px;
+    }
+
+    .theme-btn {
+        width: 40px;
+        height: 40px;
+    }
+}
