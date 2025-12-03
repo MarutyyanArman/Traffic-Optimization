@@ -1,120 +1,595 @@
-<!-- Control Panel -->
-<div id="controls" class="visible">
+<!-- templates/components/map_controls.html -->
+<!-- Routely Control Panel -->
+<div id="routely-controls" class="routely-control-panel visible">
+    <!-- Panel Header -->
     <div class="panel-header">
-        <i class="fas fa-traffic-light"></i>
-        <h2>Traffic Controls</h2>
-    </div>
-
-    <div class="control-group">
-        <label><i class="fas fa-clock"></i> Time Settings</label>
-        <div class="time-info">
-            <i class="fas fa-clock"></i>
-            <span id="current-time-map">Using current time</span>
+        <div class="header-content">
+            <div class="header-icon">
+                <i class="fas fa-sliders-h"></i>
+            </div>
+            <div class="header-text">
+                <h2>Controls</h2>
+            </div>
         </div>
-        <div class="control-row">
-            <input type="time" id="timeInput" value="">
-            <select id="dayType">
-                <option value="weekday">Weekday</option>
-                <option value="weekend">Weekend</option>
-            </select>
-        </div>
-        <div class="control-row">
-            <button onclick="useCurrentTime()" class="success" style="flex: 1;">
-                <i class="fas fa-sync-alt"></i>
-                Use Current Time
-            </button>
-            <button onclick="simulateTime()" class="purple" style="flex: 1;">
-                <i class="fas fa-play"></i>
-                Simulate Time
-            </button>
-        </div>
-    </div>
-
-    <div class="control-group">
-        <label><i class="fas fa-route"></i> Route Planning</label>
-        <div class="control-row">
-            <button onclick="clearRoute()" class="secondary">
-                <i class="fas fa-trash"></i>
-                Clear
-            </button>
-            <button onclick="switchStartEnd()" class="secondary">
-                <i class="fas fa-exchange-alt"></i>
-                Swap
-            </button>
-        </div>
-        <button onclick="calculateMultiRoute()" class="btn-full purple">
-            <i class="fas fa-route"></i>
-            Compare Routes
+        <button class="panel-toggle" id="panelToggle">
+            <i class="fas fa-chevron-left"></i>
         </button>
     </div>
 
-    <div class="route-options" id="routeOptions" style="display: none;">
-        <h4 style="margin-bottom: 10px; color: var(--text-primary);">Route Options:</h4>
-        <!-- Route options will be populated here -->
-    </div>
-
-    <div id="selectedRouteInfo" class="route-info" style="display: none;">
-        <h4><i class="fas fa-info-circle"></i> Selected Route Details</h4>
-        <div id="selectedRouteDetails" class="route-details-panel"></div>
-    </div>
-
-    <div class="control-group">
-        <label><i class="fas fa-chart-bar"></i> Analytics</label>
-        <div class="control-row">
-            <button onclick="showStats()" class="success" style="flex: 1;">
-                <i class="fas fa-chart-pie"></i>
-                Traffic Stats
-            </button>
-            <button onclick="showSpeedCongestionChart()" class="secondary" style="flex: 1;">
-                <i class="fas fa-tachometer-alt"></i>
-                Speed Chart
-            </button>
-        </div>
-        <div class="control-row">
-            <button onclick="showTrafficPredictions()" class="purple" style="flex: 1;">
-                <i class="fas fa-clock"></i>
-                Predictions
-            </button>
-            <button onclick="showPatternAnalysis()" class="secondary" style="flex: 1;">
-                <i class="fas fa-chart-line"></i>
-                Patterns
-            </button>
-        </div>
-    </div>
-
-    <!-- Data Export Section -->
-    <div class="control-group">
-        <label><i class="fas fa-download"></i> Data Export</label>
-        <div class="control-row">
-            <button onclick="downloadTrafficData()" class="success" style="flex: 1;">
-                <i class="fas fa-file-csv"></i>
-                Traffic Data
-            </button>
-            <button onclick="downloadRouteData()" class="secondary" style="flex: 1;" id="downloadRouteBtn" disabled>
+    <!-- Main Controls Container -->
+    <div class="controls-container">
+        <!-- Route Planning Section -->
+        <div class="control-section">
+            <div class="section-header">
                 <i class="fas fa-route"></i>
-                Route Data
+                <h3>Route Planning</h3>
+            </div>
+            
+            <div class="input-group">
+                <label for="startPoint">
+                    <i class="fas fa-play-circle"></i>
+                    Start Point
+                </label>
+                <div class="input-with-action">
+                    <input type="text" id="startPoint" placeholder="Enter start location">
+                    <button class="input-action-btn" data-target="startPoint" title="Set on map">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label for="endPoint">
+                    <i class="fas fa-flag-checkered"></i>
+                    Destination
+                </label>
+                <div class="input-with-action">
+                    <input type="text" id="endPoint" placeholder="Enter destination">
+                    <button class="input-action-btn" data-target="endPoint" title="Set on map">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="action-buttons-grid">
+                <button class="action-btn btn-secondary" onclick="clearRoute()">
+                    <i class="fas fa-trash"></i>
+                    Clear
+                </button>
+                <button class="action-btn btn-secondary" onclick="switchStartEnd()">
+                    <i class="fas fa-exchange-alt"></i>
+                    Swap
+                </button>
+                <button class="action-btn btn-primary" onclick="findOptimalRoute()">
+                    <i class="fas fa-search"></i>
+                    Find Route
+                </button>
+            </div>
+        </div>
+
+        <!-- Smart Planner Section -->
+        <div class="control-section">
+            <div class="section-header">
+                <i class="fas fa-brain"></i>
+                <h3>Smart Planner</h3>
+            </div>
+
+            <div class="toggle-group">
+                <label class="toggle-label">
+                    <input type="checkbox" id="enableSmartPlanner">
+                    <span class="toggle-slider"></span>
+                    <span class="toggle-text">Plan for arrival time</span>
+                </label>
+            </div>
+
+            <div class="smart-planner-options" id="smartPlannerOptions" style="display: none;">
+                <div class="input-group">
+                    <label for="arrivalTime">
+                        <i class="fas fa-clock"></i>
+                        Arrive by
+                    </label>
+                    <input type="datetime-local" id="arrivalTime">
+                </div>
+                
+                <div class="preference-options">
+                    <label>Route Preference:</label>
+                    <select id="routePreference">
+                        <option value="fastest">Fastest Route</option>
+                        <option value="balanced">Balanced</option>
+                        <option value="eco">Eco-Friendly</option>
+                        <option value="scenic">Scenic Route</option>
+                    </select>
+                </div>
+
+                <button class="action-btn btn-primary btn-full" onclick="calculateSmartRoute()">
+                    <i class="fas fa-calculator"></i>
+                    Calculate Smart Route
+                </button>
+            </div>
+        </div>
+
+        <!-- Time Simulation Section -->
+        <div class="control-section">
+            <div class="section-header">
+                <i class="fas fa-clock"></i>
+                <h3>Time Simulation</h3>
+            </div>
+
+            <div class="time-display-card">
+                <div class="time-current">
+                    <i class="fas fa-clock"></i>
+                    <div class="time-info">
+                        <span class="time-label">Current Time</span>
+                        <span class="time-value" id="currentTimeDisplay">08:00 AM</span>
+                    </div>
+                </div>
+                <button class="time-action-btn" onclick="useCurrentTime()">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+            </div>
+
+            <div class="time-controls">
+                <div class="time-presets">
+                    <button class="time-preset-btn" data-time="420">7 AM</button>
+                    <button class="time-preset-btn" data-time="480">8 AM</button>
+                    <button class="time-preset-btn" data-time="1020">5 PM</button>
+                    <button class="time-preset-btn" data-time="now">Now</button>
+                </div>
+
+                <div class="day-type-selector">
+                    <label>Day Type:</label>
+                    <div class="day-buttons">
+                        <button class="day-btn active" data-day="weekday">Weekday</button>
+                        <button class="day-btn" data-day="weekend">Weekend</button>
+                    </div>
+                </div>
+            </div>
+
+            <button class="action-btn btn-secondary btn-full" onclick="startTimeSimulation()">
+                <i class="fas fa-play"></i>
+                Start Time Simulation
             </button>
         </div>
-    </div>
 
-    <!-- Smart Travel Planner Button -->
-    <div class="control-group">
-        <label><i class="fas fa-brain"></i> Advanced Planning</label>
-        <button onclick="openSmartPlanner()" class="btn-full purple">
-            <i class="fas fa-magic"></i>
-            Smart Travel Planner
-        </button>
-        <div style="font-size: 0.8rem; color: var(--text-secondary); text-align: center; margin-top: 8px;">
-            Set constraints for optimal travel
+        <!-- Traffic Analytics Section -->
+        <div class="control-section">
+            <div class="section-header">
+                <i class="fas fa-chart-network"></i>
+                <h3>Traffic Analytics</h3>
+            </div>
+
+            <div class="analytics-controls">
+                <div class="analytics-toggle">
+                    <label class="toggle-label">
+                        <input type="checkbox" id="predictionsToggle">
+                        <span class="toggle-slider"></span>
+                        <span class="toggle-text">Traffic Predictions</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="analytics-buttons">
+                <button class="action-btn btn-secondary" onclick="showTrafficStats()">
+                    <i class="fas fa-chart-pie"></i>
+                    Stats
+                </button>
+                <button class="action-btn btn-secondary" onclick="showPatternAnalysis()">
+                    <i class="fas fa-chart-line"></i>
+                    Patterns
+                </button>
+                <button class="action-btn btn-primary" onclick="showAdvancedAnalytics()">
+                    <i class="fas fa-chart-bar"></i>
+                    Analytics
+                </button>
+            </div>
+        </div>
+
+        <!-- Saved Routes Section -->
+        <div class="control-section">
+            <div class="section-header">
+                <i class="fas fa-bookmark"></i>
+                <h3>Saved Routes</h3>
+            </div>
+
+            <div class="saved-routes-actions">
+                <button class="action-btn btn-success btn-full" onclick="saveCurrentRoute()" id="saveRouteBtn" disabled>
+                    <i class="fas fa-save"></i>
+                    Save Current Route
+                </button>
+                
+                <div class="action-buttons-grid">
+                    <button class="action-btn btn-secondary" onclick="showSavedRoutesModal()">
+                        <i class="fas fa-list"></i>
+                        View All
+                    </button>
+                    <button class="action-btn btn-secondary" onclick="loadRecentRoutes()">
+                        <i class="fas fa-history"></i>
+                        Recent
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Export Section -->
+        <div class="control-section">
+            <div class="section-header">
+                <i class="fas fa-download"></i>
+                <h3>Data Export</h3>
+            </div>
+
+            <div class="export-options">
+                <button class="action-btn btn-secondary btn-full" onclick="downloadTrafficData()">
+                    <i class="fas fa-file-csv"></i>
+                    Export Traffic Data
+                </button>
+                
+                <button class="action-btn btn-secondary btn-full" onclick="downloadRouteData()" id="downloadRouteBtn" disabled>
+                    <i class="fas fa-route"></i>
+                    Export Route Data
+                </button>
+                
+                <button class="action-btn btn-outline btn-full" onclick="generateComprehensiveReport()">
+                    <i class="fas fa-file-pdf"></i>
+                    Generate Report
+                </button>
+            </div>
+        </div>
+
+        <!-- Learning & Help Section -->
+        <div class="control-section">
+            <div class="section-header">
+                <i class="fas fa-graduation-cap"></i>
+                <h3>Learn Routely</h3>
+            </div>
+
+            <div class="help-actions">
+                <button class="action-btn btn-outline btn-full" onclick="startInteractiveTutorial()">
+                    <i class="fas fa-play-circle"></i>
+                    Interactive Tutorial
+                </button>
+                
+                <div class="action-buttons-grid">
+                    <button class="action-btn btn-secondary" onclick="showTips()">
+                        <i class="fas fa-lightbulb"></i>
+                        Tips
+                    </button>
+                    <button class="action-btn btn-secondary" onclick="showHelp()">
+                        <i class="fas fa-question-circle"></i>
+                        Help
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- Tutorial Button in Control Panel -->
-    <div class="control-group">
-        <label><i class="fas fa-graduation-cap"></i> Learning</label>
-        <button onclick="startTutorial()" class="btn-full success">
-            <i class="fas fa-play-circle"></i>
-            Start Interactive Tutorial
-        </button>
+    <!-- Quick Actions Footer -->
+    <div class="panel-footer">
+        <div class="system-status">
+            <div class="status-indicator">
+                <div class="status-dot live"></div>
+                <span class="status-text">System Live</span>
+            </div>
+        </div>
+        <div class="footer-actions">
+            <button class="footer-btn" onclick="showSettings()" title="Settings">
+                <i class="fas fa-cog"></i>
+            </button>
+            <button class="footer-btn" onclick="toggleFullscreen()" title="Fullscreen">
+                <i class="fas fa-expand"></i>
+            </button>
+        </div>
     </div>
 </div>
+
+<!-- Route Options Panel (Initially Hidden) -->
+<div id="routeOptionsPanel" class="route-options-panel">
+    <div class="options-header">
+        <h3><i class="fas fa-route"></i> Route Options</h3>
+        <button class="close-options" onclick="hideRouteOptions()">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+    <div class="options-container" id="routeOptionsContainer">
+        <!-- Route options will be populated here -->
+    </div>
+</div>
+
+<script>
+    // Control Panel Initialization
+    document.addEventListener('DOMContentLoaded', function() {
+        initializeControlPanel();
+    });
+
+    function initializeControlPanel() {
+        // Panel toggle functionality
+        const panelToggle = document.getElementById('panelToggle');
+        const controlPanel = document.getElementById('routely-controls');
+        
+        if (panelToggle && controlPanel) {
+            panelToggle.addEventListener('click', function() {
+                controlPanel.classList.toggle('collapsed');
+                const icon = this.querySelector('i');
+                icon.classList.toggle('fa-chevron-left');
+                icon.classList.toggle('fa-chevron-right');
+                
+                // Notify other components about panel state change
+                const event = new CustomEvent('controlPanelToggle', {
+                    detail: { collapsed: controlPanel.classList.contains('collapsed') }
+                });
+                document.dispatchEvent(event);
+            });
+        }
+
+        // Smart planner toggle
+        const smartPlannerToggle = document.getElementById('enableSmartPlanner');
+        const smartPlannerOptions = document.getElementById('smartPlannerOptions');
+        
+        if (smartPlannerToggle && smartPlannerOptions) {
+            smartPlannerToggle.addEventListener('change', function() {
+                smartPlannerOptions.style.display = this.checked ? 'block' : 'none';
+            });
+        }
+
+        // Map point selection buttons
+        const mapPointButtons = document.querySelectorAll('.input-action-btn');
+        mapPointButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const targetField = this.getAttribute('data-target');
+                activateMapPointSelection(targetField);
+            });
+        });
+
+        // Time preset buttons
+        const timePresets = document.querySelectorAll('.time-preset-btn');
+        timePresets.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const time = this.getAttribute('data-time');
+                setSimulationTime(time);
+            });
+        });
+
+        // Day type buttons
+        const dayButtons = document.querySelectorAll('.day-btn');
+        dayButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                dayButtons.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                setDayType(this.getAttribute('data-day'));
+            });
+        });
+
+        // Input validation
+        const routeInputs = document.querySelectorAll('#startPoint, #endPoint');
+        routeInputs.forEach(input => {
+            input.addEventListener('input', validateRouteInputs);
+        });
+
+        // Initialize current time
+        updateCurrentTimeDisplay();
+        setInterval(updateCurrentTimeDisplay, 60000); // Update every minute
+    }
+
+    function validateRouteInputs() {
+        const startPoint = document.getElementById('startPoint').value.trim();
+        const endPoint = document.getElementById('endPoint').value.trim();
+        const findRouteBtn = document.querySelector('[onclick="findOptimalRoute()"]');
+        const saveRouteBtn = document.getElementById('saveRouteBtn');
+        
+        const hasValidInputs = startPoint && endPoint;
+        
+        if (findRouteBtn) {
+            findRouteBtn.disabled = !hasValidInputs;
+        }
+        
+        if (saveRouteBtn) {
+            saveRouteBtn.disabled = !hasValidInputs;
+        }
+    }
+
+    function updateCurrentTimeDisplay() {
+        const timeDisplay = document.getElementById('currentTimeDisplay');
+        if (timeDisplay) {
+            const now = new Date();
+            timeDisplay.textContent = now.toLocaleTimeString('en-US', {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true
+            });
+        }
+    }
+
+    function activateMapPointSelection(targetField) {
+        console.log('Activating map point selection for:', targetField);
+        // This will be implemented in map-events.js
+        // Will change cursor and wait for map click
+    }
+
+    function setSimulationTime(time) {
+        console.log('Setting simulation time to:', time);
+        // Implementation in map-analytics.js
+    }
+
+    function setDayType(dayType) {
+        console.log('Setting day type to:', dayType);
+        // Implementation in map-analytics.js
+    }
+
+    // Placeholder functions for control actions
+    function findOptimalRoute() {
+        console.log('Finding optimal route...');
+        const start = document.getElementById('startPoint').value;
+        const end = document.getElementById('endPoint').value;
+        
+        if (!start || !end) {
+            showNotification('Please enter both start and end points', 'warning');
+            return;
+        }
+        
+        // Implementation in map-routing.js
+    }
+
+    function calculateSmartRoute() {
+        console.log('Calculating smart route...');
+        const arrivalTime = document.getElementById('arrivalTime').value;
+        const preference = document.getElementById('routePreference').value;
+        
+        if (!arrivalTime) {
+            showNotification('Please set arrival time for smart planning', 'warning');
+            return;
+        }
+        
+        // Implementation in smart-planner.js
+    }
+
+    function clearRoute() {
+        console.log('Clearing current route...');
+        // Implementation in map-routing.js
+    }
+
+    function switchStartEnd() {
+        console.log('Swapping start and end points...');
+        const start = document.getElementById('startPoint');
+        const end = document.getElementById('endPoint');
+        [start.value, end.value] = [end.value, start.value];
+        validateRouteInputs();
+    }
+
+    function useCurrentTime() {
+        console.log('Using current time...');
+        // Implementation in map-analytics.js
+    }
+
+    function startTimeSimulation() {
+        console.log('Starting time simulation...');
+        // Implementation in map-analytics.js
+    }
+
+    function showTrafficStats() {
+        console.log('Showing traffic statistics...');
+        // Implementation in map-analytics.js
+    }
+
+    function showPatternAnalysis() {
+        console.log('Showing pattern analysis...');
+        // Implementation in map-analytics.js
+    }
+
+    function showAdvancedAnalytics() {
+        console.log('Showing advanced analytics...');
+        // Implementation in map-analytics.js
+    }
+
+    function saveCurrentRoute() {
+        // Open the save route modal
+        const modal = document.getElementById('saveRouteModal');
+        if (modal) {
+            modal.style.display = 'block';
+            // Set default name
+            const input = document.getElementById('saveRouteNameInput');
+            if (input) {
+                const timestamp = new Date().toLocaleDateString();
+                input.value = `My Route - ${timestamp}`;
+            }
+        }
+    }
+
+    function showSavedRoutesModal() {
+        console.log('Showing saved routes modal...');
+        // Implementation in saved-routes.js
+    }
+
+    function loadRecentRoutes() {
+        console.log('Loading recent routes...');
+        // Implementation in saved-routes.js
+    }
+
+    function downloadTrafficData() {
+        console.log('Downloading traffic data...');
+        // Implementation in data-export.js
+    }
+
+    function downloadRouteData() {
+        console.log('Downloading route data...');
+        // Implementation in data-export.js
+    }
+
+    function generateComprehensiveReport() {
+        console.log('Generating comprehensive report...');
+        // Implementation in data-export.js
+    }
+
+    function startInteractiveTutorial() {
+        console.log('Starting interactive tutorial...');
+        // Implementation in tutorial.js
+    }
+
+    function showTips() {
+        console.log('Showing tips...');
+        // Implementation in help-system.js
+    }
+
+    function showHelp() {
+        console.log('Showing help...');
+        // Implementation in help-system.js
+    }
+
+    function showSettings() {
+        console.log('Showing settings...');
+        // Implementation in settings.js
+    }
+
+    function toggleFullscreen() {
+        console.log('Toggling fullscreen...');
+        // Implementation in ui-controls.js
+    }
+
+    function hideRouteOptions() {
+        const optionsPanel = document.getElementById('routeOptionsPanel');
+        if (optionsPanel) {
+            optionsPanel.classList.remove('visible');
+        }
+    }
+
+    function showRouteOptions(routes) {
+        const optionsPanel = document.getElementById('routeOptionsPanel');
+        const container = document.getElementById('routeOptionsContainer');
+        
+        if (optionsPanel && container) {
+            // Populate route options
+            container.innerHTML = routes.map((route, index) => `
+                <div class="route-option" data-route-index="${index}">
+                    <div class="route-header">
+                        <div class="route-color" style="background-color: ${route.color}"></div>
+                        <div class="route-title">${route.title}</div>
+                        <div class="route-duration">${route.duration} min</div>
+                    </div>
+                    <div class="route-details">
+                        <div class="route-stat">
+                            <i class="fas fa-road"></i>
+                            <span>${route.distance} km</span>
+                        </div>
+                        <div class="route-stat">
+                            <i class="fas fa-traffic-light"></i>
+                            <span>${route.congestion}% congestion</span>
+                        </div>
+                    </div>
+                    <button class="route-select-btn" onclick="selectRoute(${index})">
+                        Select Route
+                    </button>
+                </div>
+            `).join('');
+            
+            optionsPanel.classList.add('visible');
+        }
+    }
+
+    function selectRoute(routeIndex) {
+        console.log('Selected route:', routeIndex);
+        // Implementation in map-routing.js
+    }
+
+    function showNotification(message, type = 'info') {
+        // Implementation from main map JS
+        console.log(`[${type.toUpperCase()}] ${message}`);
+    }
+</script>

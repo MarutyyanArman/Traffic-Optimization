@@ -2,6 +2,7 @@ import networkx as nx
 import osmnx as ox
 from shapely.geometry import Point
 import logging
+import math
 from .utils import realistic_weight, get_realistic_speed
 from .ml_predictor import ml_predictor
 
@@ -27,9 +28,17 @@ def _extract_route_details(G, path):
         segment_time = realistic_weight(u, v, data)
         total_time_s += segment_time
         
+        # Get road name - handle list of names or single name
+        raw_name = data.get('name', '')
+        if isinstance(raw_name, list):
+            road_name = raw_name[0] if raw_name else 'Unnamed Road'
+        else:
+            road_name = raw_name if raw_name else 'Unnamed Road'
+        
         route_details.append({
             "from_node": u,
             "to_node": v,
+            "road_name": road_name,
             "length": data.get('length', 0),
             "congestion": round(data.get('congestion', 0.5), 2),
             "road_type": data.get('_road_type', 'unknown'),
@@ -108,7 +117,7 @@ def get_ml_route(G, start_point, end_point, hour=8, day_type="weekday"):
         return get_basic_route(G, start_point, end_point)
 
 def get_multiple_routes(G, start_point, end_point, hour=8, day_type="weekday"):
-    """Optimized multiple route calculation"""
+    """A* based multiple route calculation with different heuristics"""
     try:
         orig_node = ox.distance.nearest_nodes(G, start_point.x, start_point.y)
         dest_node = ox.distance.nearest_nodes(G, end_point.x, end_point.y)
@@ -124,11 +133,44 @@ def get_multiple_routes(G, start_point, end_point, hour=8, day_type="weekday"):
             )
             data['congestion'] = predicted_congestion
 
+        # Get destination coordinates for heuristics
+        dest_y = G_ml.nodes[dest_node]['y']
+        dest_x = G_ml.nodes[dest_node]['x']
+        
+        # Helper function to calculate straight-line distance (haversine)
+        def haversine_distance(node_id):
+            """Calculate straight-line distance from node to destination in meters"""
+            node_y = G_ml.nodes[node_id]['y']
+            node_x = G_ml.nodes[node_id]['x']
+            
+            # Haversine formula
+            R = 6371000  # Earth radius in meters
+            lat1, lon1 = math.radians(node_y), math.radians(node_x)
+            lat2, lon2 = math.radians(dest_y), math.radians(dest_x)
+            
+            dlat = lat2 - lat1
+            dlon = lon2 - lon1
+            
+            a = math.sin(dlat/2)**2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon/2)**2
+            c = 2 * math.asin(math.sqrt(a))
+            
+            return R * c
+
         route_options = {}
         
-        # Fastest Route
+        # Fastest Route: A* with cost = time, heuristic = distance / max_speed
         try:
-            fastest_path = nx.shortest_path(G_ml, orig_node, dest_node, weight=realistic_weight)
+            def fastest_heuristic(node_id, dest_node_id):
+                """Heuristic: straight-line distance / max speed (highway speed ~120 km/h)"""
+                distance = haversine_distance(node_id)
+                max_speed_ms = 90 / 3.6  # 120 km/h to m/s
+                return distance / max_speed_ms
+            
+            fastest_path = nx.astar_path(
+                G_ml, orig_node, dest_node,
+                heuristic=fastest_heuristic,
+                weight=realistic_weight
+            )
             fastest_coords, fastest_time, fastest_details = _extract_route_details(G_ml, fastest_path)
             route_options['fastest'] = {
                 "name": "Fastest Route",
@@ -142,9 +184,17 @@ def get_multiple_routes(G, start_point, end_point, hour=8, day_type="weekday"):
         except Exception as e:
             logger.warning(f"Could not calculate fastest route: {e}")
         
-        # Shortest Route
+        # Shortest Route: A* with cost = length, heuristic = straight-line distance
         try:
-            shortest_path = nx.shortest_path(G_ml, orig_node, dest_node, weight='length')
+            def shortest_heuristic(node_id, dest_node_id):
+                """Heuristic: straight-line distance in meters"""
+                return haversine_distance(node_id)
+            
+            shortest_path = nx.astar_path(
+                G_ml, orig_node, dest_node,
+                heuristic=shortest_heuristic,
+                weight='length'
+            )
             shortest_coords, shortest_time, shortest_details = _extract_route_details(G_ml, shortest_path)
             route_options['shortest'] = {
                 "name": "Shortest Route",
@@ -158,14 +208,24 @@ def get_multiple_routes(G, start_point, end_point, hour=8, day_type="weekday"):
         except Exception as e:
             logger.warning(f"Could not calculate shortest route: {e}")
         
-        # Least Congested Route
+        # Least Congested Route: A* with cost = congestion score
         try:
             def congestion_weight(u, v, d):
+                """Weight function: congestion-based cost"""
                 congestion = d.get('congestion', 0.5)
                 length = d.get('length', 100)
+                # Higher congestion = higher cost
                 return length * (1 + congestion * 3)
             
-            least_congested_path = nx.shortest_path(G_ml, orig_node, dest_node, weight=congestion_weight)
+            def congestion_heuristic(node_id, dest_node_id):
+                """Heuristic: straight-line distance (optimistic congestion-free path)"""
+                return haversine_distance(node_id)
+            
+            least_congested_path = nx.astar_path(
+                G_ml, orig_node, dest_node,
+                heuristic=congestion_heuristic,
+                weight=congestion_weight
+            )
             lc_coords, lc_time, lc_details = _extract_route_details(G_ml, least_congested_path)
             route_options['least_congested'] = {
                 "name": "Least Congested",
@@ -178,8 +238,59 @@ def get_multiple_routes(G, start_point, end_point, hour=8, day_type="weekday"):
             }
         except Exception as e:
             logger.warning(f"Could not calculate least congested route: {e}")
-        
-        return route_options
+
+        # Relabel routes so that:
+        # - Fastest Route has minimum total_time_min
+        # - Shortest Route has minimum total_distance_km
+        # - Least Congested has minimum average_congestion
+        if not route_options:
+            return {}
+
+        # Work on route objects as a list
+        routes = list(route_options.values())
+
+        def get_time(r):
+            return r.get("summary", {}).get("total_time_min", float('inf'))
+
+        def get_distance(r):
+            return r.get("summary", {}).get("total_distance_km", float('inf'))
+
+        def get_congestion(r):
+            return r.get("summary", {}).get("average_congestion", float('inf'))
+
+        final_routes = {}
+
+        # Fastest
+        try:
+            fastest = min(routes, key=get_time)
+            fastest["name"] = "Fastest Route"
+            fastest["color"] = "#2563eb"
+            fastest["icon"] = "⚡"
+            final_routes["fastest"] = fastest
+        except ValueError:
+            pass
+
+        # Shortest
+        try:
+            shortest = min(routes, key=get_distance)
+            shortest["name"] = "Shortest Route"
+            shortest["color"] = "#10b981"
+            shortest["icon"] = "📏"
+            final_routes["shortest"] = shortest
+        except ValueError:
+            pass
+
+        # Least congested
+        try:
+            least = min(routes, key=get_congestion)
+            least["name"] = "Least Congested"
+            least["color"] = "#8b5cf6"
+            least["icon"] = "😌"
+            final_routes["least_congested"] = least
+        except ValueError:
+            pass
+
+        return final_routes or route_options
         
     except Exception as e:
         logger.error(f"Error in multi-route calculation: {str(e)}")

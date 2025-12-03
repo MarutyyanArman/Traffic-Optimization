@@ -36,22 +36,81 @@
         </div>
     </div>
 
-    <div class="charts-grid">
-        <div class="chart-container">
-            <div class="chart-title">Congestion Distribution</div>
-            <canvas id="congestionChart"></canvas>
+    <div class="charts-accordion">
+        <!-- Congestion Distribution -->
+        <div class="chart-section">
+            <div class="chart-section-header" onclick="toggleChartSection(this)">
+                <div class="chart-section-title">
+                    <i class="fas fa-chart-pie"></i>
+                    Congestion Distribution
+                </div>
+                <div class="chart-section-actions">
+                    <button class="chart-download-btn" onclick="event.stopPropagation(); downloadChart('congestionChart', 'congestion_distribution')" title="Download Chart">
+                        <i class="fas fa-download"></i>
+                    </button>
+                    <i class="fas fa-chevron-down chart-toggle-icon"></i>
+                </div>
+            </div>
+            <div class="chart-section-content expanded">
+                <canvas id="congestionChart"></canvas>
+            </div>
         </div>
-        <div class="chart-container">
-            <div class="chart-title">Traffic Patterns by Hour</div>
-            <canvas id="hourlyPatternChart"></canvas>
+
+        <!-- Traffic Patterns by Hour -->
+        <div class="chart-section">
+            <div class="chart-section-header" onclick="toggleChartSection(this)">
+                <div class="chart-section-title">
+                    <i class="fas fa-clock"></i>
+                    Traffic Patterns by Hour
+                </div>
+                <div class="chart-section-actions">
+                    <button class="chart-download-btn" onclick="event.stopPropagation(); downloadChart('hourlyPatternChart', 'hourly_traffic_patterns')" title="Download Chart">
+                        <i class="fas fa-download"></i>
+                    </button>
+                    <i class="fas fa-chevron-down chart-toggle-icon"></i>
+                </div>
+            </div>
+            <div class="chart-section-content expanded">
+                <canvas id="hourlyPatternChart"></canvas>
+            </div>
         </div>
-        <div class="chart-container">
-            <div class="chart-title">Road Types Analysis</div>
-            <canvas id="roadTypeChart"></canvas>
+
+        <!-- Road Types Analysis -->
+        <div class="chart-section">
+            <div class="chart-section-header" onclick="toggleChartSection(this)">
+                <div class="chart-section-title">
+                    <i class="fas fa-road"></i>
+                    Road Types Analysis
+                </div>
+                <div class="chart-section-actions">
+                    <button class="chart-download-btn" onclick="event.stopPropagation(); downloadChart('roadTypeChart', 'road_types_analysis')" title="Download Chart">
+                        <i class="fas fa-download"></i>
+                    </button>
+                    <i class="fas fa-chevron-down chart-toggle-icon"></i>
+                </div>
+            </div>
+            <div class="chart-section-content expanded">
+                <canvas id="roadTypeChart"></canvas>
+            </div>
         </div>
-        <div class="chart-container">
-            <div class="chart-title">Weekly Traffic Trends</div>
-            <canvas id="weeklyTrendChart"></canvas>
+
+        <!-- Weekly Traffic Trends -->
+        <div class="chart-section">
+            <div class="chart-section-header" onclick="toggleChartSection(this)">
+                <div class="chart-section-title">
+                    <i class="fas fa-calendar-week"></i>
+                    Weekly Traffic Trends
+                </div>
+                <div class="chart-section-actions">
+                    <button class="chart-download-btn" onclick="event.stopPropagation(); downloadChart('weeklyTrendChart', 'weekly_traffic_trends')" title="Download Chart">
+                        <i class="fas fa-download"></i>
+                    </button>
+                    <i class="fas fa-chevron-down chart-toggle-icon"></i>
+                </div>
+            </div>
+            <div class="chart-section-content expanded">
+                <canvas id="weeklyTrendChart"></canvas>
+            </div>
         </div>
     </div>
 

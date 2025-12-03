@@ -1,0 +1,405 @@
+<!-- templates/components/header.html -->
+<header class="routely-header">
+    <!-- Main Header Bar -->
+    <div class="header-main">
+        <!-- Brand Logo & Name -->
+        <div class="header-brand">
+            <div class="logo-container">
+                <div class="logo-icon">
+                    <i class="fas fa-route"></i>
+                </div>
+                <div class="brand-text">
+                    <h1 class="brand-name">Routely</h1>
+                    <span class="brand-tagline">Intelligent Traffic Optimization</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Menu -->
+        <nav class="header-nav">
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="/" class="nav-link" onclick="syncThemeToHomepage()">
+                        <i class="fas fa-home"></i>
+                        <span>Home</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/map" class="nav-link active">
+                        <i class="fas fa-map-marked-alt"></i>
+                        <span>Live Map</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#analytics" class="nav-link" onclick="showAnalyticsDashboard()">
+                        <i class="fas fa-chart-network"></i>
+                        <span>Analytics</span>
+                    </a>
+                </li>
+                <li class="nav-item dropdown">
+                    <button class="nav-link dropdown-toggle">
+                        <i class="fas fa-road"></i>
+                        <span>Routes</span>
+                        <i class="fas fa-chevron-down dropdown-arrow"></i>
+                    </button>
+                    <div class="dropdown-menu">
+                        <a href="#" class="dropdown-item" onclick="showSavedRoutesModal()">
+                            <i class="fas fa-bookmark"></i>
+                            Saved Routes
+                        </a>
+                        <a href="#" class="dropdown-item" onclick="showRecentRoutes()">
+                            <i class="fas fa-history"></i>
+                            Recent Trips
+                        </a>
+                        <a href="#" class="dropdown-item" onclick="showPopularRoutes()">
+                            <i class="fas fa-fire"></i>
+                            Popular Routes
+                        </a>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- User Actions -->
+        <div class="header-actions">
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button class="action-btn" id="predictionsToggle" title="Traffic Predictions">
+                    <i class="fas fa-chart-line"></i>
+                    <span class="btn-text">Predictions</span>
+                    <div class="active-indicator"></div>
+                </button>
+                <button class="action-btn" id="settingsToggle" title="Settings">
+                    <i class="fas fa-cog"></i>
+                    <span class="btn-text">Settings</span>
+                </button>
+
+                <!-- User Profile -->
+                <div class="user-profile dropdown">
+                    <button class="profile-btn">
+                        <div class="avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <span class="username">Guest</span>
+                        <i class="fas fa-chevron-down dropdown-arrow"></i>
+                    </button>
+                    <div class="dropdown-menu">
+                        <div class="dropdown-header">
+                            <div class="avatar">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="user-info">
+                                <div class="user-name">Guest User</div>
+                                <div class="user-email">guest@routely.com</div>
+                            </div>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item">
+                            <i class="fas fa-user-cog"></i>
+                            Profile Settings
+                        </a>
+                        <a href="#" class="dropdown-item">
+                            <i class="fas fa-bell"></i>
+                            Notifications
+                        </a>
+                        <a href="#" class="dropdown-item">
+                            <i class="fas fa-download"></i>
+                            Export Data
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item">
+                            <i class="fas fa-sign-out-alt"></i>
+                            Sign In
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Toggle -->
+        <button class="mobile-menu-toggle" id="mobileMenuToggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </div>
+
+    <!-- Secondary Header Bar (Contextual) -->
+    <div class="header-secondary" id="headerSecondary">
+        <div class="secondary-content">
+            <!-- Current Route Info -->
+            <div class="route-info" id="currentRouteInfo" style="display: none;">
+                <div class="route-summary">
+                    <div class="route-from-to">
+                        <span class="from-point" id="currentFrom">Start Point</span>
+                        <i class="fas fa-arrow-right"></i>
+                        <span class="to-point" id="currentTo">Destination</span>
+                    </div>
+                    <div class="route-stats">
+                        <span class="route-stat">
+                            <i class="fas fa-clock"></i>
+                            <span id="currentDuration">-- min</span>
+                        </span>
+                        <span class="route-stat">
+                            <i class="fas fa-road"></i>
+                            <span id="currentDistance">-- km</span>
+                        </span>
+                    </div>
+                </div>
+                <div class="route-actions">
+                    <button class="btn btn-sm btn-outline" onclick="saveCurrentRoute()">
+                        <i class="fas fa-bookmark"></i>
+                        Save
+                    </button>
+                    <button class="btn btn-sm btn-primary" onclick="shareCurrentRoute()">
+                        <i class="fas fa-share"></i>
+                        Share
+                    </button>
+                </div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="quick-stats-bar">
+                <div class="quick-stat">
+                    <i class="fas fa-users"></i>
+                    <span class="stat-value" id="headerActiveUsers">2.4k</span>
+                    <span class="stat-label">Active</span>
+                </div>
+                <div class="quick-stat">
+                    <i class="fas fa-route"></i>
+                    <span class="stat-value" id="headerRoutesToday">1.2k</span>
+                    <span class="stat-label">Routes Today</span>
+                </div>
+                <div class="quick-stat">
+                    <i class="fas fa-bolt"></i>
+                    <span class="stat-value" id="headerAvgSavings">12min</span>
+                    <span class="stat-label">Avg. Saved</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Navigation Menu -->
+    <div class="mobile-nav" id="mobileNav">
+        <div class="mobile-nav-header">
+            <div class="logo-container">
+                <div class="logo-icon">
+                    <i class="fas fa-route"></i>
+                </div>
+                <div class="brand-text">
+                    <h3>Routely</h3>
+                </div>
+            </div>
+            <button class="mobile-nav-close" id="mobileNavClose">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <nav class="mobile-nav-menu">
+            <a href="/" class="mobile-nav-item" onclick="syncThemeToHomepage()">
+                <i class="fas fa-home"></i>
+                <span>Home</span>
+            </a>
+            <a href="/map" class="mobile-nav-item active">
+                <i class="fas fa-map-marked-alt"></i>
+                <span>Live Map</span>
+            </a>
+            <a href="#analytics" class="mobile-nav-item" onclick="showAnalyticsDashboard()">
+                <i class="fas fa-chart-network"></i>
+                <span>Analytics</span>
+            </a>
+            <div class="mobile-nav-section">
+                <h4>Routes</h4>
+                <a href="#" class="mobile-nav-item" onclick="showSavedRoutesModal()">
+                    <i class="fas fa-bookmark"></i>
+                    <span>Saved Routes</span>
+                </a>
+                <a href="#" class="mobile-nav-item" onclick="showRecentRoutes()">
+                    <i class="fas fa-history"></i>
+                    <span>Recent Trips</span>
+                </a>
+                <a href="#" class="mobile-nav-item" onclick="showPopularRoutes()">
+                    <i class="fas fa-fire"></i>
+                    <span>Popular Routes</span>
+                </a>
+            </div>
+            <div class="mobile-nav-section">
+                <h4>Tools</h4>
+                <button class="mobile-nav-item" onclick="togglePredictions()">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Predictions</span>
+                    <div class="toggle-switch">
+                        <input type="checkbox" id="mobilePredictionsToggle">
+                        <span class="slider"></span>
+                    </div>
+                </button>
+            </div>
+        </nav>
+        
+        <div class="mobile-nav-footer">
+            <div class="user-profile-mobile">
+                <div class="avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="user-info">
+                    <div class="user-name">Guest User</div>
+                    <div class="user-email">guest@routely.com</div>
+                </div>
+            </div>
+            <button class="btn btn-outline btn-block" onclick="showSettingsModal()">
+                <i class="fas fa-cog"></i>
+                Settings
+            </button>
+        </div>
+    </div>
+</header>
+
+<script>
+    // Header functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        initializeHeader();
+    });
+
+    function initializeHeader() {
+        // Mobile menu toggle
+        const mobileToggle = document.getElementById('mobileMenuToggle');
+        const mobileNav = document.getElementById('mobileNav');
+        const mobileClose = document.getElementById('mobileNavClose');
+
+        if (mobileToggle && mobileNav) {
+            mobileToggle.addEventListener('click', function() {
+                mobileNav.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            });
+
+            mobileClose.addEventListener('click', function() {
+                mobileNav.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+        }
+
+        // Dropdown functionality
+        const dropdowns = document.querySelectorAll('.dropdown');
+        dropdowns.forEach(dropdown => {
+            const toggle = dropdown.querySelector('.dropdown-toggle, .profile-btn');
+            const menu = dropdown.querySelector('.dropdown-menu');
+
+            if (toggle && menu) {
+                toggle.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    // Close other dropdowns
+                    dropdowns.forEach(other => {
+                        if (other !== dropdown) {
+                            other.classList.remove('active');
+                        }
+                    });
+                    // Toggle current dropdown
+                    dropdown.classList.toggle('active');
+                });
+            }
+        });
+
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', function() {
+            dropdowns.forEach(dropdown => {
+                dropdown.classList.remove('active');
+            });
+        });
+
+        // Action button toggles
+        const actionButtons = document.querySelectorAll('.action-btn');
+        actionButtons.forEach(btn => {
+            if (btn.id === 'settingsToggle') return; // Settings doesn't toggle
+            
+            btn.addEventListener('click', function() {
+                const isActive = this.getAttribute('data-active') === 'true';
+                this.setAttribute('data-active', !isActive);
+                this.classList.toggle('active', !isActive);
+                
+                // Handle specific actions
+                switch(this.id) {
+                    case 'predictionsToggle':
+                        togglePredictions(!isActive);
+                        break;
+                }
+            });
+        });
+
+        // Update quick stats periodically
+        updateHeaderStats();
+        setInterval(updateHeaderStats, 30000); // Update every 30 seconds
+    }
+
+    function updateHeaderStats() {
+        // Simulate live data updates
+        const activeUsers = document.getElementById('headerActiveUsers');
+        const routesToday = document.getElementById('headerRoutesToday');
+        const avgSavings = document.getElementById('headerAvgSavings');
+
+        if (activeUsers) {
+            const current = parseInt(activeUsers.textContent);
+            const variation = Math.floor(Math.random() * 50) - 25;
+            activeUsers.textContent = Math.max(1000, current + variation).toLocaleString();
+        }
+
+        if (routesToday) {
+            const current = parseInt(routesToday.textContent);
+            routesToday.textContent = (current + Math.floor(Math.random() * 10)).toLocaleString();
+        }
+    }
+
+    function showCurrentRouteInfo(from, to, duration, distance, congestion) {
+        const routeInfo = document.getElementById('currentRouteInfo');
+        const secondaryHeader = document.getElementById('headerSecondary');
+        
+        if (routeInfo && secondaryHeader) {
+            document.getElementById('currentFrom').textContent = from;
+            document.getElementById('currentTo').textContent = to;
+            document.getElementById('currentDuration').textContent = duration + ' min';
+            document.getElementById('currentDistance').textContent = distance + ' km';
+            
+            routeInfo.style.display = 'flex';
+            secondaryHeader.classList.add('has-route');
+        }
+    }
+
+    function hideCurrentRouteInfo() {
+        const routeInfo = document.getElementById('currentRouteInfo');
+        const secondaryHeader = document.getElementById('headerSecondary');
+        
+        if (routeInfo && secondaryHeader) {
+            routeInfo.style.display = 'none';
+            secondaryHeader.classList.remove('has-route');
+        }
+    }
+
+    // Placeholder functions for header actions
+    function togglePredictions(enable) {
+        console.log('Predictions:', enable ? 'ON' : 'OFF');
+        // Implementation in main map JS
+    }
+
+    function showSettingsModal() {
+        console.log('Showing settings modal');
+        // Implementation in main map JS
+    }
+
+    function saveCurrentRoute() {
+        // Open the save route modal
+        const modal = document.getElementById('saveRouteModal');
+        if (modal) {
+            modal.style.display = 'block';
+            // Set default name
+            const input = document.getElementById('saveRouteNameInput');
+            if (input) {
+                const timestamp = new Date().toLocaleDateString();
+                input.value = `My Route - ${timestamp}`;
+            }
+        }
+    }
+
+    function shareCurrentRoute() {
+        console.log('Sharing current route');
+        // Implementation in sharing functionality
+    }
+</script>

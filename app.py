@@ -11,14 +11,37 @@ import logging
 from datetime import datetime, timedelta
 import time
 import csv
-from io import StringIO
+from io import StringIO, BytesIO
 from flask import Response
+import json
+import uuid
+import os
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from email.utils import formataddr
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 app = Flask(__name__)
 
 # Optimize Flask
 app.config['JSONIFY_PRETTYPRINT_REGULAR'] = False
 app.config['JSON_SORT_KEYS'] = False
+
+# Support email configuration (set via environment variables)
+SUPPORT_EMAIL_HOST = os.getenv('SUPPORT_EMAIL_HOST', 'localhost')
+SUPPORT_EMAIL_PORT = int(os.getenv('SUPPORT_EMAIL_PORT', '25'))
+SUPPORT_EMAIL_USE_SSL = os.getenv('SUPPORT_EMAIL_USE_SSL', 'false').lower() == 'true'
+SUPPORT_EMAIL_USE_TLS = os.getenv('SUPPORT_EMAIL_USE_TLS', 'true').lower() == 'true'
+SUPPORT_EMAIL_USER = os.getenv('SUPPORT_EMAIL_USER')
+SUPPORT_EMAIL_PASSWORD = (os.getenv('SUPPORT_EMAIL_PASSWORD') or '').replace(' ', '')
+
+SUPPORT_EMAIL_FROM = os.getenv('SUPPORT_EMAIL_FROM', SUPPORT_EMAIL_USER or 'support@routely.am')
+SUPPORT_TARGET_EMAIL = os.getenv('SUPPORT_TARGET_EMAIL', 'amarutyan99@gmail.com')
+SUPPORT_REPLY_ADDRESS = os.getenv('SUPPORT_REPLY_ADDRESS', 'noreply@routely.am')
 
 # Set up optimized logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -27,6 +50,30 @@ logger = logging.getLogger(__name__)
 # Response cache
 response_cache = {}
 CACHE_TIMEOUT = 300  # 5 minutes
+
+# Saved Routes System
+SAVED_ROUTES_FILE = "saved_routes.json"
+
+def load_saved_routes():
+    """Load saved routes from file"""
+    try:
+        if os.path.exists(SAVED_ROUTES_FILE):
+            with open(SAVED_ROUTES_FILE, 'r') as f:
+                return json.load(f)
+        return []
+    except Exception as e:
+        logger.error(f"Error loading saved routes: {str(e)}")
+        return []
+
+def save_routes_to_file(routes):
+    """Save routes to file"""
+    try:
+        with open(SAVED_ROUTES_FILE, 'w') as f:
+            json.dump(routes, f, indent=2)
+        return True
+    except Exception as e:
+        logger.error(f"Error saving routes: {str(e)}")
+        return False
 
 @app.route('/')
 def home():
@@ -311,6 +358,135 @@ def available_road_types():
         logger.error(f"Error in /available-road-types: {str(e)}")
         return jsonify({"error": "Failed to get road types"}), 500
 
+# Saved Routes Endpoints
+@app.route('/save-route', methods=['POST'])
+def save_route():
+    """Save a route for later use"""
+    try:
+        data = request.get_json()
+        if not data or 'route_data' not in data:
+            return jsonify({"error": "Invalid route data"}), 400
+        
+        route_data = data['route_data']
+        route_name = data.get('route_name', f"Route_{datetime.now().strftime('%Y%m%d_%H%M')}")
+        route_type = data.get('route_type', 'smart_plan')
+        
+        # Generate unique ID for the route
+        route_id = str(uuid.uuid4())
+        
+        saved_route = {
+            'id': route_id,
+            'name': route_name,
+            'type': route_type,
+            'created_at': datetime.now().isoformat(),
+            'route_data': route_data,
+            'start_point': data.get('start_point'),
+            'end_point': data.get('end_point')
+        }
+        
+        # Load existing routes and add new one
+        saved_routes = load_saved_routes()
+        saved_routes.append(saved_route)
+        
+        # Save back to file
+        if save_routes_to_file(saved_routes):
+            return jsonify({
+                "success": True,
+                "message": "Route saved successfully",
+                "route_id": route_id
+            })
+        else:
+            return jsonify({"error": "Failed to save route"}), 500
+            
+    except Exception as e:
+        logger.error(f"Error saving route: {str(e)}")
+        return jsonify({"error": f"Failed to save route: {str(e)}"}), 500
+
+@app.route('/saved-routes', methods=['GET'])
+def get_saved_routes():
+    """Get all saved routes"""
+    try:
+        saved_routes = load_saved_routes()
+        return jsonify({
+            "success": True,
+            "routes": saved_routes
+        })
+    except Exception as e:
+        logger.error(f"Error loading saved routes: {str(e)}")
+        return jsonify({"error": "Failed to load saved routes"}), 500
+
+@app.route('/saved-route/<route_id>', methods=['GET'])
+def get_saved_route(route_id):
+    """Get a specific saved route"""
+    try:
+        saved_routes = load_saved_routes()
+        route = next((r for r in saved_routes if r['id'] == route_id), None)
+        
+        if route:
+            return jsonify({
+                "success": True,
+                "route": route
+            })
+        else:
+            return jsonify({"error": "Route not found"}), 404
+            
+    except Exception as e:
+        logger.error(f"Error loading saved route: {str(e)}")
+        return jsonify({"error": "Failed to load saved route"}), 500
+
+@app.route('/delete-route/<route_id>', methods=['DELETE'])
+def delete_route(route_id):
+    """Delete a saved route"""
+    try:
+        saved_routes = load_saved_routes()
+        initial_count = len(saved_routes)
+        
+        # Filter out the route to delete
+        saved_routes = [r for r in saved_routes if r['id'] != route_id]
+        
+        if len(saved_routes) < initial_count:
+            # Route was found and removed, save the updated list
+            if save_routes_to_file(saved_routes):
+                return jsonify({
+                    "success": True,
+                    "message": "Route deleted successfully"
+                })
+            else:
+                return jsonify({"error": "Failed to save routes after deletion"}), 500
+        else:
+            return jsonify({"error": "Route not found"}), 404
+            
+    except Exception as e:
+        logger.error(f"Error deleting route: {str(e)}")
+        return jsonify({"error": "Failed to delete route"}), 500
+
+@app.route('/update-route/<route_id>', methods=['PUT'])
+def update_route(route_id):
+    """Update a saved route (e.g., change name)"""
+    try:
+        data = request.get_json()
+        saved_routes = load_saved_routes()
+        
+        for route in saved_routes:
+            if route['id'] == route_id:
+                if 'name' in data:
+                    route['name'] = data['name']
+                route['updated_at'] = datetime.now().isoformat()
+                
+                if save_routes_to_file(saved_routes):
+                    return jsonify({
+                        "success": True,
+                        "message": "Route updated successfully"
+                    })
+                else:
+                    return jsonify({"error": "Failed to save routes after update"}), 500
+        
+        return jsonify({"error": "Route not found"}), 404
+        
+    except Exception as e:
+        logger.error(f"Error updating route: {str(e)}")
+        return jsonify({"error": "Failed to update route"}), 500
+
 @app.route('/health', methods=['GET'])
 def health_check():
     """Optimized health check"""
@@ -333,8 +509,9 @@ def download_traffic_data():
         hour = request.args.get("hour", type=int)
         day_type = request.args.get("day_type", "weekday")
         
-        # Create CSV in memory
+        # Create CSV in memory with UTF-8 BOM for proper encoding
         output = StringIO()
+        output.write('\ufeff')  # UTF-8 BOM for Excel compatibility
         writer = csv.writer(output)
         
         # Write CSV header
@@ -381,14 +558,14 @@ def download_traffic_data():
                 day_type, coord_str
             ])
         
-        # Prepare response
+        # Prepare response with UTF-8 encoding
         output.seek(0)
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         filename = f"yerevan_traffic_data_{timestamp}.csv"
         
         return Response(
-            output.getvalue(),
-            mimetype="text/csv",
+            output.getvalue().encode('utf-8-sig'),
+            mimetype="text/csv; charset=utf-8",
             headers={"Content-disposition": f"attachment; filename={filename}"}
         )
         
@@ -407,13 +584,14 @@ def download_route_data():
         route_details = data['route_details']
         route_name = data.get('route_name', 'Unknown Route')
         
-        # Create CSV in memory
+        # Create CSV in memory with UTF-8 BOM for proper encoding
         output = StringIO()
+        output.write('\ufeff')  # UTF-8 BOM for Excel compatibility
         writer = csv.writer(output)
         
         # Write CSV header
         writer.writerow([
-            'Segment', 'From Node', 'To Node', 'Road Type', 
+            'Segment', 'From Node', 'To Node', 'Road Name', 'Road Type', 
             'Length (m)', 'Congestion (%)', 'Travel Time (s)',
             'Estimated Speed (km/h)', 'Cumulative Time (min)',
             'Cumulative Distance (km)'
@@ -432,15 +610,15 @@ def download_route_data():
             
             writer.writerow([
                 i, segment.get('from_node', 'N/A'), segment.get('to_node', 'N/A'),
-                segment.get('road_type', 'unknown'), round(segment_length, 2),
-                round(congestion, 2), round(segment_time, 2),
+                segment.get('road_name', 'Unknown Road'), segment.get('road_type', 'unknown'), 
+                round(segment_length, 2), round(congestion, 2), round(segment_time, 2),
                 segment.get('speed_kmh', 0), round(cumulative_time / 60, 2),
                 round(cumulative_distance / 1000, 2)
             ])
         
         # Add summary row
         writer.writerow([])
-        writer.writerow(['SUMMARY', '', '', '', '', '', '', '', '', ''])
+        writer.writerow(['SUMMARY', '', '', '', '', '', '', '', '', '', ''])
         writer.writerow([
             'Total', '', '', '', 
             round(cumulative_distance, 2), 
@@ -457,14 +635,211 @@ def download_route_data():
         filename = f"yerevan_route_{route_name.replace(' ', '_').lower()}_{timestamp}.csv"
         
         return Response(
-            output.getvalue(),
-            mimetype="text/csv",
+            output.getvalue().encode('utf-8-sig'),
+            mimetype="text/csv; charset=utf-8",
             headers={"Content-disposition": f"attachment; filename={filename}"}
         )
         
     except Exception as e:
         logger.error(f"Error generating route CSV: {str(e)}")
         return jsonify({"error": "Failed to generate route data export"}), 500
+
+@app.route('/send-support-email', methods=['POST'])
+def send_support_email():
+    """Send support email directly without using mailto"""
+    try:
+        data = request.get_json()
+        
+        # Validate required fields
+        required_fields = ['name', 'surname', 'email', 'subject', 'problem']
+        for field in required_fields:
+            if not data.get(field):
+                return jsonify({"error": f"{field} is required"}), 400
+        
+        # Create email content
+        subject = f"Routely Support: {data['subject']}"
+        
+        body = f"""Dear Routely Support Team,
+
+I am writing to request assistance with the following issue:
+
+--------------------------------------------------
+CONTACT INFORMATION
+--------------------------------------------------
+Name: {data['name']} {data['surname']}
+Email: {data['email']}
+Subject: {data['subject']}
+Date: {datetime.now().strftime('%Y-%m-%d')}
+Time: {datetime.now().strftime('%H:%M:%S')}
+
+--------------------------------------------------
+ISSUE DESCRIPTION
+--------------------------------------------------
+{data['problem']}
+
+--------------------------------------------------
+ADDITIONAL INFORMATION
+--------------------------------------------------
+This support request was submitted through the Routely Traffic Optimization Platform.
+Reference ID: {int(time.time())}
+
+Thank you for your assistance.
+
+Best regards,
+{data['name']} {data['surname']}
+{data['email']}
+"""
+        
+        # Send email using Gmail SMTP (you'll need to configure this)
+        try:
+            msg = MIMEMultipart()
+            reply_name = f"{data['name']} {data['surname']}".strip() or data['name'] or data['surname'] or 'Routely User'
+            # Present email as coming from the user (so replies auto-fill)
+            msg['From'] = formataddr((reply_name, data['email']))
+            msg['Sender'] = SUPPORT_EMAIL_FROM
+            msg['To'] = SUPPORT_TARGET_EMAIL
+            msg['Reply-To'] = formataddr((reply_name, data['email']))
+            msg['Subject'] = subject
+
+            msg.attach(MIMEText(body, 'plain'))
+
+            connection = None
+            if SUPPORT_EMAIL_USE_SSL:
+                connection = smtplib.SMTP_SSL(SUPPORT_EMAIL_HOST, SUPPORT_EMAIL_PORT, timeout=20)
+            else:
+                connection = smtplib.SMTP(SUPPORT_EMAIL_HOST, SUPPORT_EMAIL_PORT, timeout=20)
+                if SUPPORT_EMAIL_USE_TLS:
+                    connection.starttls()
+
+            if SUPPORT_EMAIL_USER and SUPPORT_EMAIL_PASSWORD:
+                connection.login(SUPPORT_EMAIL_USER, SUPPORT_EMAIL_PASSWORD)
+
+            connection.send_message(msg)
+            connection.quit()
+
+            logger.info(f"Support message delivered to {SUPPORT_TARGET_EMAIL} (from {data['email']})")
+
+            return jsonify({
+                "success": True,
+                "message": "Message sent successfully to the Support Center."
+            })
+
+        except Exception as smtp_error:
+            logger.error(f"SMTP Error while sending support email: {smtp_error}")
+            return jsonify({
+                "error": "Failed to deliver your support request. Please try again later."
+            }), 500
+            
+    except Exception as e:
+        logger.error(f"Error sending support email: {str(e)}")
+        return jsonify({
+            "error": "Failed to send support request. Please try again later."
+        }), 500
+
+@app.route('/download-route-data', methods=['GET'])
+def download_saved_route_data():
+    """Download saved route data as CSV by route_id"""
+    try:
+        route_id = request.args.get('route_id')
+        if not route_id:
+            return jsonify({"error": "Route ID required"}), 400
+        
+        # Load the saved route
+        saved_routes = load_saved_routes()
+        route = next((r for r in saved_routes if r['id'] == route_id), None)
+        
+        if not route:
+            return jsonify({"error": "Route not found"}), 404
+        
+        route_data = route.get('route_data', {})
+        route_name = route.get('name', 'Unknown Route')
+        
+        # Create CSV in memory with UTF-8 BOM for proper encoding
+        output = StringIO()
+        output.write('\ufeff')  # UTF-8 BOM for Excel compatibility
+        writer = csv.writer(output)
+        
+        # Get summary data directly from route_data
+        summary = route_data.get('summary', {})
+        total_distance_km = summary.get('total_distance_km', 0)
+        total_time_min = route_data.get('total_time_min', summary.get('total_time_min', 0))
+        avg_congestion = summary.get('average_congestion', 0)
+        avg_speed = summary.get('average_speed_kmh', 0)
+        
+        # Get start and end points
+        start_point = route.get('start_point', {})
+        end_point = route.get('end_point', {})
+        
+        # Get road names by reverse geocoding the start/end coordinates
+        start_road = "Unknown"
+        end_road = "Unknown"
+        
+        # Try to get road names from the graph based on nearest nodes
+        try:
+            from shapely.geometry import Point
+            import osmnx as ox
+            
+            if start_point.get('lat') and start_point.get('lng'):
+                start_node = ox.distance.nearest_nodes(G, start_point['lng'], start_point['lat'])
+                # Get edges connected to this node and find road name
+                for u, v, data in G.edges(start_node, data=True):
+                    name = data.get('name', '')
+                    if name:
+                        start_road = name[0] if isinstance(name, list) else name
+                        break
+            
+            if end_point.get('lat') and end_point.get('lng'):
+                end_node = ox.distance.nearest_nodes(G, end_point['lng'], end_point['lat'])
+                for u, v, data in G.edges(end_node, data=True):
+                    name = data.get('name', '')
+                    if name:
+                        end_road = name[0] if isinstance(name, list) else name
+                        break
+        except Exception as e:
+            logger.warning(f"Could not get road names: {e}")
+        
+        # Write route summary header
+        writer.writerow(['Route Name', route_name])
+        writer.writerow(['Created', route.get('created_at', 'N/A')])
+        writer.writerow(['Type', route.get('type', 'N/A')])
+        writer.writerow([])
+        
+        # Write main metrics
+        writer.writerow(['ROUTE SUMMARY'])
+        writer.writerow(['Total Distance (km)', round(total_distance_km, 2)])
+        writer.writerow(['Total Time (min)', round(total_time_min, 1)])
+        writer.writerow(['Average Congestion (%)', round(avg_congestion, 1)])
+        writer.writerow(['Average Speed (km/h)', round(avg_speed, 1)])
+        writer.writerow([])
+        
+        # Write road type breakdown if available
+        road_types = summary.get('road_type_breakdown', {})
+        if road_types:
+            writer.writerow(['ROAD TYPES USED'])
+            for road_type, count in road_types.items():
+                writer.writerow([road_type.title(), f"{count} segments"])
+            writer.writerow([])
+        
+        # Write start and end road names
+        writer.writerow(['ROUTE ENDPOINTS'])
+        writer.writerow(['Start Road', start_road])
+        writer.writerow(['End Road', end_road])
+        
+        # Prepare response
+        output.seek(0)
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        safe_name = route_name.replace(' ', '_').replace('/', '_')[:30]
+        filename = f"route_{safe_name}_{timestamp}.csv"
+        
+        return Response(
+            output.getvalue().encode('utf-8-sig'),
+            mimetype="text/csv; charset=utf-8",
+            headers={"Content-disposition": f"attachment; filename={filename}"}
+        )
+        
+    except Exception as e:
+        logger.error(f"Error downloading saved route CSV: {str(e)}")
+        return jsonify({"error": "Failed to download route data"}), 500
 
 # Clear cache periodically
 def clear_old_cache():
@@ -499,6 +874,11 @@ if __name__ == "__main__":
     print("  /heatmap-data - Heatmap data API")
     print("  /smart-travel-plan - Smart travel planner with constraints")
     print("  /available-road-types - Get road types for constraints")
+    print("  /save-route - Save route for later use")
+    print("  /saved-routes - Get all saved routes")
+    print("  /saved-route/<id> - Get specific saved route")
+    print("  /delete-route/<id> - Delete saved route")
+    print("  /update-route/<id> - Update saved route")
     print("  /health    - Health check")
     print("  /debug     - Debug endpoint")
     

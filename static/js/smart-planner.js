@@ -8,6 +8,13 @@ function openSmartPlanner() {
     }
 
     showModal('smartPlannerModal');
+    
+    // Clear previous results
+    const resultsContainer = document.getElementById('smartPlanResultsModal');
+    if (resultsContainer) {
+        resultsContainer.innerHTML = '';
+        resultsContainer.style.display = 'none';
+    }
 
     // Load road types if not already loaded
     if (!roadTypesLoaded) {
@@ -85,7 +92,8 @@ async function generateSmartPlan() {
         return;
     }
 
-    showLoading();
+    // Show loading in modal
+    showSmartPlanLoading();
 
     try {
         // Collect constraints
@@ -98,7 +106,7 @@ async function generateSmartPlan() {
 
         if (!timeStart || !timeEnd) {
             showNotification("Please set both start and end times for your travel window", "warning");
-            hideLoading();
+            hideSmartPlanLoading();
             return;
         }
 
@@ -107,7 +115,7 @@ async function generateSmartPlan() {
 
         if (timeWindowStart >= timeWindowEnd) {
             showNotification("End time must be after start time", "warning");
-            hideLoading();
+            hideSmartPlanLoading();
             return;
         }
 
@@ -139,79 +147,124 @@ async function generateSmartPlan() {
         const result = response.data;
 
         if (result.success) {
-            closeModal('smartPlannerModal');
-            displaySmartPlanResults(result);
+            // Store the result globally for saving
+            window.smartPlanResult = result;
+            
+            // Hide loading and show results in modal
+            hideSmartPlanLoading();
+            displaySmartPlanResultsInModal(result);
             drawSmartPlanRoute(result);
             showNotification("Smart plan generated successfully! 🎉", "success");
         } else {
+            hideSmartPlanLoading();
             showNotification(result.message || "No suitable plan found with your constraints", "error");
         }
 
     } catch (error) {
         console.error('Smart plan error:', error);
+        hideSmartPlanLoading();
         showNotification('Failed to generate smart plan: ' + (error.response?.data?.error || error.message), 'error');
-    } finally {
-        hideLoading();
     }
 }
 
-// Display smart plan results in the main panel
-function displaySmartPlanResults(result) {
-    // Create or update results display in controls
-    let resultsPanel = document.getElementById('smartPlanResults');
-    if (!resultsPanel) {
-        resultsPanel = document.createElement('div');
-        resultsPanel.id = 'smartPlanResults';
-        resultsPanel.style.marginTop = '15px';
-
-        // Find where to insert it (after the Smart Travel Planner button)
-        const plannerButton = document.querySelector('button[onclick="openSmartPlanner()"]');
-        if (plannerButton) {
-            plannerButton.parentNode.parentNode.appendChild(resultsPanel);
-        }
+// Show loading in smart planner modal
+function showSmartPlanLoading() {
+    const modalContent = document.querySelector('#smartPlannerModal .modal-content');
+    const loadingHTML = `
+        <div id="smartPlanLoading" style="text-align: center; padding: 40px;">
+            <i class="fas fa-spinner fa-spin fa-3x" style="color: var(--primary); margin-bottom: 20px;"></i>
+            <h3 style="color: var(--modal-text); margin-bottom: 10px;">Generating Smart Plan</h3>
+            <p style="color: var(--text-secondary);">Analyzing traffic patterns and finding optimal route...</p>
+        </div>
+    `;
+    
+    // Hide the form and show loading
+    const formSection = modalContent.querySelector('div:last-child');
+    if (formSection) {
+        formSection.style.display = 'none';
     }
+    
+    modalContent.insertAdjacentHTML('beforeend', loadingHTML);
+}
 
+// Hide loading in smart planner modal
+function hideSmartPlanLoading() {
+    const loadingElement = document.getElementById('smartPlanLoading');
+    if (loadingElement) {
+        loadingElement.remove();
+    }
+    
+    // Show the form again
+    const modalContent = document.querySelector('#smartPlannerModal .modal-content');
+    const formSection = modalContent.querySelector('div:last-child');
+    if (formSection) {
+        formSection.style.display = 'block';
+    }
+}
+
+// Display smart plan results in the modal
+function displaySmartPlanResultsInModal(result) {
     const optimal = result.optimal_departure_time;
     const route = result.recommended_route;
 
+    // Create or get results container in modal
+    let resultsContainer = document.getElementById('smartPlanResultsModal');
+    if (!resultsContainer) {
+        resultsContainer = document.createElement('div');
+        resultsContainer.id = 'smartPlanResultsModal';
+        resultsContainer.style.marginTop = '20px';
+        resultsContainer.style.maxHeight = '400px';
+        resultsContainer.style.overflowY = 'auto';
+        
+        const modalContent = document.querySelector('#smartPlannerModal .modal-content');
+        modalContent.appendChild(resultsContainer);
+    }
+
     let html = `
-        <div class="route-info">
-            <h4><i class="fas fa-check-circle"></i> Smart Plan Results</h4>
-            <div style="margin-bottom: 15px;">
-                <div style="background: var(--success); color: white; padding: 10px; border-radius: 8px; text-align: center; margin-bottom: 10px;">
+        <div class="route-info" style="background: var(--card-bg); border-radius: 10px; padding: 20px; border-left: 4px solid var(--success);">
+            <h4 style="color: var(--modal-text); margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                <i class="fas fa-check-circle" style="color: var(--success);"></i>
+                Smart Plan Generated Successfully!
+            </h4>
+            
+            <div style="margin-bottom: 20px;">
+                <div style="background: var(--success); color: white; padding: 12px; border-radius: 8px; text-align: center; margin-bottom: 15px;">
                     <strong>🚀 Optimal Departure: ${optimal.time_display}</strong>
                 </div>
                 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
-                    <div style="background: var(--card-bg); padding: 8px; border-radius: 6px; text-align: center;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
+                    <div style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 6px; text-align: center;">
                         <div style="font-size: 0.9rem; color: var(--text-secondary);">Travel Time</div>
-                        <div style="font-weight: bold; color: var(--text-primary);">${optimal.travel_time_min.toFixed(1)} min</div>
+                        <div style="font-weight: bold; color: var(--modal-text); font-size: 1.2rem;">${optimal.travel_time_min.toFixed(1)} min</div>
                     </div>
-                    <div style="background: var(--card-bg); padding: 8px; border-radius: 6px; text-align: center;">
+                    <div style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 6px; text-align: center;">
                         <div style="font-size: 0.9rem; color: var(--text-secondary);">Congestion</div>
-                        <div style="font-weight: bold; color: ${optimal.congestion_percent < 50 ? 'var(--success)' : optimal.congestion_percent < 70 ? 'var(--warning)' : 'var(--danger)'};">${optimal.congestion_percent.toFixed(1)}%</div>
+                        <div style="font-weight: bold; color: ${optimal.congestion_percent < 50 ? 'var(--success)' : optimal.congestion_percent < 70 ? 'var(--warning)' : 'var(--danger)'}; font-size: 1.2rem;">${optimal.congestion_percent.toFixed(1)}%</div>
                     </div>
                 </div>
                 
-                <div style="margin-bottom: 10px;">
-                    <strong>Route Summary:</strong><br>
-                    • Distance: ${route.total_distance_km.toFixed(1)} km<br>
-                    • Road types used: ${Object.keys(route.road_types_used).join(', ')}
+                <div style="margin-bottom: 15px;">
+                    <strong style="color: var(--modal-text);">Route Summary:</strong><br>
+                    <div style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 5px;">
+                        • Distance: ${route.total_distance_km.toFixed(1)} km<br>
+                        • Road types used: ${Object.keys(route.road_types_used).join(', ')}<br>
+                        • Estimated average speed: ${route.summary ? route.summary.average_speed_kmh + ' km/h' : 'N/A'}
+                    </div>
                 </div>
             </div>
     `;
 
     // Add recommendations
     if (result.recommendations && result.recommendations.length > 0) {
-        html += `<div style="margin-bottom: 10px;"><strong>💡 Recommendations:</strong></div>`;
+        html += `<div style="margin-bottom: 15px;"><strong style="color: var(--modal-text);">💡 Recommendations:</strong></div>`;
         result.recommendations.forEach(rec => {
-            html += `<div style="font-size: 0.85rem; margin-bottom: 5px; padding-left: 10px; border-left: 3px solid var(--primary);">${rec}</div>`;
+            html += `<div style="font-size: 0.85rem; margin-bottom: 8px; padding-left: 12px; border-left: 3px solid var(--primary); color: var(--modal-text);">${rec}</div>`;
         });
     }
 
     // Add constraints used
     html += `
-        <div style="margin-top: 15px; padding-top: 10px; border-top: 1px solid var(--border-color);">
+        <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid var(--border-color);">
             <div style="font-size: 0.8rem; color: var(--text-secondary);">
                 <strong>Constraints applied:</strong><br>
                 ${result.constraints_used.max_travel_time ? `• Max time: ${result.constraints_used.max_travel_time} min<br>` : ''}
@@ -220,11 +273,32 @@ function displaySmartPlanResults(result) {
                 • Day type: ${result.constraints_used.day_type}
             </div>
         </div>
+        
+        <div style="margin-top: 15px; display: flex; gap: 10px;">
+            <button onclick="closeModal('smartPlannerModal')" class="secondary" style="flex: 1; padding: 10px;">
+                <i class="fas fa-times"></i>
+                Close
+            </button>
+            <button onclick="useThisSmartPlan()" class="success" style="flex: 1; padding: 10px;">
+                <i class="fas fa-check"></i>
+                Use This Plan
+            </button>
+            <button onclick="saveCurrentRoute('smart_plan')" class="purple" style="flex: 1; padding: 10px;">
+                <i class="fas fa-save"></i>
+                Save Route
+            </button>
+        </div>
     `;
 
     html += `</div>`;
-    resultsPanel.innerHTML = html;
-    resultsPanel.style.display = 'block';
+    resultsContainer.innerHTML = html;
+    resultsContainer.style.display = 'block';
+}
+
+// Function to use the generated smart plan
+function useThisSmartPlan() {
+    closeModal('smartPlannerModal');
+    showNotification("Smart plan applied to map! 🗺️", "success");
 }
 
 // Draw the smart plan route on map
@@ -251,4 +325,29 @@ function drawSmartPlanRoute(result) {
     // Update selected route
     selectedRoute = 'smart';
     updateDownloadButton();
+}
+
+// Smart Planner Modal Close Function
+function closeSmartPlannerModal() {
+    // Clear any results from previous runs
+    const resultsContainer = document.getElementById('smartPlanResultsModal');
+    if (resultsContainer) {
+        resultsContainer.innerHTML = '';
+        resultsContainer.style.display = 'none';
+    }
+    
+    // Hide any loading
+    const loadingElement = document.getElementById('smartPlanLoading');
+    if (loadingElement) {
+        loadingElement.remove();
+    }
+    
+    // Show the form section
+    const modalContent = document.querySelector('#smartPlannerModal .modal-content');
+    const formSection = modalContent.querySelector('div:last-child');
+    if (formSection) {
+        formSection.style.display = 'block';
+    }
+    
+    closeModal('smartPlannerModal');
 }

@@ -486,6 +486,31 @@ function showNotification(message, type = 'info') {
     }, 4000);
 }
 
+// Smart Planner Modal Close Function
+function closeSmartPlannerModal() {
+    // Clear any results from previous runs
+    const resultsContainer = document.getElementById('smartPlanResultsModal');
+    if (resultsContainer) {
+        resultsContainer.innerHTML = '';
+        resultsContainer.style.display = 'none';
+    }
+    
+    // Hide any loading
+    const loadingElement = document.getElementById('smartPlanLoading');
+    if (loadingElement) {
+        loadingElement.remove();
+    }
+    
+    // Show the form section
+    const modalContent = document.querySelector('#smartPlannerModal .modal-content');
+    const formSection = modalContent.querySelector('div:last-child');
+    if (formSection) {
+        formSection.style.display = 'block';
+    }
+    
+    closeModal('smartPlannerModal');
+}
+
 // Add CSS animations for notifications
 const style = document.createElement('style');
 style.textContent = `

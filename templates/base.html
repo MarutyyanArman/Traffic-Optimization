@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Routely - Intelligent Traffic Optimization{% endblock %}</title>
+    
+    <!-- Meta Tags -->
+    <meta name="description" content="Routely - AI-powered traffic analysis and optimal route planning for smarter urban navigation">
+    <meta name="keywords" content="traffic, routing, navigation, AI, optimization, routes, maps">
+    <meta name="author" content="Routely Team">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Routely - Intelligent Traffic Optimization">
+    <meta property="og:description" content="AI-powered traffic analysis and optimal route planning for smarter urban navigation">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ request.url if request else '/' }}">
+    
+    <!-- Favicon & App Icons -->
+    <link rel="icon" href="{{ url_for('static', filename='img/favicon.ico') }}" type="image/x-icon">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='img/apple-touch-icon.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='img/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='img/favicon-16x16.png') }}">
+    
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#4361ee" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)">
+    
+    <!-- Preload Critical Resources -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    
+    <!-- CSS Stylesheets -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    
+    {% block extra_css %}{% endblock %}
+    
+    <!-- Inline Critical CSS -->
+    <style>
+        /* Critical above-the-fold styles */
+        .critical-loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+        
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Ensure content is hidden until loaded */
+        .main-content {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .loaded .main-content {
+            opacity: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Critical Loading Screen -->
+    <div id="criticalLoading" class="critical-loading">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <div style="margin-top: 20px; color: white; text-align: center;">
+                <h3>Routely</h3>
+                <p>Loading intelligent routing system...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Wrapper -->
+    <div class="main-content">
+        <!-- Theme Switcher (Global) -->
+        <div class="theme-switcher">
+            <button class="theme-btn" id="themeToggle" aria-label="Toggle theme">
+                <i class="fas fa-moon"></i>
+                <i class="fas fa-sun"></i>
+            </button>
+        </div>
+
+        <!-- Header Block -->
+        {% block header %}
+        <header class="main-header">
+            <div class="header-container">
+                <!-- Logo and Brand -->
+                <div class="header-brand">
+                    <a href="{{ url_for('index') }}" class="brand-link">
+                        <div class="logo-icon">
+                            <i class="fas fa-route"></i>
+                        </div>
+                        <div class="brand-text">
+                            <h1 class="brand-name">Routely</h1>
+                            <span class="brand-tagline">Intelligent Traffic Optimization</span>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Main Navigation -->
+                <nav class="main-nav">
+                    <ul class="nav-menu">
+                        <li class="nav-item">
+                            <a href="{{ url_for('index') }}" class="nav-link {% if request.endpoint == 'index' %}active{% endif %}">
+                                <i class="fas fa-home"></i>
+                                <span>Home</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ url_for('map') }}" class="nav-link {% if request.endpoint == 'map' %}active{% endif %}">
+                                <i class="fas fa-map-marked-alt"></i>
+                                <span>Live Map</span>
+                            </a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <button class="nav-link dropdown-toggle">
+                                <i class="fas fa-chart-network"></i>
+                                <span>Analytics</span>
+                                <i class="fas fa-chevron-down dropdown-arrow"></i>
+                            </button>
+                            <div class="dropdown-menu">
+                                <a href="#traffic-stats" class="dropdown-item" onclick="showTrafficStats()">
+                                    <i class="fas fa-chart-pie"></i>
+                                    Traffic Statistics
+                                </a>
+                                <a href="#pattern-analysis" class="dropdown-item" onclick="showPatternAnalysis()">
+                                    <i class="fas fa-chart-line"></i>
+                                    Pattern Analysis
+                                </a>
+                                <a href="#predictions" class="dropdown-item" onclick="showTrafficPredictions()">
+                                    <i class="fas fa-crystal-ball"></i>
+                                    Predictions
+                                </a>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#about" class="nav-link">
+                                <i class="fas fa-info-circle"></i>
+                                <span>About</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+
+                <!-- User Actions -->
+                <div class="header-actions">
+                    {% if current_user.is_authenticated %}
+                    <div class="user-profile dropdown">
+                        <button class="profile-btn">
+                            <div class="avatar">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <span class="username">{{ current_user.username }}</span>
+                            <i class="fas fa-chevron-down dropdown-arrow"></i>
+                        </button>
+                        <div class="dropdown-menu">
+                            <div class="dropdown-header">
+                                <div class="avatar">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <div class="user-info">
+                                    <div class="user-name">{{ current_user.username }}</div>
+                                    <div class="user-email">{{ current_user.email }}</div>
+                                </div>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <a href="#profile" class="dropdown-item">
+                                <i class="fas fa-user-cog"></i>
+                                Profile Settings
+                            </a>
+                            <a href="#saved-routes" class="dropdown-item">
+                                <i class="fas fa-bookmark"></i>
+                                Saved Routes
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <a href="{{ url_for('logout') }}" class="dropdown-item">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Sign Out
+                            </a>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="auth-buttons">
+                        <a href="{{ url_for('login') }}" class="btn btn-outline btn-sm">Sign In</a>
+                        <a href="{{ url_for('register') }}" class="btn btn-primary btn-sm">Get Started</a>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Mobile Menu Toggle -->
+                <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle navigation menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </header>
+        {% endblock %}
+
+        <!-- Main Content Block -->
+        <main class="main-container">
+            {% block content %}
+            <!-- Default content will be overridden by child templates -->
+            {% endblock %}
+        </main>
+
+        <!-- Footer Block -->
+        {% block footer %}
+        <footer class="main-footer">
+            <div class="footer-container">
+                <div class="footer-content">
+                    <!-- Brand Section -->
+                    <div class="footer-brand">
+                        <div class="logo-brand">
+                            <div class="logo-icon">
+                                <i class="fas fa-route"></i>
+                            </div>
+                            <div class="brand-text">
+                                <h3>Routely</h3>
+                                <p class="footer-description">
+                                    Intelligent traffic optimization powered by advanced AI and real-time data analytics.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="social-links">
+                            <a href="#" class="social-link" aria-label="GitHub">
+                                <i class="fab fa-github"></i>
+                            </a>
+                            <a href="#" class="social-link" aria-label="Twitter">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                            <a href="#" class="social-link" aria-label="LinkedIn">
+                                <i class="fab fa-linkedin"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Quick Links -->
+                    <div class="footer-section">
+                        <h4>Navigation</h4>
+                        <ul class="footer-links">
+                            <li><a href="{{ url_for('index') }}">Home</a></li>
+                            <li><a href="{{ url_for('map') }}">Live Map</a></li>
+                            <li><a href="#analytics">Traffic Analytics</a></li>
+                            <li><a href="#about">About Routely</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Features -->
+                    <div class="footer-section">
+                        <h4>Features</h4>
+                        <ul class="footer-links">
+                            <li><a href="#route-planning">Route Planning</a></li>
+                            <li><a href="#predictions">Traffic Predictions</a></li>
+                            <li><a href="#analytics">Real-time Analytics</a></li>
+                            <li><a href="#export">Data Export</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Support -->
+                    <div class="footer-section">
+                        <h4>Support</h4>
+                        <ul class="footer-links">
+                            <li><a href="#help">Help Center</a></li>
+                            <li><a href="#tutorial">Interactive Tutorial</a></li>
+                            <li><a href="#contact">Contact Us</a></li>
+                            <li><a href="#feedback">Feedback</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Technology Stack -->
+                    <div class="footer-section">
+                        <h4>Powered By</h4>
+                        <div class="tech-stack">
+                            <span class="tech-badge"><i class="fas fa-brain"></i> Machine Learning</span>
+                            <span class="tech-badge"><i class="fas fa-project-diagram"></i> Graph Theory</span>
+                            <span class="tech-badge"><i class="fas fa-chart-line"></i> Predictive Analytics</span>
+                            <span class="tech-badge"><i class="fas fa-database"></i> Real-time Data</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer Bottom -->
+                <div class="footer-bottom">
+                    <div class="footer-bottom-content">
+                        <div class="copyright">
+                            <p>&copy; 2025 Routely - Intelligent Traffic Optimization. All rights reserved.</p>
+                        </div>
+                        <div class="footer-links-bottom">
+                            <a href="#privacy">Privacy Policy</a>
+                            <a href="#terms">Terms of Service</a>
+                            <a href="#cookies">Cookie Policy</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        {% endblock %}
+
+        <!-- Mobile Navigation Menu -->
+        <div class="mobile-nav" id="mobileNav">
+            <div class="mobile-nav-header">
+                <div class="logo-brand">
+                    <div class="logo-icon">
+                        <i class="fas fa-route"></i>
+                    </div>
+                    <div class="brand-text">
+                        <h3>Routely</h3>
+                    </div>
+                </div>
+                <button class="mobile-nav-close" id="mobileNavClose" aria-label="Close navigation">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <nav class="mobile-nav-menu">
+                <a href="{{ url_for('index') }}" class="mobile-nav-item">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
+                </a>
+                <a href="{{ url_for('map') }}" class="mobile-nav-item">
+                    <i class="fas fa-map-marked-alt"></i>
+                    <span>Live Map</span>
+                </a>
+                
+                <div class="mobile-nav-section">
+                    <h4>Analytics</h4>
+                    <a href="#traffic-stats" class="mobile-nav-item" onclick="showTrafficStats()">
+                        <i class="fas fa-chart-pie"></i>
+                        <span>Traffic Statistics</span>
+                    </a>
+                    <a href="#pattern-analysis" class="mobile-nav-item" onclick="showPatternAnalysis()">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Pattern Analysis</span>
+                    </a>
+                    <a href="#predictions" class="mobile-nav-item" onclick="showTrafficPredictions()">
+                        <i class="fas fa-crystal-ball"></i>
+                        <span>Predictions</span>
+                    </a>
+                </div>
+                
+                <div class="mobile-nav-section">
+                    <h4>Resources</h4>
+                    <a href="#about" class="mobile-nav-item">
+                        <i class="fas fa-info-circle"></i>
+                        <span>About</span>
+                    </a>
+                    <a href="#help" class="mobile-nav-item">
+                        <i class="fas fa-question-circle"></i>
+                        <span>Help Center</span>
+                    </a>
+                    <a href="#tutorial" class="mobile-nav-item" onclick="startInteractiveTutorial()">
+                        <i class="fas fa-graduation-cap"></i>
+                        <span>Interactive Tutorial</span>
+                    </a>
+                </div>
+            </nav>
+            
+            <div class="mobile-nav-footer">
+                {% if current_user.is_authenticated %}
+                <div class="user-profile-mobile">
+                    <div class="avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="user-info">
+                        <div class="user-name">{{ current_user.username }}</div>
+                        <div class="user-email">{{ current_user.email }}</div>
+                    </div>
+                </div>
+                <a href="{{ url_for('logout') }}" class="btn btn-outline btn-block">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Sign Out
+                </a>
+                {% else %}
+                <div class="auth-buttons-mobile">
+                    <a href="{{ url_for('login') }}" class="btn btn-outline btn-block">Sign In</a>
+                    <a href="{{ url_for('register') }}" class="btn btn-primary btn-block">Get Started</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Notification Container -->
+        <div class="notification-container" id="notificationContainer">
+            <!-- Notifications will be inserted here -->
+        </div>
+
+        <!-- Global Modals -->
+        <div id="globalModals">
+            <!-- Analytics Dashboard Modal -->
+            <div id="analyticsDashboardModal" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2><i class="fas fa-chart-network"></i> Traffic Analytics Dashboard</h2>
+                        <button class="modal-close" onclick="closeModal('analyticsDashboardModal')">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Analytics content will be loaded here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Modal -->
+            <div id="settingsModal" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2><i class="fas fa-cog"></i> Settings</h2>
+                        <button class="modal-close" onclick="closeModal('settingsModal')">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Settings content will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.0/axios.min.js"></script>
+    
+    <!-- Main JavaScript -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    
+    <!-- Extra JavaScript Block -->
+    {% block extra_js %}{% endblock %}
+
+    <!-- Theme Verification Script -->
+    <script>
+        // Theme verification and synchronization
+        function verifyThemeConsistency() {
+            const savedTheme = localStorage.getItem('routely-theme') || 'light';
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            
+            // Fix any mismatch between saved and current theme
+            if (currentTheme !== savedTheme) {
+                document.documentElement.setAttribute('data-theme', savedTheme);
+                console.log('Fixed theme mismatch:', currentTheme, '→', savedTheme);
+            }
+            
+            // Verify theme-dependent elements
+            const themeDependentElements = document.querySelectorAll('[data-theme-dependent]');
+            themeDependentElements.forEach(el => {
+                el.classList.toggle('dark-theme', savedTheme === 'dark');
+                el.classList.toggle('light-theme', savedTheme === 'light');
+            });
+        }
+        
+        // Run verification on page load and theme changes
+        document.addEventListener('DOMContentLoaded', verifyThemeConsistency);
+        document.addEventListener('themeChange', verifyThemeConsistency);
+    </script>
+
+    <!-- Initialization Script -->
+    <script>
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Hide critical loading screen
+            const loadingScreen = document.getElementById('criticalLoading');
+            if (loadingScreen) {
+                setTimeout(() => {
+                    loadingScreen.style.opacity = '0';
+                    setTimeout(() => {
+                        loadingScreen.style.display = 'none';
+                        document.body.classList.add('loaded');
+                    }, 500);
+                }, 1000);
+            }
+
+            // Initialize global functionality
+            initializeGlobalFeatures();
+        });
+
+        function initializeGlobalFeatures() {
+            // Mobile menu functionality
+            const mobileToggle = document.getElementById('mobileMenuToggle');
+            const mobileNav = document.getElementById('mobileNav');
+            const mobileClose = document.getElementById('mobileNavClose');
+
+            if (mobileToggle && mobileNav) {
+                mobileToggle.addEventListener('click', function() {
+                    mobileNav.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                });
+
+                mobileClose.addEventListener('click', function() {
+                    mobileNav.classList.remove('active');
+                    document.body.style.overflow = '';
+                });
+            }
+
+            // Dropdown functionality
+            const dropdowns = document.querySelectorAll('.dropdown');
+            dropdowns.forEach(dropdown => {
+                const toggle = dropdown.querySelector('.dropdown-toggle');
+                const menu = dropdown.querySelector('.dropdown-menu');
+
+                if (toggle && menu) {
+                    toggle.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        dropdowns.forEach(other => {
+                            if (other !== dropdown) {
+                                other.classList.remove('active');
+                            }
+                        });
+                        dropdown.classList.toggle('active');
+                    });
+                }
+            });
+
+            // Close dropdowns when clicking outside
+            document.addEventListener('click', function() {
+                dropdowns.forEach(dropdown => {
+                    dropdown.classList.remove('active');
+                });
+            });
+
+            // Theme initialization
+            if (window.routelyApp && window.routelyApp.themeManager) {
+                window.routelyApp.themeManager.initializeTheme();
+            }
+
+            console.log("🌍 Routely global features initialized");
+        }
+
+        // Global utility functions
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        function showModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = 'flex';
+            }
+        }
+
+        // Placeholder functions for navigation
+        function showTrafficStats() {
+            console.log("Showing traffic statistics");
+            showModal('analyticsDashboardModal');
+        }
+
+        function showPatternAnalysis() {
+            console.log("Showing pattern analysis");
+            showModal('analyticsDashboardModal');
+        }
+
+        function showTrafficPredictions() {
+            console.log("Showing traffic predictions");
+            showModal('analyticsDashboardModal');
+        }
+
+        function startInteractiveTutorial() {
+            if (window.routelyEvents) {
+                window.routelyEvents.startTutorial();
+            } else {
+                console.log("Starting interactive tutorial");
+            }
+        }
+    </script>
+</body>
+</html>

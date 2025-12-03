@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <title>Yerevan Traffic Intelligence</title>
+    <title>Routely - Intelligent Traffic Optimization</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
@@ -18,70 +20,233 @@
         </button>
     </div>
 
+    <!-- Animated Background Elements -->
+    <div class="background-elements">
+        <div class="floating-circle circle-1"></div>
+        <div class="floating-circle circle-2"></div>
+        <div class="floating-circle circle-3"></div>
+        <div class="grid-pattern"></div>
+    </div>
+
     <div class="container">
-        <header>
-            <div class="logo">
-                <i class="fas fa-traffic-light"></i>
-            </div>
-            <h1>Yerevan Traffic Intelligence</h1>
-            <p class="subtitle">AI-powered traffic analysis and optimal route planning for Yerevan's road network</p>
-            <div style="margin-top: 2rem;">
-                <a href="/map" class="btn btn-large" onclick="syncThemeToMapPage()">
-                    <i class="fas fa-map-marked-alt"></i>
-                    Explore Traffic Map
-                </a>
-            </div>
-        </header>
-
-        <section class="features">
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <i class="fas fa-brain"></i>
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-content">
+                <div class="logo-brand">
+                    <div class="logo-icon">
+                        <i class="fas fa-route"></i>
+                    </div>
+                    <h1 class="brand-name">Routely</h1>
                 </div>
-                <h3>AI-Powered Routing</h3>
-                <p>Our machine learning model analyzes traffic patterns and finds the fastest routes using real-time congestion data.</p>
+                <p class="hero-subtitle">AI-Powered Traffic Intelligence for Smarter Commutes</p>
+                <p class="hero-description">
+                    Experience the future of urban navigation with real-time optimization, predictive analytics, 
+                    and intelligent route planning designed to save you time and reduce stress.
+                </p>
+                
+                <div class="hero-actions">
+                    <a href="/map" class="btn btn-primary btn-large" onclick="syncThemeToMapPage()">
+                        <i class="fas fa-map-marked-alt"></i>
+                        Launch Routely Map
+                    </a>
+                    <button class="btn btn-secondary btn-large" onclick="scrollToFeatures()">
+                        <i class="fas fa-play-circle"></i>
+                        See How It Works
+                    </button>
+                </div>
+
+                <!-- Quick Stats -->
+                <div class="quick-stats">
+                    <div class="quick-stat">
+                        <div class="stat-value" id="live-users">2.4k+</div>
+                        <div class="stat-label">Active Users</div>
+                    </div>
+                    <div class="quick-stat">
+                        <div class="stat-value" id="routes-optimized">15.7k+</div>
+                        <div class="stat-label">Routes Optimized</div>
+                    </div>
+                    <div class="quick-stat">
+                        <div class="stat-value" id="time-saved">4.2k+</div>
+                        <div class="stat-label">Hours Saved</div>
+                    </div>
+                </div>
             </div>
 
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <i class="fas fa-chart-line"></i>
+            <!-- Hero Visual -->
+            <div class="hero-visual">
+                <div class="app-preview">
+                    <div class="preview-header">
+                        <div class="preview-dots">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div>
+                    <div class="preview-content">
+                        <div class="route-animation">
+                            <div class="route-line"></div>
+                            <div class="moving-dot"></div>
+                        </div>
+                        <div class="preview-stats">
+                            <div class="preview-stat">
+                                <span class="label">ETA</span>
+                                <span class="value">18 min</span>
+                            </div>
+                            <div class="preview-stat">
+                                <span class="label">Saved</span>
+                                <span class="value">12 min</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <h3>Real-time Analytics</h3>
-                <p>Get detailed traffic statistics and congestion analysis updated based on time of day and road types.</p>
-            </div>
-
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <i class="fas fa-clock"></i>
-                </div>
-                <h3>Time-based Simulation</h3>
-                <p>See how traffic conditions change throughout the day and compare weekday vs weekend patterns.</p>
             </div>
         </section>
 
-        <section class="action-cards">
-            <div class="action-card">
-                <div class="action-icon">
-                    <i class="fas fa-route"></i>
-                </div>
-                <h3>Route Planning</h3>
-                <p>Find the optimal path between any two points in Yerevan using our intelligent routing system.</p>
-                <button onclick="syncThemeAndNavigate()" class="btn">
-                    <i class="fas fa-directions"></i>
-                    Plan Route
-                </button>
+        <!-- Features Section -->
+        <section class="features" id="features">
+            <div class="section-header">
+                <h2>Why Choose Routely?</h2>
+                <p>Advanced features that make your commute smarter and more efficient</p>
             </div>
 
-            <div class="action-card">
-                <div class="action-icon">
-                    <i class="fas fa-chart-bar"></i>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3>AI-Powered Routing</h3>
+                    <p>Our advanced machine learning algorithms analyze real-time traffic patterns, historical data, and current conditions to find the optimal path.</p>
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check"></i> Real-time congestion analysis</li>
+                        <li><i class="fas fa-check"></i> Predictive traffic modeling</li>
+                        <li><i class="fas fa-check"></i> Multi-criteria optimization</li>
+                    </ul>
                 </div>
-                <h3>Traffic Analysis</h3>
-                <p>Explore comprehensive traffic statistics and congestion patterns across the city.</p>
-                <button onclick="showAnalyticsDashboard()" class="btn btn-outline">
-                    <i class="fas fa-analytics"></i>
-                    View Analytics
-                </button>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3>Smart Departure Planning</h3>
+                    <p>Tell us when you need to arrive, and we'll calculate the perfect departure time based on predicted traffic conditions.</p>
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check"></i> Arrival-time optimization</li>
+                        <li><i class="fas fa-check"></i> Weather integration</li>
+                        <li><i class="fas fa-check"></i> Event-aware routing</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-network"></i>
+                    </div>
+                    <h3>Live Traffic Intelligence</h3>
+                    <p>Visualize traffic flow with our interactive heatmaps and get instant insights into current and predicted road conditions.</p>
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check"></i> Live congestion heatmaps</li>
+                        <li><i class="fas fa-check"></i> Incident reporting</li>
+                        <li><i class="fas fa-check"></i> Road work alerts</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-sliders-h"></i>
+                    </div>
+                    <h3>Personalized Preferences</h3>
+                    <p>Customize your routing based on your preferences - avoid highways, minimize CO2, or find the most scenic route.</p>
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check"></i> Custom route preferences</li>
+                        <li><i class="fas fa-check"></i> Eco-friendly options</li>
+                        <li><i class="fas fa-check"></i> Accessibility features</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-download"></i>
+                    </div>
+                    <h3>Data Export & Analytics</h3>
+                    <p>Download detailed route analytics, traffic reports, and performance metrics for personal or professional use.</p>
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check"></i> Comprehensive reports</li>
+                        <li><i class="fas fa-check"></i> Multiple export formats</li>
+                        <li><i class="fas fa-check"></i> Historical analysis</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h3>Cross-Platform Experience</h3>
+                    <p>Access Routely seamlessly across all your devices with our responsive design and future mobile app integration.</p>
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check"></i> Fully responsive</li>
+                        <li><i class="fas fa-check"></i> Progressive Web App</li>
+                        <li><i class="fas fa-check"></i> Offline capabilities</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="cta-section">
+            <div class="cta-content">
+                <h2>Ready to Transform Your Commute?</h2>
+                <p>Join thousands of users who save time and reduce stress with intelligent routing</p>
+                <div class="cta-actions">
+                    <a href="/map" class="btn btn-primary btn-large" onclick="syncThemeToMapPage()">
+                        <i class="fas fa-rocket"></i>
+                        Start Using Routely
+                    </a>
+                    <button class="btn btn-outline btn-large" onclick="showAnalyticsDashboard()">
+                        <i class="fas fa-chart-bar"></i>
+                        View Live Analytics
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats Section -->
+        <section class="stats-section">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-road"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number" id="total-roads">1,247</div>
+                        <div class="stat-label">Roads Monitored</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-ruler-combined"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number" id="total-length">856</div>
+                        <div class="stat-label">Kilometers Covered</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-traffic-light"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number" id="avg-congestion">23%</div>
+                        <div class="stat-label">Avg. Congestion</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number" id="ml-routes">100%</div>
+                        <div class="stat-label">AI Optimized</div>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -89,98 +254,174 @@
         <div id="analyticsDashboard" class="analytics-dashboard">
             <div class="dashboard-header">
                 <h2 class="dashboard-title">
-                    <i class="fas fa-chart-bar"></i>
-                    Traffic Analytics Dashboard
+                    <i class="fas fa-chart-network"></i>
+                    Routely Analytics Dashboard
                 </h2>
-                <button class="close-dashboard" onclick="hideAnalyticsDashboard()">&times;</button>
+                <button class="close-dashboard" onclick="hideAnalyticsDashboard()">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
 
-            <div style="margin-bottom: 20px; text-align: center;">
-                <button onclick="downloadComprehensiveData()" class="btn" style="background: var(--success);">
+            <div class="dashboard-actions">
+                <button onclick="downloadComprehensiveData()" class="btn btn-primary">
                     <i class="fas fa-download"></i>
-                    Download Comprehensive Traffic Report
+                    Download Traffic Report
                 </button>
-                <p style="margin-top: 10px; font-size: 0.9rem; color: var(--text-secondary);">
-                    Export complete traffic analysis data as CSV
+                <p class="action-description">
+                    Export complete traffic analysis data in CSV format
                 </p>
             </div>
 
             <div class="analytics-stats">
                 <div class="analytics-stat">
-                    <div class="value" id="dashboard-total-roads">...</div>
-                    <div class="label">Total Roads Monitored</div>
+                    <div class="stat-icon">
+                        <i class="fas fa-road"></i>
+                    </div>
+                    <div class="value" id="dashboard-total-roads">1,247</div>
+                    <div class="label">Roads Monitored</div>
                 </div>
-                <div class="analytics-stat" style="background: var(--success);">
-                    <div class="value" id="dashboard-avg-speed">...</div>
-                    <div class="label">Average Speed (km/h)</div>
+                <div class="analytics-stat">
+                    <div class="stat-icon">
+                        <i class="fas fa-tachometer-alt"></i>
+                    </div>
+                    <div class="value" id="dashboard-avg-speed">38</div>
+                    <div class="label">Avg Speed (km/h)</div>
                 </div>
-                <div class="analytics-stat" style="background: var(--warning);">
-                    <div class="value" id="dashboard-avg-congestion">...</div>
-                    <div class="label">Average Congestion</div>
+                <div class="analytics-stat">
+                    <div class="stat-icon">
+                        <i class="fas fa-compress-alt"></i>
+                    </div>
+                    <div class="value" id="dashboard-avg-congestion">23%</div>
+                    <div class="label">Avg Congestion</div>
                 </div>
-                <div class="analytics-stat" style="background: var(--danger);">
-                    <div class="value" id="dashboard-peak-congestion">...</div>
-                    <div class="label">Peak Hour Congestion</div>
-                </div>
-            </div>
-
-            <div class="charts-grid">
-                <div class="chart-container">
-                    <div class="chart-title">Congestion Distribution</div>
-                    <canvas id="congestionChart"></canvas>
-                </div>
-                <div class="chart-container">
-                    <div class="chart-title">Traffic Patterns by Hour</div>
-                    <canvas id="hourlyPatternChart"></canvas>
-                </div>
-                <div class="chart-container">
-                    <div class="chart-title">Road Types Analysis</div>
-                    <canvas id="roadTypeChart"></canvas>
-                </div>
-                <div class="chart-container">
-                    <div class="chart-title">Weekly Traffic Trends</div>
-                    <canvas id="weeklyTrendChart"></canvas>
+                <div class="analytics-stat">
+                    <div class="stat-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="value" id="dashboard-peak-congestion">67%</div>
+                    <div class="label">Peak Congestion</div>
                 </div>
             </div>
 
-            <div class="peak-hours">
-                <h3>🚦 Peak Traffic Hours</h3>
-                <div id="peakHoursList">
+            <div class="charts-accordion">
+                <!-- Congestion Distribution -->
+                <div class="chart-section">
+                    <div class="chart-section-header" onclick="toggleChartSection(this)">
+                        <div class="chart-section-title">
+                            <i class="fas fa-chart-pie"></i>
+                            Congestion Distribution
+                        </div>
+                        <div class="chart-section-actions">
+                            <button class="chart-download-btn" onclick="event.stopPropagation(); downloadChart('congestionChart', 'congestion_distribution')" title="Download Chart">
+                                <i class="fas fa-download"></i>
+                            </button>
+                            <i class="fas fa-chevron-down chart-toggle-icon"></i>
+                        </div>
+                    </div>
+                    <div class="chart-section-content expanded">
+                        <canvas id="congestionChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Hourly Traffic Patterns -->
+                <div class="chart-section">
+                    <div class="chart-section-header" onclick="toggleChartSection(this)">
+                        <div class="chart-section-title">
+                            <i class="fas fa-clock"></i>
+                            Hourly Traffic Patterns
+                        </div>
+                        <div class="chart-section-actions">
+                            <button class="chart-download-btn" onclick="event.stopPropagation(); downloadChart('hourlyPatternChart', 'hourly_traffic_patterns')" title="Download Chart">
+                                <i class="fas fa-download"></i>
+                            </button>
+                            <i class="fas fa-chevron-down chart-toggle-icon"></i>
+                        </div>
+                    </div>
+                    <div class="chart-section-content expanded">
+                        <canvas id="hourlyPatternChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Road Types Analysis -->
+                <div class="chart-section">
+                    <div class="chart-section-header" onclick="toggleChartSection(this)">
+                        <div class="chart-section-title">
+                            <i class="fas fa-road"></i>
+                            Road Types Analysis
+                        </div>
+                        <div class="chart-section-actions">
+                            <button class="chart-download-btn" onclick="event.stopPropagation(); downloadChart('roadTypeChart', 'road_types_analysis')" title="Download Chart">
+                                <i class="fas fa-download"></i>
+                            </button>
+                            <i class="fas fa-chevron-down chart-toggle-icon"></i>
+                        </div>
+                    </div>
+                    <div class="chart-section-content expanded">
+                        <canvas id="roadTypeChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Weekly Trends -->
+                <div class="chart-section">
+                    <div class="chart-section-header" onclick="toggleChartSection(this)">
+                        <div class="chart-section-title">
+                            <i class="fas fa-calendar-week"></i>
+                            Weekly Trends
+                        </div>
+                        <div class="chart-section-actions">
+                            <button class="chart-download-btn" onclick="event.stopPropagation(); downloadChart('weeklyTrendChart', 'weekly_trends')" title="Download Chart">
+                                <i class="fas fa-download"></i>
+                            </button>
+                            <i class="fas fa-chevron-down chart-toggle-icon"></i>
+                        </div>
+                    </div>
+                    <div class="chart-section-content expanded">
+                        <canvas id="weeklyTrendChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="peak-hours-section">
+                <h3><i class="fas fa-clock"></i> Peak Traffic Hours</h3>
+                <div id="peakHoursList" class="peak-hours-list">
                     <!-- Peak hours will be populated here -->
                 </div>
             </div>
         </div>
 
-        <section class="stats">
-            <div class="stat-card">
-                <div class="stat-number" id="total-roads">...</div>
-                <div class="stat-label">Total Roads</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" id="total-length">...</div>
-                <div class="stat-label">Road Length (km)</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" id="avg-congestion">...</div>
-                <div class="stat-label">Avg Congestion</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" id="ml-routes">100%</div>
-                <div class="stat-label">ML Optimized</div>
-            </div>
-        </section>
+        <!-- Footer -->
+        <footer class="main-footer">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="logo-brand">
+                        <div class="logo-icon">
+                            <i class="fas fa-route"></i>
+                        </div>
+                        <h3>Routely</h3>
+                    </div>
+                    <p class="footer-description">
+                        Intelligent traffic optimization powered by advanced AI and real-time data analytics.
+                    </p>
+                </div>
 
-        <footer>
-            <div class="tech-stack">
-                <span class="tech-badge"><i class="fas fa-robot"></i> Machine Learning</span>
-                <span class="tech-badge"><i class="fas fa-project-diagram"></i> Graph Theory</span>
-                <span class="tech-badge"><i class="fas fa-chart-pie"></i> Probability Theory</span>
-                <span class="tech-badge"><i class="fas fa-map"></i> Real-time Data</span>
+                <div class="tech-stack">
+                    <h4>Powered By</h4>
+                    <div class="tech-badges">
+                        <span class="tech-badge"><i class="fas fa-brain"></i> Machine Learning</span>
+                        <span class="tech-badge"><i class="fas fa-project-diagram"></i> Graph Theory</span>
+                        <span class="tech-badge"><i class="fas fa-chart-line"></i> Predictive Analytics</span>
+                        <span class="tech-badge"><i class="fas fa-database"></i> Real-time Data</span>
+                    </div>
+                </div>
             </div>
-            <p>Yerevan Traffic Intelligence &copy; 2025 | UFAR | Project S5</p>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 Routely - Intelligent Traffic Optimization | UFAR | Project S5</p>
+            </div>
         </footer>
     </div>
 
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
+
 </html>

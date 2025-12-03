@@ -1,0 +1,77 @@
+Folder PATH listing
+Volume serial number is C4FF-876A
+C:.
+|   app.py
+|   historical_traffic_data.json
+|   requirements.txt
+|   saved_routes.json
+|   structure.txt
+|   traffic_core.py
+|   
++---cache
+|       514139098b33767f3fc1fc70b02cba8fbc608e36.json
+|       5875ee4b11fa4275bdb8482e2eb5e93486192e6d.json
+|       648653f1e1a47878fd33dcfcddb74ad490884f4c.json
+|       8aaab65c45fb6d5e0004ed1ada280d716a2f6ed6.json
+|       915f818a2c7ebbd2d1c605d25f2935132aea79db.json
+|       b5d70f7764e9f48a6ade4b97ed45dfaf02282bcd.json
+|       e5da6ebeb1e5cd113b0c9194a6df9597b8d97b6e.json
+|       e987e492922a0b95317f78807a0c149881dacf8e.json
+|       
++---ml_models
+|       neural_network_model.pkl
+|       random_forest_model.pkl
+|       
++---static
+|   |   style.css
+|   |   
+|   +---css
+|   |       components.css
+|   |       main.css
+|   |       map.css
+|   |       
+|   \---js
+|           main.js
+|           map-analytics.js
+|           map-core.js
+|           map-events.js
+|           map-routing.js
+|           saved-routes.js
+|           smart-planner.js
+|           
++---templates
+|   |   base.html
+|   |   index.html
+|   |   map.html
+|   |   
+|   \---components
+|           analytics_dashboard.html
+|           header.html
+|           map_controls.html
+|           map_info.html
+|           map_modals.html
+|           map_results.html
+|           
++---traffic_core
+|   |   congestion_simulator.py
+|   |   ml_predictor.py
+|   |   network_loader.py
+|   |   route_planner.py
+|   |   smart_planner.py
+|   |   traffic_analyzer.py
+|   |   utils.py
+|   |   __init__.py
+|   |   
+|   \---__pycache__
+|           congestion_simulator.cpython-312.pyc
+|           ml_predictor.cpython-312.pyc
+|           network_loader.cpython-312.pyc
+|           route_planner.cpython-312.pyc
+|           smart_planner.cpython-312.pyc
+|           traffic_analyzer.cpython-312.pyc
+|           utils.cpython-312.pyc
+|           __init__.cpython-312.pyc
+|           
+\---__pycache__
+        traffic_core.cpython-312.pyc
+        

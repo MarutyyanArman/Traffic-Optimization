@@ -1,420 +1,965 @@
-// Theme Management
-function initializeTheme() {
-    const savedTheme = localStorage.getItem('theme') || 'light';
-    document.documentElement.setAttribute('data-theme', savedTheme);
-    updateThemeIcon(savedTheme);
-}
+// main.js - Routely Modern JavaScript
 
-function toggleTheme() {
-    const currentTheme = document.documentElement.getAttribute('data-theme');
-    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+// Theme Management System
+class ThemeManager {
+    constructor() {
+        this.currentTheme = 'light';
+        this.init();
+    }
 
-    document.documentElement.setAttribute('data-theme', newTheme);
-    localStorage.setItem('theme', newTheme);
-    updateThemeIcon(newTheme);
+    init() {
+        this.initializeTheme();
+        this.bindEvents();
+    }
 
-    // Sync to map page
-    syncThemeToMapPage();
+    initializeTheme() {
+        const savedTheme = localStorage.getItem('routely-theme') || 'light';
+        this.currentTheme = savedTheme;
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        this.updateThemeIcon(savedTheme);
+        this.updateMetaTheme(savedTheme);
+    }
 
-    // Update charts if they exist
-    updateChartsTheme();
-}
+    toggleTheme() {
+        const newTheme = this.currentTheme === 'light' ? 'dark' : 'light';
+        this.currentTheme = newTheme;
 
-function syncThemeToMapPage() {
-    const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('routely-theme', newTheme);
+        this.updateThemeIcon(newTheme);
+        this.updateMetaTheme(newTheme);
 
-    // Store theme in sessionStorage for immediate use
-    sessionStorage.setItem('theme', currentTheme);
+        // Sync to other pages
+        this.syncThemeToMapPage();
+        
+        // Update charts and UI elements
+        this.updateChartsTheme();
+        this.updateUITheme();
 
-    // Also store in localStorage for persistence
-    localStorage.setItem('theme', currentTheme);
+        // Dispatch custom event for other components
+        document.dispatchEvent(new CustomEvent('themeChange', { detail: { theme: newTheme } }));
 
-    console.log(`Theme ${currentTheme} synced for map page`);
-}
+        console.log(`🎨 Theme changed to ${newTheme}`);
+    }
 
-function updateThemeIcon(theme) {
-    const themeToggle = document.getElementById('themeToggle');
-    if (theme === 'dark') {
-        themeToggle.setAttribute('aria-label', 'Switch to light theme');
-    } else {
-        themeToggle.setAttribute('aria-label', 'Switch to dark theme');
+    updateThemeIcon(theme) {
+        const themeToggle = document.getElementById('themeToggle');
+        if (themeToggle) {
+            if (theme === 'dark') {
+                themeToggle.setAttribute('aria-label', 'Switch to light theme');
+                themeToggle.setAttribute('title', 'Switch to light theme');
+            } else {
+                themeToggle.setAttribute('aria-label', 'Switch to dark theme');
+                themeToggle.setAttribute('title', 'Switch to dark theme');
+            }
+        }
+    }
+
+    updateMetaTheme(theme) {
+        const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+        if (metaThemeColor) {
+            metaThemeColor.setAttribute('content', theme === 'dark' ? '#0f172a' : '#ffffff');
+        }
+    }
+
+    syncThemeToMapPage() {
+        // Store theme in sessionStorage for immediate use
+        sessionStorage.setItem('routely-theme', this.currentTheme);
+        console.log(`🔄 Theme ${this.currentTheme} synced for map page`);
+    }
+
+    updateChartsTheme() {
+        if (window.chartInstances && Array.isArray(window.chartInstances)) {
+            window.chartInstances.forEach(chart => {
+                if (chart && typeof chart.update === 'function') {
+                    const isDark = this.currentTheme === 'dark';
+                    const textColor = isDark ? '#ffffff' : '#2b2d42';
+                    const gridColor = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+                    
+                    // Update chart options
+                    chart.options.scales.x.ticks.color = textColor;
+                    chart.options.scales.y.ticks.color = textColor;
+                    chart.options.scales.x.grid.color = gridColor;
+                    chart.options.scales.y.grid.color = gridColor;
+                    
+                    if (chart.options.plugins.legend) {
+                        chart.options.plugins.legend.labels.color = textColor;
+                    }
+                    
+                    chart.update('none');
+                }
+            });
+        }
+    }
+
+    updateUITheme() {
+        // Update any theme-dependent UI elements
+        const elements = document.querySelectorAll('[data-theme-dependent]');
+        elements.forEach(element => {
+            element.classList.toggle('dark-theme', this.currentTheme === 'dark');
+            element.classList.toggle('light-theme', this.currentTheme === 'light');
+        });
+    }
+
+    bindEvents() {
+        const themeToggle = document.getElementById('themeToggle');
+        if (themeToggle) {
+            themeToggle.addEventListener('click', () => this.toggleTheme());
+        }
+
+        // Listen for system theme changes
+        if (window.matchMedia) {
+            const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+            mediaQuery.addEventListener('change', (e) => {
+                if (!localStorage.getItem('routely-theme')) {
+                    // Only auto-switch if user hasn't set a preference
+                    this.currentTheme = e.matches ? 'dark' : 'light';
+                    document.documentElement.setAttribute('data-theme', this.currentTheme);
+                    this.updateThemeIcon(this.currentTheme);
+                    this.updateChartsTheme();
+                }
+            });
+        }
     }
 }
 
-function updateChartsTheme() {
-    // This function will be implemented to update chart colors when theme changes
-    if (window.chartInstances) {
+// Stats and Data Manager
+class DataManager {
+    constructor() {
+        this.cache = new Map();
+        this.cacheTimeout = 5 * 60 * 1000; // 5 minutes
+    }
+
+    async loadStats() {
+        try {
+            const cacheKey = 'homepage-stats';
+            const cached = this.getCachedData(cacheKey);
+            
+            if (cached) {
+                this.updateStatsUI(cached);
+                return;
+            }
+
+            const response = await fetch('/traffic-data?hour=8&day_type=weekday');
+            if (!response.ok) throw new Error('Network response was not ok');
+            
+            const stats = await response.json();
+            this.cacheData(cacheKey, stats);
+            this.updateStatsUI(stats);
+
+        } catch (error) {
+            console.error('❌ Error loading stats:', error);
+            this.showFallbackStats();
+        }
+    }
+
+    async loadDashboardData() {
+        try {
+            const cacheKey = 'dashboard-data';
+            const cached = this.getCachedData(cacheKey);
+            
+            if (cached) {
+                this.updateDashboardUI(cached.stats, cached.patterns);
+                return;
+            }
+
+            const [statsResponse, patternsResponse] = await Promise.all([
+                fetch('/traffic-data?hour=8&day_type=weekday'),
+                fetch('/traffic-patterns')
+            ]);
+
+            if (!statsResponse.ok || !patternsResponse.ok) {
+                throw new Error('Failed to fetch dashboard data');
+            }
+
+            const [stats, patterns] = await Promise.all([
+                statsResponse.json(),
+                patternsResponse.json()
+            ]);
+
+            const data = { stats, patterns };
+            this.cacheData(cacheKey, data);
+            this.updateDashboardUI(stats, patterns);
+
+        } catch (error) {
+            console.error('❌ Error loading dashboard data:', error);
+            this.showFallbackDashboard();
+        }
+    }
+
+    updateStatsUI(stats) {
+        this.safeUpdateElement('total-roads', stats.total_roads?.toLocaleString() || '1,247');
+        this.safeUpdateElement('total-length', stats.total_road_length_km?.toLocaleString() || '856');
+        
+        const avgCongestion = stats.avg_congestion ? 
+            (stats.avg_congestion * 100).toFixed(1) + '%' : '23%';
+        this.safeUpdateElement('avg-congestion', avgCongestion);
+
+        // Update quick stats in hero section
+        this.safeUpdateElement('live-users', '2.4k+');
+        this.safeUpdateElement('routes-optimized', '15.7k+');
+        this.safeUpdateElement('time-saved', '4.2k+');
+    }
+
+    updateDashboardUI(stats, patterns) {
+        // Update dashboard stats
+        this.safeUpdateElement('dashboard-total-roads', stats.total_roads?.toLocaleString() || '1,247');
+        
+        const avgCongestion = stats.avg_congestion ? 
+            (stats.avg_congestion * 100).toFixed(1) + '%' : '23%';
+        this.safeUpdateElement('dashboard-avg-congestion', avgCongestion);
+
+        const peakCongestion = patterns.peak_hours?.[0]?.congestion + '%' || '67%';
+        this.safeUpdateElement('dashboard-peak-congestion', peakCongestion);
+
+        // Calculate average speed
+        const avgSpeed = stats.avg_congestion ? 
+            Math.max(20, 60 - (stats.avg_congestion * 40)).toFixed(0) : '38';
+        this.safeUpdateElement('dashboard-avg-speed', avgSpeed);
+
+        // Render charts via DashboardManager
+        if (window.routelyApp && window.routelyApp.dashboardManager) {
+            window.routelyApp.dashboardManager.renderCharts(stats, patterns);
+            window.routelyApp.dashboardManager.updatePeakHours(patterns.peak_hours || []);
+        }
+    }
+
+    safeUpdateElement(id, value) {
+        const element = document.getElementById(id);
+        if (element) {
+            element.textContent = value;
+        }
+    }
+
+    getCachedData(key) {
+        const cached = this.cache.get(key);
+        if (cached && Date.now() - cached.timestamp < this.cacheTimeout) {
+            return cached.data;
+        }
+        return null;
+    }
+
+    cacheData(key, data) {
+        this.cache.set(key, {
+            data,
+            timestamp: Date.now()
+        });
+    }
+
+    showFallbackStats() {
+        this.safeUpdateElement('total-roads', '1,247');
+        this.safeUpdateElement('total-length', '856');
+        this.safeUpdateElement('avg-congestion', '23%');
+    }
+
+    showFallbackDashboard() {
+        this.safeUpdateElement('dashboard-total-roads', '1,247');
+        this.safeUpdateElement('dashboard-avg-speed', '38');
+        this.safeUpdateElement('dashboard-avg-congestion', '23%');
+        this.safeUpdateElement('dashboard-peak-congestion', '67%');
+    }
+}
+
+// Analytics Dashboard Manager
+class DashboardManager {
+    constructor() {
+        this.isVisible = false;
+        this.dataManager = new DataManager();
+    }
+
+    show() {
+        const dashboard = document.getElementById('analyticsDashboard');
+        if (dashboard) {
+            dashboard.style.display = 'block';
+            this.isVisible = true;
+            
+            // Add animation class
+            dashboard.classList.add('dashboard-visible');
+            
+            // Load data
+            this.dataManager.loadDashboardData();
+            
+            // Scroll to dashboard
+            this.scrollToDashboard();
+            
+            // Dispatch event
+            document.dispatchEvent(new CustomEvent('dashboardShow'));
+            
+            console.log('📊 Analytics dashboard opened');
+        }
+    }
+
+    hide() {
+        const dashboard = document.getElementById('analyticsDashboard');
+        if (dashboard) {
+            dashboard.style.display = 'none';
+            this.isVisible = false;
+            dashboard.classList.remove('dashboard-visible');
+            
+            // Dispatch event
+            document.dispatchEvent(new CustomEvent('dashboardHide'));
+            
+            console.log('📊 Analytics dashboard closed');
+        }
+    }
+
+    scrollToDashboard() {
+        const dashboard = document.getElementById('analyticsDashboard');
+        if (dashboard) {
+            window.scrollTo({
+                top: dashboard.offsetTop - 100,
+                behavior: 'smooth'
+            });
+        }
+    }
+
+    renderCharts(stats, patterns) {
+        // Store chart instances for theme updates
+        window.chartInstances = window.chartInstances || [];
+
+        // Clear existing charts
         window.chartInstances.forEach(chart => {
-            chart.update();
+            if (chart && typeof chart.destroy === 'function') {
+                chart.destroy();
+            }
+        });
+        window.chartInstances = [];
+
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        const textColor = isDark ? '#ffffff' : '#2b2d42';
+        const gridColor = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+        const fontFamily = 'Inter, system-ui, -apple-system, sans-serif';
+
+        // Congestion Distribution Chart
+        this.renderCongestionChart(stats, isDark, textColor, gridColor, fontFamily);
+        
+        // Hourly Pattern Chart
+        this.renderHourlyPatternChart(patterns, isDark, textColor, gridColor, fontFamily);
+        
+        // Road Type Chart
+        this.renderRoadTypeChart(stats, isDark, textColor, gridColor, fontFamily);
+        
+        // Weekly Trend Chart
+        this.renderWeeklyTrendChart(isDark, textColor, gridColor, fontFamily);
+    }
+
+    renderCongestionChart(stats, isDark, textColor, gridColor, fontFamily) {
+        const ctx = document.getElementById('congestionChart');
+        if (!ctx) return;
+
+        const chart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Free Flow', 'Light', 'Moderate', 'Heavy', 'Severe'],
+                datasets: [{
+                    data: [
+                        stats.congestion_distribution?.free_flow || 25,
+                        stats.congestion_distribution?.light || 35,
+                        stats.congestion_distribution?.moderate || 20,
+                        stats.congestion_distribution?.heavy || 15,
+                        stats.congestion_distribution?.severe || 5
+                    ],
+                    backgroundColor: [
+                        '#10b981', '#f59e0b', '#f97316', '#ef4444', '#dc2626'
+                    ],
+                    borderWidth: 2,
+                    borderColor: isDark ? '#1e293b' : '#ffffff'
+                }]
+            },
+            options: {
+                responsive: true,
+                cutout: '60%',
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: textColor,
+                            font: {
+                                family: fontFamily,
+                                size: 11
+                            },
+                            padding: 15,
+                            usePointStyle: true
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: isDark ? '#1e293b' : '#ffffff',
+                        titleColor: textColor,
+                        bodyColor: textColor,
+                        borderColor: isDark ? '#334155' : '#e2e8f0',
+                        borderWidth: 1
+                    }
+                },
+                animation: {
+                    animateScale: true,
+                    animateRotate: true
+                }
+            }
+        });
+        window.chartInstances.push(chart);
+    }
+
+    renderHourlyPatternChart(patterns, isDark, textColor, gridColor, fontFamily) {
+        const ctx = document.getElementById('hourlyPatternChart');
+        if (!ctx) return;
+
+        const hours = patterns.daily_trends?.map(d => d.hour + ':00') || 
+                     Array.from({length: 24}, (_, i) => i + ':00');
+        const weekdayData = patterns.daily_trends?.map(d => d.weekday) || 
+                           Array.from({length: 24}, (_, i) => Math.sin(i / 24 * Math.PI) * 30 + 40);
+        const weekendData = patterns.daily_trends?.map(d => d.weekend) || 
+                           Array.from({length: 24}, (_, i) => Math.cos(i / 24 * Math.PI) * 20 + 30);
+
+        const chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: hours,
+                datasets: [
+                    {
+                        label: 'Weekday',
+                        data: weekdayData,
+                        borderColor: '#4361ee',
+                        backgroundColor: 'rgba(67, 97, 238, 0.1)',
+                        tension: 0.4,
+                        fill: true,
+                        borderWidth: 3
+                    },
+                    {
+                        label: 'Weekend',
+                        data: weekendData,
+                        borderColor: '#9d4edd',
+                        backgroundColor: 'rgba(157, 78, 221, 0.1)',
+                        tension: 0.4,
+                        fill: true,
+                        borderWidth: 3
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                interaction: {
+                    intersect: false,
+                    mode: 'index'
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        title: {
+                            display: true,
+                            text: 'Congestion (%)',
+                            color: textColor,
+                            font: {
+                                family: fontFamily,
+                                weight: '500'
+                            }
+                        },
+                        grid: {
+                            color: gridColor
+                        },
+                        ticks: {
+                            color: textColor,
+                            font: {
+                                family: fontFamily
+                            }
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Time of Day',
+                            color: textColor,
+                            font: {
+                                family: fontFamily,
+                                weight: '500'
+                            }
+                        },
+                        grid: {
+                            color: gridColor
+                        },
+                        ticks: {
+                            color: textColor,
+                            font: {
+                                family: fontFamily
+                            },
+                            maxRotation: 45
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: textColor,
+                            font: {
+                                family: fontFamily,
+                                size: 12
+                            }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: isDark ? '#1e293b' : '#ffffff',
+                        titleColor: textColor,
+                        bodyColor: textColor,
+                        borderColor: isDark ? '#334155' : '#e2e8f0',
+                        borderWidth: 1
+                    }
+                }
+            }
+        });
+        window.chartInstances.push(chart);
+    }
+
+    renderRoadTypeChart(stats, isDark, textColor, gridColor, fontFamily) {
+        const ctx = document.getElementById('roadTypeChart');
+        if (!ctx) return;
+
+        const roadTypes = Object.keys(stats.road_type_distribution || { 
+            'Highway': 45, 'Arterial': 120, 'Collector': 85, 'Local': 180 
+        });
+        const roadCounts = Object.values(stats.road_type_distribution || { 
+            'Highway': 45, 'Arterial': 120, 'Collector': 85, 'Local': 180 
+        });
+
+        const chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: roadTypes,
+                datasets: [{
+                    label: 'Number of Roads',
+                    data: roadCounts,
+                    backgroundColor: 'rgba(67, 97, 238, 0.7)',
+                    borderRadius: 6,
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Number of Roads',
+                            color: textColor,
+                            font: {
+                                family: fontFamily,
+                                weight: '500'
+                            }
+                        },
+                        grid: {
+                            color: gridColor
+                        },
+                        ticks: {
+                            color: textColor,
+                            font: {
+                                family: fontFamily
+                            }
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            color: textColor,
+                            font: {
+                                family: fontFamily
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: isDark ? '#1e293b' : '#ffffff',
+                        titleColor: textColor,
+                        bodyColor: textColor,
+                        borderColor: isDark ? '#334155' : '#e2e8f0',
+                        borderWidth: 1
+                    }
+                }
+            }
+        });
+        window.chartInstances.push(chart);
+    }
+
+    renderWeeklyTrendChart(isDark, textColor, gridColor, fontFamily) {
+        const ctx = document.getElementById('weeklyTrendChart');
+        if (!ctx) return;
+
+        const chart = new Chart(ctx, {
+            type: 'radar',
+            data: {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                datasets: [{
+                    label: 'Average Congestion',
+                    data: [65, 68, 70, 72, 75, 45, 40],
+                    backgroundColor: 'rgba(67, 97, 238, 0.2)',
+                    borderColor: '#4361ee',
+                    pointBackgroundColor: '#4361ee',
+                    pointBorderColor: '#ffffff',
+                    pointBorderWidth: 2,
+                    pointRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    r: {
+                        beginAtZero: true,
+                        max: 100,
+                        grid: {
+                            color: gridColor
+                        },
+                        angleLines: {
+                            color: gridColor
+                        },
+                        pointLabels: {
+                            color: textColor,
+                            font: {
+                                family: fontFamily,
+                                size: 11
+                            }
+                        },
+                        ticks: {
+                            color: textColor,
+                            backdropColor: 'transparent',
+                            font: {
+                                family: fontFamily
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: textColor,
+                            font: {
+                                family: fontFamily
+                            }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: isDark ? '#1e293b' : '#ffffff',
+                        titleColor: textColor,
+                        bodyColor: textColor,
+                        borderColor: isDark ? '#334155' : '#e2e8f0',
+                        borderWidth: 1
+                    }
+                }
+            }
+        });
+        window.chartInstances.push(chart);
+    }
+
+    updatePeakHours(peakHours) {
+        const container = document.getElementById('peakHoursList');
+        if (!container) return;
+
+        const hours = peakHours.length > 0 ? peakHours.slice(0, 5) : [
+            { hour: '08:00', congestion: 75 },
+            { hour: '17:00', congestion: 82 },
+            { hour: '18:00', congestion: 78 },
+            { hour: '09:00', congestion: 68 },
+            { hour: '16:00', congestion: 65 }
+        ];
+
+        container.innerHTML = hours.map(hour => `
+            <div class="hour-item">
+                <span class="hour-time">${hour.hour}</span>
+                <span class="hour-congestion ${hour.congestion > 70 ? 'high' : hour.congestion > 50 ? 'medium' : 'low'}">
+                    ${hour.congestion}% congestion
+                </span>
+            </div>
+        `).join('');
+    }
+}
+
+// Navigation Manager
+class NavigationManager {
+    static syncThemeAndNavigate(url) {
+        const theme = document.documentElement.getAttribute('data-theme') || 'light';
+        sessionStorage.setItem('routely-theme', theme);
+        
+        // Add loading state
+        document.body.classList.add('page-transition');
+        
+        setTimeout(() => {
+            window.location.href = url;
+        }, 300);
+    }
+
+    static scrollToFeatures() {
+        const featuresSection = document.getElementById('features');
+        if (featuresSection) {
+            window.scrollTo({
+                top: featuresSection.offsetTop - 80,
+                behavior: 'smooth'
+            });
+        }
+    }
+}
+
+// Download Manager
+class DownloadManager {
+    static async downloadComprehensiveData() {
+        try {
+            // Show loading state
+            this.showDownloadLoading();
+
+            const response = await fetch('/download-traffic-data?hour=8&day_type=weekday');
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            a.download = 'routely_comprehensive_traffic_report.csv';
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+
+            this.showDownloadSuccess();
+
+        } catch (error) {
+            console.error('❌ Download error:', error);
+            this.showDownloadError();
+        }
+    }
+
+    static showDownloadLoading() {
+        // You can implement a toast notification here
+        console.log('⬇️ Starting download...');
+    }
+
+    static showDownloadSuccess() {
+        // You can implement a success notification here
+        console.log('✅ Download completed successfully!');
+    }
+
+    static showDownloadError() {
+        // You can implement an error notification here
+        alert('❌ Failed to download traffic report. Please try again.');
+    }
+}
+
+// Initialize Routely Application
+class RoutelyApp {
+    constructor() {
+        this.themeManager = new ThemeManager();
+        this.dataManager = new DataManager();
+        this.dashboardManager = new DashboardManager();
+        this.init();
+    }
+
+    init() {
+        this.bindEvents();
+        this.loadInitialData();
+        this.initializeAnimations();
+        
+        console.log('🚀 Routely application initialized');
+    }
+
+    bindEvents() {
+        // Global event listeners
+        document.addEventListener('click', this.handleGlobalClick.bind(this));
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', this.handleKeyboardShortcuts.bind(this));
+        
+        // Page visibility
+        document.addEventListener('visibilitychange', this.handleVisibilityChange.bind(this));
+    }
+
+    handleGlobalClick(event) {
+        // Handle analytics dashboard toggle
+        if (event.target.closest('[data-action="toggle-analytics"]')) {
+            this.dashboardManager.show();
+        }
+        
+        // Theme toggle is handled by ThemeManager.bindEvents() - don't duplicate here
+    }
+
+    handleKeyboardShortcuts(event) {
+        // Toggle dashboard with Ctrl/Cmd + D
+        if ((event.ctrlKey || event.metaKey) && event.key === 'd') {
+            event.preventDefault();
+            this.dashboardManager.isVisible ? 
+                this.dashboardManager.hide() : 
+                this.dashboardManager.show();
+        }
+        
+        // Toggle theme with Ctrl/Cmd + T
+        if ((event.ctrlKey || event.metaKey) && event.key === 't') {
+            event.preventDefault();
+            this.themeManager.toggleTheme();
+        }
+    }
+
+    handleVisibilityChange() {
+        if (!document.hidden) {
+            // Refresh data when page becomes visible
+            this.dataManager.loadStats();
+        }
+    }
+
+    loadInitialData() {
+        this.dataManager.loadStats();
+        
+        // Preload dashboard data if user is likely to open it
+        setTimeout(() => {
+            this.dataManager.loadDashboardData();
+        }, 2000);
+    }
+
+    initializeAnimations() {
+        // Initialize any entrance animations
+        const animatedElements = document.querySelectorAll('.feature-card, .stat-card, .action-card');
+        animatedElements.forEach((element, index) => {
+            element.style.opacity = '0';
+            element.style.transform = 'translateY(30px)';
+            
+            setTimeout(() => {
+                element.style.transition = 'all 0.6s ease';
+                element.style.opacity = '1';
+                element.style.transform = 'translateY(0)';
+            }, 100 * index);
         });
     }
 }
 
-// Enhanced navigation function with theme sync
-function syncThemeAndNavigate() {
-    syncThemeToMapPage();
-    // Small delay to ensure theme is synced before navigation
-    setTimeout(() => {
-        window.location.href = '/map';
-    }, 100);
-}
-
-function openRoutePlanner() {
-    syncThemeToMapPage();
-    setTimeout(() => {
-        window.location.href = '/map';
-    }, 100);
-}
-
-// Load basic stats on homepage
-async function loadStats() {
-    try {
-        const response = await fetch('/traffic-data?hour=8&day_type=weekday');
-        const stats = await response.json();
-
-        document.getElementById('total-roads').textContent = stats.total_roads;
-        document.getElementById('total-length').textContent = stats.total_road_length_km;
-        document.getElementById('avg-congestion').textContent = (stats.avg_congestion * 100).toFixed(1) + '%';
-    } catch (error) {
-        console.error('Error loading stats:', error);
-        // Set default values
-        document.getElementById('total-roads').textContent = '250+';
-        document.getElementById('total-length').textContent = '45+';
-        document.getElementById('avg-congestion').textContent = '35%';
+// Initialize Routely application when DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+    if (!window.routelyApp) {
+        window.routelyApp = new RoutelyApp();
     }
-}
+});
 
-// Analytics Dashboard Functions
+// Global functions for HTML onclick attributes
 function showAnalyticsDashboard() {
-    document.getElementById('analyticsDashboard').style.display = 'block';
-    loadDashboardData();
-    window.scrollTo({ top: document.getElementById('analyticsDashboard').offsetTop - 20, behavior: 'smooth' });
+    if (window.routelyApp) {
+        window.routelyApp.dashboardManager.show();
+    }
 }
 
 function hideAnalyticsDashboard() {
-    document.getElementById('analyticsDashboard').style.display = 'none';
-}
-
-// Enhanced dashboard data loading
-async function loadDashboardData() {
-    try {
-        // Load traffic statistics
-        const statsResponse = await fetch('/traffic-data?hour=8&day_type=weekday');
-        const stats = await statsResponse.json();
-
-        // Load traffic patterns
-        const patternsResponse = await fetch('/traffic-patterns');
-        const patterns = await patternsResponse.json();
-
-        // Update dashboard stats
-        document.getElementById('dashboard-total-roads').textContent = stats.total_roads;
-        document.getElementById('dashboard-avg-congestion').textContent = (stats.avg_congestion * 100).toFixed(1) + '%';
-        document.getElementById('dashboard-peak-congestion').textContent = patterns.peak_hours[0]?.congestion + '%' || '65%';
-
-        // Calculate average speed (simulated)
-        const avgSpeed = Math.max(20, 60 - (stats.avg_congestion * 40));
-        document.getElementById('dashboard-avg-speed').textContent = avgSpeed.toFixed(0);
-
-        // Render charts
-        renderCharts(stats, patterns);
-
-        // Update peak hours
-        updatePeakHours(patterns.peak_hours);
-
-    } catch (error) {
-        console.error('Error loading dashboard data:', error);
-        // Set default values
-        document.getElementById('dashboard-total-roads').textContent = '250';
-        document.getElementById('dashboard-avg-speed').textContent = '35';
-        document.getElementById('dashboard-avg-congestion').textContent = '35%';
-        document.getElementById('dashboard-peak-congestion').textContent = '65%';
+    if (window.routelyApp) {
+        window.routelyApp.dashboardManager.hide();
     }
 }
 
-function renderCharts(stats, patterns) {
-    // Store chart instances for theme updates
-    window.chartInstances = window.chartInstances || [];
-
-    // Clear existing charts
-    window.chartInstances.forEach(chart => chart.destroy());
-    window.chartInstances = [];
-
-    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-    const textColor = isDark ? '#f1f5f9' : '#1e293b';
-    const gridColor = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
-
-    // Congestion Distribution Chart
-    const congestionCtx = document.getElementById('congestionChart').getContext('2d');
-    const congestionChart = new Chart(congestionCtx, {
-        type: 'doughnut',
-        data: {
-            labels: ['Low (<30%)', 'Medium (30-60%)', 'High (>60%)'],
-            datasets: [{
-                data: [
-                    stats.congestion_distribution.low,
-                    stats.congestion_distribution.medium,
-                    stats.congestion_distribution.high
-                ],
-                backgroundColor: ['#4CAF50', '#FF9800', '#F44336']
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    position: 'bottom',
-                    labels: {
-                        color: textColor
-                    }
-                }
-            }
-        }
-    });
-    window.chartInstances.push(congestionChart);
-
-    // Hourly Pattern Chart
-    const hourlyCtx = document.getElementById('hourlyPatternChart').getContext('2d');
-    const hours = patterns.daily_trends.map(d => d.hour + ':00');
-    const weekdayData = patterns.daily_trends.map(d => d.weekday);
-    const weekendData = patterns.daily_trends.map(d => d.weekend);
-
-    const hourlyChart = new Chart(hourlyCtx, {
-        type: 'line',
-        data: {
-            labels: hours,
-            datasets: [
-                {
-                    label: 'Weekday',
-                    data: weekdayData,
-                    borderColor: '#2563eb',
-                    backgroundColor: 'rgba(37, 99, 235, 0.1)',
-                    tension: 0.4,
-                    fill: true
-                },
-                {
-                    label: 'Weekend',
-                    data: weekendData,
-                    borderColor: '#8b5cf6',
-                    backgroundColor: 'rgba(139, 92, 246, 0.1)',
-                    tension: 0.4,
-                    fill: true
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    max: 100,
-                    title: {
-                        display: true,
-                        text: 'Congestion (%)',
-                        color: textColor
-                    },
-                    grid: {
-                        color: gridColor
-                    },
-                    ticks: {
-                        color: textColor
-                    }
-                },
-                x: {
-                    ticks: {
-                        color: textColor
-                    },
-                    grid: {
-                        color: gridColor
-                    }
-                }
-            },
-            plugins: {
-                legend: {
-                    labels: {
-                        color: textColor
-                    }
-                }
-            }
-        }
-    });
-    window.chartInstances.push(hourlyChart);
-
-    // Road Type Chart
-    const roadTypeCtx = document.getElementById('roadTypeChart').getContext('2d');
-    const roadTypes = Object.keys(stats.road_type_distribution);
-    const roadCounts = Object.values(stats.road_type_distribution);
-    const roadCongestion = roadTypes.map(type =>
-        (stats.avg_congestion_by_type[type] * 100) || 50
-    );
-
-    const roadTypeChart = new Chart(roadTypeCtx, {
-        type: 'bar',
-        data: {
-            labels: roadTypes,
-            datasets: [
-                {
-                    label: 'Number of Roads',
-                    data: roadCounts,
-                    backgroundColor: 'rgba(37, 99, 235, 0.6)',
-                    yAxisID: 'y'
-                },
-                {
-                    label: 'Avg Congestion (%)',
-                    data: roadCongestion,
-                    backgroundColor: 'rgba(239, 68, 68, 0.6)',
-                    yAxisID: 'y1',
-                    type: 'line'
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            scales: {
-                y: {
-                    type: 'linear',
-                    position: 'left',
-                    title: {
-                        display: true,
-                        text: 'Number of Roads',
-                        color: textColor
-                    },
-                    grid: {
-                        color: gridColor
-                    },
-                    ticks: {
-                        color: textColor
-                    }
-                },
-                y1: {
-                    type: 'linear',
-                    position: 'right',
-                    max: 100,
-                    title: {
-                        display: true,
-                        text: 'Congestion (%)',
-                        color: textColor
-                    },
-                    grid: {
-                        drawOnChartArea: false
-                    },
-                    ticks: {
-                        color: textColor
-                    }
-                },
-                x: {
-                    ticks: {
-                        color: textColor
-                    },
-                    grid: {
-                        color: gridColor
-                    }
-                }
-            },
-            plugins: {
-                legend: {
-                    labels: {
-                        color: textColor
-                    }
-                }
-            }
-        }
-    });
-    window.chartInstances.push(roadTypeChart);
-
-    // Weekly Trend Chart
-    const weeklyCtx = document.getElementById('weeklyTrendChart').getContext('2d');
-    const weeklyChart = new Chart(weeklyCtx, {
-        type: 'radar',
-        data: {
-            labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-            datasets: [{
-                label: 'Average Congestion',
-                data: [65, 68, 70, 72, 75, 45, 40],
-                backgroundColor: 'rgba(37, 99, 235, 0.2)',
-                borderColor: '#2563eb',
-                pointBackgroundColor: '#2563eb'
-            }]
-        },
-        options: {
-            scales: {
-                r: {
-                    beginAtZero: true,
-                    max: 100,
-                    grid: {
-                        color: gridColor
-                    },
-                    angleLines: {
-                        color: gridColor
-                    },
-                    pointLabels: {
-                        color: textColor
-                    },
-                    ticks: {
-                        color: textColor,
-                        backdropColor: isDark ? '#1e293b' : 'white'
-                    }
-                }
-            },
-            plugins: {
-                legend: {
-                    labels: {
-                        color: textColor
-                    }
-                }
-            }
-        }
-    });
-    window.chartInstances.push(weeklyChart);
+function syncThemeToMapPage() {
+    if (window.routelyApp) {
+        window.routelyApp.themeManager.syncThemeToMapPage();
+    }
 }
 
-function updatePeakHours(peakHours) {
-    const container = document.getElementById('peakHoursList');
-    container.innerHTML = '';
-
-    peakHours.slice(0, 5).forEach(hour => {
-        const hourItem = document.createElement('div');
-        hourItem.className = 'hour-item';
-        hourItem.innerHTML = `
-            <span>${hour.hour}:00</span>
-            <span style="color: ${hour.congestion > 70 ? '#F44336' : hour.congestion > 50 ? '#FF9800' : '#4CAF50'}; font-weight: bold;">
-                ${hour.congestion}% congestion
-            </span>
-        `;
-        container.appendChild(hourItem);
-    });
+function syncThemeAndNavigate() {
+    NavigationManager.syncThemeAndNavigate('/map');
 }
 
-// Initialize theme and load stats when page loads
-document.addEventListener('DOMContentLoaded', function () {
-    initializeTheme();
-    loadStats();
+function scrollToFeatures() {
+    NavigationManager.scrollToFeatures();
+}
 
-    // Add event listener to theme toggle button
-    document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+function downloadComprehensiveData() {
+    DownloadManager.downloadComprehensiveData();
+}
+
+// Chart Accordion Functions
+function toggleChartSection(headerElement) {
+    const section = headerElement.closest('.chart-section');
+    const content = section.querySelector('.chart-section-content');
+    const isExpanded = content.classList.contains('expanded');
+
+    // If currently expanded, play closing animation then hide
+    if (isExpanded) {
+        content.classList.remove('expanded');
+        content.classList.add('collapsing');
+        headerElement.classList.add('collapsed');
+
+        const onAnimationEnd = (event) => {
+            if (event.animationName === 'chart-accordion-close') {
+                content.classList.remove('collapsing');
+                content.style.display = 'none';
+                content.removeEventListener('animationend', onAnimationEnd);
+            }
+        };
+
+        content.addEventListener('animationend', onAnimationEnd);
+    } else {
+        // Opening: ensure visible and play open animation
+        content.style.display = 'block';
+        content.classList.remove('collapsing');
+        content.classList.add('expanded');
+        headerElement.classList.remove('collapsed');
+    }
+}
+
+function downloadChart(canvasId, filename) {
+    const canvas = document.getElementById(canvasId);
+    if (!canvas) {
+        console.error('Chart canvas not found:', canvasId);
+        return;
+    }
+    
+    try {
+        // Create a temporary canvas with white background for better quality
+        const tempCanvas = document.createElement('canvas');
+        const ctx = tempCanvas.getContext('2d');
+        
+        tempCanvas.width = canvas.width;
+        tempCanvas.height = canvas.height;
+        
+        // Fill with white background (or dark if in dark mode)
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        ctx.fillStyle = isDark ? '#1e293b' : '#ffffff';
+        ctx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+        
+        // Draw the original chart on top
+        ctx.drawImage(canvas, 0, 0);
+        
+        // Create download link
+        const link = document.createElement('a');
+        const timestamp = new Date().toISOString().slice(0, 10);
+        link.download = `routely_${filename}_${timestamp}.png`;
+        link.href = tempCanvas.toDataURL('image/png', 1.0);
+        
+        // Trigger download
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        console.log(`📊 Chart downloaded: ${filename}`);
+    } catch (error) {
+        console.error('Error downloading chart:', error);
+        alert('Failed to download chart. Please try again.');
+    }
+}
+
+// Initialize application when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    // Add loaded class to body for CSS animations
+    document.body.classList.add('loaded');
+    
+    console.log('✨ Routely fully loaded and ready!');
 });
 
-// Function to download comprehensive data from homepage
-async function downloadComprehensiveData() {
-    try {
-        const response = await fetch('/download-traffic-data?hour=8&day_type=weekday');
-
-        if (!response.ok) {
-            throw new Error('Failed to download traffic data');
-        }
-
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.style.display = 'none';
-        a.href = url;
-        a.download = 'yerevan_comprehensive_traffic_report.csv';
-        document.body.appendChild(a);
-        a.click();
-        window.URL.revokeObjectURL(url);
-        document.body.removeChild(a);
-
-    } catch (error) {
-        console.error('Download error:', error);
-        alert('Failed to download traffic report');
-    }
+// Export for module usage (if needed)
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+        ThemeManager,
+        DataManager,
+        DashboardManager,
+        NavigationManager,
+        DownloadManager,
+        RoutelyApp
+    };
 }

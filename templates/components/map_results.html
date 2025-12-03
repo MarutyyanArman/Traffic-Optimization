@@ -1,4 +1,594 @@
 <!-- Smart Plan Results Panel -->
 <div id="smartPlanResults" class="route-info" style="display: none; margin-top: 15px;">
     <!-- Smart plan results will be populated here -->
+</div><!-- templates/components/map_results.html -->
+<!-- Routely Route Results Panel -->
+<div id="routely-results" class="routely-results-panel">
+    <!-- Panel Header -->
+    <div class="results-header">
+        <div class="header-content">
+            <div class="header-icon">
+                <i class="fas fa-route"></i>
+            </div>
+            <div class="header-text">
+                <h2>Route Options</h2>
+                <p class="results-subtitle" id="resultsSubtitle">Select your preferred route</p>
+            </div>
+        </div>
+        <button class="results-close" id="resultsClose">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+
+    <!-- Route Summary -->
+    <div class="route-summary-card">
+        <div class="summary-content">
+            <div class="route-points">
+                <div class="point start-point">
+                    <div class="point-marker">
+                        <i class="fas fa-play-circle"></i>
+                    </div>
+                    <div class="point-details">
+                        <span class="point-label">From</span>
+                        <span class="point-address" id="startAddress">--</span>
+                    </div>
+                </div>
+                <div class="point end-point">
+                    <div class="point-marker">
+                        <i class="fas fa-flag-checkered"></i>
+                    </div>
+                    <div class="point-details">
+                        <span class="point-label">To</span>
+                        <span class="point-address" id="endAddress">--</span>
+                    </div>
+                </div>
+            </div>
+            <div class="summary-stats">
+                <div class="summary-stat">
+                    <i class="fas fa-clock"></i>
+                    <span id="bestDuration">-- min</span>
+                </div>
+                <div class="summary-stat">
+                    <i class="fas fa-road"></i>
+                    <span id="bestDistance">-- km</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Smart Plan Results -->
+    <div id="smartPlanResults" class="smart-plan-results">
+        <div class="smart-plan-header">
+            <i class="fas fa-brain"></i>
+            <h3>Smart Plan Results</h3>
+        </div>
+        <div class="smart-plan-content" id="smartPlanContent">
+            <!-- Smart plan results will be populated here -->
+        </div>
+    </div>
+
+    <!-- Route Options Container -->
+    <div class="route-options-container" id="routeOptionsContainer">
+        <div class="options-header">
+            <h3>Recommended Routes</h3>
+            <div class="options-count">
+                <span id="routesCount">3</span> options
+            </div>
+        </div>
+
+        <div class="route-options-list" id="routeOptionsList">
+            <!-- Route options will be dynamically populated -->
+        </div>
+    </div>
+
+    <!-- Selected Route Details -->
+    <div class="selected-route-details" id="selectedRouteDetails">
+        <div class="details-header">
+            <h3><i class="fas fa-info-circle"></i> Route Details</h3>
+            <button class="details-toggle" id="detailsToggle">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </div>
+        <div class="details-content" id="detailsContent">
+            <div class="route-breakdown">
+                <div class="breakdown-item">
+                    <span class="breakdown-label">Total Distance</span>
+                    <span class="breakdown-value" id="detailDistance">-- km</span>
+                </div>
+                <div class="breakdown-item">
+                    <span class="breakdown-label">Estimated Duration</span>
+                    <span class="breakdown-value" id="detailDuration">-- min</span>
+                </div>
+                <div class="breakdown-item">
+                    <span class="breakdown-label">Traffic Conditions</span>
+                    <span class="breakdown-value" id="detailCongestion">--</span>
+                </div>
+                <div class="breakdown-item">
+                    <span class="breakdown-label">Average Speed</span>
+                    <span class="breakdown-value" id="detailSpeed">-- km/h</span>
+                </div>
+            </div>
+
+            <div class="route-stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon time-saved">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <div class="stat-info">
+                        <div class="stat-value" id="timeSaved">-- min</div>
+                        <div class="stat-label">Time Saved</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon fuel-saved">
+                        <i class="fas fa-gas-pump"></i>
+                    </div>
+                    <div class="stat-info">
+                        <div class="stat-value" id="fuelSaved">-- L</div>
+                        <div class="stat-label">Fuel Saved</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon co2-reduced">
+                        <i class="fas fa-leaf"></i>
+                    </div>
+                    <div class="stat-info">
+                        <div class="stat-value" id="co2Reduced">-- kg</div>
+                        <div class="stat-label">CO₂ Reduced</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="turn-by-turn" id="turnByTurn">
+                <h4>Turn-by-Turn Directions</h4>
+                <div class="directions-list" id="directionsList">
+                    <!-- Directions will be populated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="results-actions">
+        <button class="action-btn btn-primary btn-full" id="startNavigationBtn">
+            <i class="fas fa-play-circle"></i>
+            Start Navigation
+        </button>
+        
+        <div class="action-buttons-grid">
+            <button class="action-btn btn-secondary" id="saveRouteBtn">
+                <i class="fas fa-bookmark"></i>
+                Save Route
+            </button>
+            <button class="action-btn btn-secondary" id="shareRouteBtn">
+                <i class="fas fa-share"></i>
+                Share
+            </button>
+            <button class="action-btn btn-secondary" id="exportRouteBtn">
+                <i class="fas fa-download"></i>
+                Export
+            </button>
+        </div>
+
+        <button class="action-btn btn-outline btn-full" id="compareRoutesBtn">
+            <i class="fas fa-chart-bar"></i>
+            Compare All Routes
+        </button>
+    </div>
+
+    <!-- Loading State -->
+    <div class="results-loading" id="resultsLoading">
+        <div class="loading-spinner"></div>
+        <h3>Finding Best Routes</h3>
+        <p>Analyzing traffic patterns and optimizing your journey...</p>
+        <div class="loading-progress">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <span class="progress-text" id="progressText">0%</span>
+        </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="results-empty" id="resultsEmpty">
+        <div class="empty-icon">
+            <i class="fas fa-route"></i>
+        </div>
+        <h3>No Routes Found</h3>
+        <p>We couldn't find any routes for your selected points. Try adjusting your start or destination.</p>
+        <button class="action-btn btn-primary" onclick="clearRouteAndRetry()">
+            <i class="fas fa-redo"></i>
+            Try Again
+        </button>
+    </div>
 </div>
+
+<!-- Route Comparison Modal -->
+<div id="routeComparisonModal" class="comparison-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2><i class="fas fa-chart-bar"></i> Route Comparison</h2>
+            <button class="modal-close" onclick="closeComparisonModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="comparison-grid" id="comparisonGrid">
+                <!-- Comparison content will be populated here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Route Results Initialization
+    document.addEventListener('DOMContentLoaded', function() {
+        initializeResultsPanel();
+    });
+
+    function initializeResultsPanel() {
+        // Close button
+        const closeBtn = document.getElementById('resultsClose');
+        const resultsPanel = document.getElementById('routely-results');
+        
+        if (closeBtn && resultsPanel) {
+            closeBtn.addEventListener('click', function() {
+                hideResultsPanel();
+            });
+        }
+
+        // Details toggle
+        const detailsToggle = document.getElementById('detailsToggle');
+        const detailsContent = document.getElementById('detailsContent');
+        
+        if (detailsToggle && detailsContent) {
+            detailsToggle.addEventListener('click', function() {
+                detailsContent.classList.toggle('expanded');
+                const icon = this.querySelector('i');
+                icon.classList.toggle('fa-chevron-down');
+                icon.classList.toggle('fa-chevron-up');
+            });
+        }
+
+        // Action buttons
+        initializeActionButtons();
+    }
+
+    function initializeActionButtons() {
+        // Navigation button
+        const navBtn = document.getElementById('startNavigationBtn');
+        if (navBtn) {
+            navBtn.addEventListener('click', startNavigation);
+        }
+
+        // Save route button
+        const saveBtn = document.getElementById('saveRouteBtn');
+        if (saveBtn) {
+            saveBtn.addEventListener('click', saveCurrentRoute);
+        }
+
+        // Share route button
+        const shareBtn = document.getElementById('shareRouteBtn');
+        if (shareBtn) {
+            shareBtn.addEventListener('click', shareCurrentRoute);
+        }
+
+        // Export route button
+        const exportBtn = document.getElementById('exportRouteBtn');
+        if (exportBtn) {
+            exportBtn.addEventListener('click', exportRouteData);
+        }
+
+        // Compare routes button
+        const compareBtn = document.getElementById('compareRoutesBtn');
+        if (compareBtn) {
+            compareBtn.addEventListener('click', showRouteComparison);
+        }
+    }
+
+    // Main function to display route results
+    function showRouteResults(routes, startAddress, endAddress) {
+        const resultsPanel = document.getElementById('routely-results');
+        const loadingElement = document.getElementById('resultsLoading');
+        const emptyElement = document.getElementById('resultsEmpty');
+        const optionsList = document.getElementById('routeOptionsList');
+        
+        if (!resultsPanel) return;
+
+        // Hide loading and empty states
+        if (loadingElement) loadingElement.style.display = 'none';
+        if (emptyElement) emptyElement.style.display = 'none';
+
+        // Update addresses
+        updateRouteAddresses(startAddress, endAddress);
+
+        if (!routes || routes.length === 0) {
+            showEmptyState();
+            return;
+        }
+
+        // Populate route options
+        populateRouteOptions(routes);
+
+        // Show the first route by default
+        if (routes.length > 0) {
+            selectRoute(0, routes[0]);
+        }
+
+        // Show results panel
+        resultsPanel.classList.add('visible');
+        
+        // Update best route summary
+        updateBestRouteSummary(routes[0]);
+    }
+
+    function populateRouteOptions(routes) {
+        const optionsList = document.getElementById('routeOptionsList');
+        const routesCount = document.getElementById('routesCount');
+        
+        if (!optionsList) return;
+
+        optionsList.innerHTML = routes.map((route, index) => `
+            <div class="route-option ${index === 0 ? 'selected' : ''}" data-route-index="${index}">
+                <div class="option-header">
+                    <div class="route-color-indicator" style="border-color: ${route.color}">
+                        <div class="color-dot" style="background-color: ${route.color}"></div>
+                    </div>
+                    <div class="route-main-info">
+                        <h4 class="route-title">${route.title}</h4>
+                        <div class="route-badges">
+                            ${route.badges ? route.badges.map(badge => `
+                                <span class="route-badge ${badge.type}">${badge.text}</span>
+                            `).join('') : ''}
+                        </div>
+                    </div>
+                    <div class="route-duration">
+                        ${route.duration} min
+                    </div>
+                </div>
+                
+                <div class="option-details">
+                    <div class="route-stats">
+                        <div class="route-stat">
+                            <i class="fas fa-road"></i>
+                            <span>${route.distance} km</span>
+                        </div>
+                        <div class="route-stat">
+                            <i class="fas fa-traffic-light"></i>
+                            <span>${route.congestion}% congestion</span>
+                        </div>
+                        ${route.eta ? `
+                        <div class="route-stat">
+                            <i class="fas fa-clock"></i>
+                            <span>ETA: ${route.eta}</span>
+                        </div>
+                        ` : ''}
+                    </div>
+                    
+                    <div class="route-features">
+                        ${route.features ? route.features.map(feature => `
+                            <span class="feature-tag">
+                                <i class="fas fa-${feature.icon}"></i>
+                                ${feature.text}
+                            </span>
+                        `).join('') : ''}
+                    </div>
+                </div>
+                
+                <button class="select-route-btn" onclick="selectRoute(${index}, ${JSON.stringify(route).replace(/"/g, '&quot;')})">
+                    <i class="fas fa-check"></i>
+                    Select Route
+                </button>
+            </div>
+        `).join('');
+
+        if (routesCount) {
+            routesCount.textContent = routes.length;
+        }
+    }
+
+    function selectRoute(index, route) {
+        // Update visual selection
+        const allOptions = document.querySelectorAll('.route-option');
+        allOptions.forEach(option => option.classList.remove('selected'));
+        
+        const selectedOption = document.querySelector(`[data-route-index="${index}"]`);
+        if (selectedOption) {
+            selectedOption.classList.add('selected');
+        }
+
+        // Update route details
+        updateRouteDetails(route);
+        
+        // Highlight route on map
+        highlightRouteOnMap(index, route);
+        
+        // Enable action buttons
+        enableActionButtons(true);
+    }
+
+    function updateRouteDetails(route) {
+        // Update basic details
+        document.getElementById('detailDistance').textContent = `${route.distance} km`;
+        document.getElementById('detailDuration').textContent = `${route.duration} min`;
+        document.getElementById('detailCongestion').textContent = `${route.congestion}% congestion`;
+        document.getElementById('detailSpeed').textContent = `${route.avgSpeed || '--'} km/h`;
+
+        // Update savings
+        document.getElementById('timeSaved').textContent = `${route.timeSaved || '--'} min`;
+        document.getElementById('fuelSaved').textContent = `${route.fuelSaved || '--'} L`;
+        document.getElementById('co2Reduced').textContent = `${route.co2Reduced || '--'} kg`;
+
+        // Update directions
+        updateTurnByTurnDirections(route.directions);
+    }
+
+    function updateTurnByTurnDirections(directions) {
+        const directionsList = document.getElementById('directionsList');
+        if (!directionsList) return;
+
+        if (!directions || directions.length === 0) {
+            directionsList.innerHTML = '<div class="no-directions">Turn-by-turn directions not available</div>';
+            return;
+        }
+
+        directionsList.innerHTML = directions.map((step, index) => `
+            <div class="direction-step">
+                <div class="step-number">${index + 1}</div>
+                <div class="step-content">
+                    <div class="step-instruction">${step.instruction}</div>
+                    ${step.distance ? `<div class="step-distance">${step.distance}</div>` : ''}
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function updateBestRouteSummary(route) {
+        document.getElementById('bestDuration').textContent = `${route.duration} min`;
+        document.getElementById('bestDistance').textContent = `${route.distance} km`;
+    }
+
+    function updateRouteAddresses(start, end) {
+        const startElement = document.getElementById('startAddress');
+        const endElement = document.getElementById('endAddress');
+        
+        if (startElement) startElement.textContent = start || '--';
+        if (endElement) endElement.textContent = end || '--';
+    }
+
+    function showLoadingState() {
+        const resultsPanel = document.getElementById('routely-results');
+        const loadingElement = document.getElementById('resultsLoading');
+        const emptyElement = document.getElementById('resultsEmpty');
+        
+        if (resultsPanel) resultsPanel.classList.add('visible');
+        if (loadingElement) loadingElement.style.display = 'block';
+        if (emptyElement) emptyElement.style.display = 'none';
+        
+        // Simulate progress (in real app, this would be based on actual progress)
+        simulateProgress();
+    }
+
+    function simulateProgress() {
+        let progress = 0;
+        const progressFill = document.getElementById('progressFill');
+        const progressText = document.getElementById('progressText');
+        
+        const interval = setInterval(() => {
+            progress += Math.random() * 15;
+            if (progress >= 100) {
+                progress = 100;
+                clearInterval(interval);
+            }
+            
+            if (progressFill) progressFill.style.width = `${progress}%`;
+            if (progressText) progressText.textContent = `${Math.round(progress)}%`;
+        }, 200);
+    }
+
+    function showEmptyState() {
+        const loadingElement = document.getElementById('resultsLoading');
+        const emptyElement = document.getElementById('resultsEmpty');
+        
+        if (loadingElement) loadingElement.style.display = 'none';
+        if (emptyElement) emptyElement.style.display = 'block';
+    }
+
+    function hideResultsPanel() {
+        const resultsPanel = document.getElementById('routely-results');
+        if (resultsPanel) {
+            resultsPanel.classList.remove('visible');
+        }
+    }
+
+    function enableActionButtons(enabled) {
+        const buttons = [
+            'startNavigationBtn',
+            'saveRouteBtn',
+            'shareRouteBtn',
+            'exportRouteBtn',
+            'compareRoutesBtn'
+        ];
+        
+        buttons.forEach(btnId => {
+            const btn = document.getElementById(btnId);
+            if (btn) {
+                btn.disabled = !enabled;
+            }
+        });
+    }
+
+    // Placeholder functions for actions
+    function startNavigation() {
+        console.log('Starting navigation...');
+        showNotification('Navigation started', 'success');
+    }
+
+    function saveCurrentRoute() {
+        // Open the save route modal
+        if (typeof window.saveCurrentRoute === 'function' && window.saveCurrentRoute !== saveCurrentRoute) {
+            window.saveCurrentRoute();
+        } else {
+            // Fallback: directly open the modal
+            const modal = document.getElementById('saveRouteModal');
+            if (modal) {
+                modal.style.display = 'block';
+                // Set default name
+                const input = document.getElementById('saveRouteNameInput');
+                if (input) {
+                    const timestamp = new Date().toLocaleDateString();
+                    input.value = `My Route - ${timestamp}`;
+                }
+            }
+        }
+    }
+
+    function shareCurrentRoute() {
+        console.log('Sharing route...');
+        showNotification('Route sharing options opened', 'info');
+    }
+
+    function exportRouteData() {
+        console.log('Exporting route data...');
+        showNotification('Route data exported', 'success');
+    }
+
+    function showRouteComparison() {
+        console.log('Showing route comparison...');
+        const modal = document.getElementById('routeComparisonModal');
+        if (modal) {
+            modal.classList.add('visible');
+        }
+    }
+
+    function closeComparisonModal() {
+        const modal = document.getElementById('routeComparisonModal');
+        if (modal) {
+            modal.classList.remove('visible');
+        }
+    }
+
+    function clearRouteAndRetry() {
+        console.log('Clearing route and retrying...');
+        hideResultsPanel();
+        // Implementation to clear current route and reset
+    }
+
+    function highlightRouteOnMap(index, route) {
+        console.log('Highlighting route on map:', index);
+        // Implementation in map-routing.js
+    }
+
+    function showNotification(message, type) {
+        console.log(`[${type}] ${message}`);
+        // Implementation from main notification system
+    }
+
+    // Public API
+    window.RouteResults = {
+        show: showRouteResults,
+        hide: hideResultsPanel,
+        showLoading: showLoadingState,
+        updateAddresses: updateRouteAddresses
+    };
+</script>
