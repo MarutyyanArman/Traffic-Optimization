@@ -1,6 +1,6 @@
 import numpy as np
 import random
-from .utils import get_color
+from .utils import get_color, get_realistic_speed, SPEED_LIMITS
 
 def get_road_data(G):
     """Optimized road data preparation with batch processing"""
@@ -27,6 +27,7 @@ def get_traffic_statistics(G):
     """Optimized statistics calculation"""
     congestions = []
     lengths = []
+    speeds = []
     road_types = {}
     congestion_by_type = {}
     
@@ -36,6 +37,11 @@ def get_traffic_statistics(G):
         
         congestions.append(congestion)
         lengths.append(length)
+        
+        # Calculate actual speed based on congestion and road type
+        speed_ms = get_realistic_speed(data, congestion)
+        speed_kmh = speed_ms * 3.6  # Convert m/s to km/h
+        speeds.append(speed_kmh)
         
         road_type = data.get('_road_type', 'unknown')
         road_types[road_type] = road_types.get(road_type, 0) + 1
@@ -47,6 +53,7 @@ def get_traffic_statistics(G):
     # Calculate averages
     avg_congestion = np.mean(congestions) if congestions else 0
     total_length = sum(lengths) if lengths else 0
+    avg_speed = np.mean(speeds) if speeds else 0
     
     avg_congestion_by_type = {}
     for road_type, congs in congestion_by_type.items():
@@ -59,6 +66,30 @@ def get_traffic_statistics(G):
         "high": len([c for c in congestions if c >= 0.6])
     }
     
+    # Calculate speed distributions by congestion level
+    speed_by_congestion = {
+        "low": [],
+        "medium": [],
+        "high": []
+    }
+    
+    # Group speeds by congestion level
+    for congestion, speed in zip(congestions, speeds):
+        if congestion < 0.3:
+            speed_by_congestion["low"].append(speed)
+        elif congestion < 0.6:
+            speed_by_congestion["medium"].append(speed)
+        else:
+            speed_by_congestion["high"].append(speed)
+    
+    # Calculate average speeds by congestion level
+    avg_speed_by_congestion = {}
+    for level, level_speeds in speed_by_congestion.items():
+        if level_speeds:
+            avg_speed_by_congestion[level] = round(np.mean(level_speeds), 1)
+        else:
+            avg_speed_by_congestion[level] = 0
+    
     return {
         "total_roads": len(G.edges()),
         "total_nodes": len(G.nodes()),
@@ -68,7 +99,9 @@ def get_traffic_statistics(G):
         "total_road_length_km": round(total_length / 1000, 2),
         "road_type_distribution": road_types,
         "avg_congestion_by_type": avg_congestion_by_type,
-        "congestion_distribution": congestion_dist
+        "congestion_distribution": congestion_dist,
+        "avg_speed_kmh": round(avg_speed, 1),
+        "avg_speed_by_congestion": avg_speed_by_congestion
     }
 
 def get_heatmap_data(G, hour=None, day_type="weekday"):

@@ -15,7 +15,7 @@ def load_road_network():
     """Load and cache the road network"""
     logger.info("Loading Yerevan road network...")
     # Further expanded bounding box to include an even wider area of streets
-    north, south, east, west = 40.215, 40.155, 44.57, 44.47
+    north, south, east, west = 40.198, 40.216, 44.54, 44.49
     G = ox.graph_from_bbox(north, south, east, west, network_type="drive", simplify=True)
     
     # Precompute edge data for faster access

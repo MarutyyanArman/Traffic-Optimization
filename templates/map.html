@@ -8,44 +8,143 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/map-page.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.0/axios.min.js"></script>
     
 </head>
 
 <body class="routely-map" data-theme="light">
-    <!-- Theme Switcher -->
-    <div class="theme-switcher">
-        <button class="theme-btn" id="themeToggle" aria-label="Toggle theme">
-            <i class="fas fa-moon"></i>
-            <i class="fas fa-sun"></i>
-        </button>
-    </div>
 
     <!-- App Header -->
     <div class="routely-header">
-        <a href="/" class="header-brand" style="text-decoration: none; color: inherit;">
-            <div class="logo-icon">
-                <i class="fas fa-route"></i>
-            </div>
-            <div class="brand-text">
-                <h1>Routely</h1>
-                <span class="brand-tagline">Intelligent Traffic Optimization</span>
-            </div>
+        <a href="/" class="header-brand" style="text-decoration: none;">
+            <img src="{{ url_for('static', filename='images/routely-logo.png') }}" alt="Routely" class="header-logo">
         </a>
         
         <div class="header-actions">
             <button class="header-btn" id="predictionsToggle">
-                <i class="fas fa-chart-line"></i>
                 Predictions
             </button>
-            <button class="header-btn icon-only" id="showSavedRoutesBtn" title="Saved Routes">
-                <i class="fas fa-bookmark"></i>
+            <div class="header-analytics-wrapper">
+                <button class="header-btn" id="headerAnalyticsBtn">
+                    Analytics
+                </button>
+                <div class="header-analytics-dropdown">
+                    <button class="header-analytics-item" id="showStatsBtn">
+                        <i class="fas fa-chart-pie"></i>
+                        <span>Stats</span>
+                    </button>
+                    <button class="header-analytics-item" id="showPatternsBtn">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Patterns</span>
+                    </button>
+                    <button class="header-analytics-item" id="showAnalyticsBtn">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>Analytics</span>
+                    </button>
+                </div>
+            </div>
+            <div class="header-settings-wrapper">
+                <button class="header-btn" id="settingsToggle">
+                    Settings
+                </button>
+                <div class="header-settings-dropdown">
+                    <div class="settings-toggle-row">
+                        <span class="settings-toggle-label">Theme</span>
+                        <label class="settings-switch">
+                            <input type="checkbox" id="darkThemeToggle">
+                            <span class="settings-switch-slider"></span>
+                        </label>
+                    </div>
+                    <div class="settings-toggle-row">
+                        <span class="settings-toggle-label">Live Traffic</span>
+                        <label class="settings-switch">
+                            <input type="checkbox" id="liveTrafficToggle" checked>
+                            <span class="settings-switch-slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sign In / User Profile (from homepage) -->
+        <div class="auth-section">
+            <!-- Sign In Button (shown when not logged in) -->
+            <button class="sign-in-btn" id="signInBtn" onclick="showAuthModal('login')">
+                <i class="fas fa-sign-in-alt"></i>
+                <span>Sign In</span>
             </button>
-            <button class="header-btn" id="settingsToggle">
-                <i class="fas fa-cog"></i>
-                Settings
-            </button>
+
+            <!-- User Profile (shown when logged in) -->
+            <div class="user-profile-section" id="userProfileSection">
+                <button class="user-avatar-btn">
+                    <i class="fas fa-user"></i>
+                </button>
+                <div class="user-dropdown">
+                    <div class="user-dropdown-header">
+                        <div class="user-dropdown-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="user-dropdown-name" id="profileUserName">User</div>
+                        <div class="user-dropdown-id" id="profileUserId">ID: --------</div>
+                        <div class="user-dropdown-email" id="profileUserEmail">user@email.com</div>
+                    </div>
+                    <div class="user-dropdown-body">
+                        <a href="#" class="user-dropdown-item">
+                            <i class="fas fa-user-cog"></i>
+                            <span>Profile Settings</span>
+                        </a>
+                        <a href="#" class="user-dropdown-item" onclick="if (window.Routely) { window.Routely.toggleSavedRoutesPanel(); } return false;">
+                            <i class="fas fa-bookmark"></i>
+                            <span>Saved Routes</span>
+                        </a>
+                        <a href="#" class="user-dropdown-item" onclick="if (window.Routely) { window.Routely.openTripHistoryModal(); } return false;">
+                            <i class="fas fa-history"></i>
+                            <span>Trip History</span>
+                        </a>
+                        <a href="#" class="user-dropdown-item" onclick="if (window.Routely) { window.Routely.openPersonalAnalyticsModal(); } return false;">
+                            <i class="fas fa-chart-line"></i>
+                            <span>Personal Analytics</span>
+                        </a>
+                        <div class="user-dropdown-divider"></div>
+                        <button class="user-dropdown-item logout-btn" onclick="handleLogout()">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Log Out</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Personal Analytics Modal -->
+    <div id="personalAnalyticsModal" class="modal" style="display: none;">
+        <div class="modal-content" style="max-width: 720px;">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fas fa-user-chart"></i> Personal Trip Analytics</h3>
+                <button class="close-modal" onclick="closeModal('personalAnalyticsModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body personal-analytics-body" id="personalAnalyticsBody">
+                <div class="stats-loading">Loading your trip analytics...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Trip History Modal -->
+    <div id="tripHistoryModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fas fa-history"></i> Trip History</h3>
+                <button class="close-modal" onclick="closeModal('tripHistoryModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="tripHistoryBody">
+                <div class="stats-loading">No trips yet</div>
+            </div>
         </div>
     </div>
 
@@ -83,35 +182,22 @@
         <div class="controls-container">
             <!-- Route Planning Section -->
             <div class="control-section">
-                <div class="section-header">
-                    <i class="fas fa-route"></i>
-                    <h3>Route Planning</h3>
-                </div>
-                
                 <div class="input-group">
-                    <label for="startPoint">
-                        <i class="fas fa-play-circle"></i>
-                        Start Point
-                    </label>
-                    <div class="input-with-action">
-                        <input type="text" id="startPoint" placeholder="Click map or enter location">
-                        <button class="input-action-btn" id="setStartPointBtn" title="Set on map">
-                            <i class="fas fa-map-marker-alt"></i>
-                        </button>
+                    <label for="startPoint"></label>
+                    <div class="input-with-action address-input">
+                        <i class="fas fa-map-marker-alt address-icon"></i>
+                        <input type="text" id="startPoint" placeholder="Start Point">
                     </div>
+                    <div id="startSuggestions" class="address-suggestions"></div>
                 </div>
 
                 <div class="input-group">
-                    <label for="endPoint">
-                        <i class="fas fa-flag-checkered"></i>
-                        Destination
-                    </label>
-                    <div class="input-with-action">
-                        <input type="text" id="endPoint" placeholder="Click map or enter location">
-                        <button class="input-action-btn" id="setEndPointBtn" title="Set on map">
-                            <i class="fas fa-map-marker-alt"></i>
-                        </button>
+                    <label for="endPoint"></label>
+                    <div class="input-with-action address-input">
+                        <i class="fas fa-map-marker-alt address-icon"></i>
+                        <input type="text" id="endPoint" placeholder="End Point">
                     </div>
+                    <div id="endSuggestions" class="address-suggestions"></div>
                 </div>
 
                 <div class="action-buttons-grid">
@@ -132,11 +218,6 @@
 
             <!-- Time Simulation Section -->
             <div class="control-section">
-                <div class="section-header">
-                    <i class="fas fa-clock"></i>
-                    <h3>Time Simulation</h3>
-                </div>
-
                 <div class="time-display-card">
                     <div class="time-current">
                         <i class="fas fa-clock"></i>
@@ -183,37 +264,8 @@
                 </button>
             </div>
 
-            <!-- Analytics Section -->
-            <div class="control-section">
-                <div class="section-header">
-                    <i class="fas fa-chart-network"></i>
-                    <h3>Traffic Analytics</h3>
-                </div>
-
-                <div class="analytics-buttons">
-                    <button class="action-btn btn-secondary" id="showStatsBtn">
-                        <i class="fas fa-chart-pie"></i>
-                        Stats
-                    </button>
-                    <button class="action-btn btn-secondary" id="showPatternsBtn">
-                        <i class="fas fa-chart-line"></i>
-                        Patterns
-                    </button>
-                    <button class="action-btn btn-primary" id="showAnalyticsBtn">
-                        <i class="fas fa-chart-bar"></i>
-                        Analytics
-                    </button>
-                </div>
-                
-            </div>
-
             <!-- Learning Section -->
             <div class="control-section">
-                <div class="section-header">
-                    <i class="fas fa-graduation-cap"></i>
-                    <h3>Learn Routely</h3>
-                </div>
-
                 <div class="help-actions">
                     <button class="action-btn btn-outline btn-full" id="startTutorialBtn">
                         <i class="fas fa-play-circle"></i>
@@ -308,10 +360,16 @@
                     <div class="time-range-inputs">
                         <div class="input-group-inline">
                             <label>From:</label>
-                            <select id="travelTimeFrom">
+                            <select id="travelTimeFrom" class="time-select">
+                                <option value="0">12:00 AM</option>
+                                <option value="1">1:00 AM</option>
+                                <option value="2">2:00 AM</option>
+                                <option value="3">3:00 AM</option>
+                                <option value="4">4:00 AM</option>
+                                <option value="5">5:00 AM</option>
                                 <option value="6">6:00 AM</option>
                                 <option value="7">7:00 AM</option>
-                                <option value="8" selected>8:00 AM</option>
+                                <option value="8">8:00 AM</option>
                                 <option value="9">9:00 AM</option>
                                 <option value="10">10:00 AM</option>
                                 <option value="11">11:00 AM</option>
@@ -324,26 +382,15 @@
                                 <option value="18">6:00 PM</option>
                                 <option value="19">7:00 PM</option>
                                 <option value="20">8:00 PM</option>
+                                <option value="21">9:00 PM</option>
+                                <option value="22">10:00 PM</option>
+                                <option value="23">11:00 PM</option>
                             </select>
                         </div>
                         <div class="input-group-inline">
                             <label>To:</label>
-                            <select id="travelTimeTo">
-                                <option value="8">8:00 AM</option>
-                                <option value="9">9:00 AM</option>
-                                <option value="10">10:00 AM</option>
-                                <option value="11">11:00 AM</option>
-                                <option value="12">12:00 PM</option>
-                                <option value="13">1:00 PM</option>
-                                <option value="14">2:00 PM</option>
-                                <option value="15">3:00 PM</option>
-                                <option value="16">4:00 PM</option>
-                                <option value="17">5:00 PM</option>
-                                <option value="18" selected>6:00 PM</option>
-                                <option value="19">7:00 PM</option>
-                                <option value="20">8:00 PM</option>
-                                <option value="21">9:00 PM</option>
-                                <option value="22">10:00 PM</option>
+                            <select id="travelTimeTo" class="time-select">
+                                <!-- Will be populated dynamically -->
                             </select>
                         </div>
                     </div>
@@ -636,16 +683,16 @@
                         <div class="help-item">
                             <h5>Route not found?</h5>
                             <p>Try these solutions:<br>
-                               â€¢ Check if locations are within Yerevan<br>
-                               â€¢ Use more specific addresses<br>
-                               â€¢ Click directly on the map instead of typing</p>
+                               &bull; Check if locations are within Yerevan<br>
+                               &bull; Use more specific addresses<br>
+                               &bull; Click directly on the map instead of typing</p>
                         </div>
                         
                         <div class="help-item">
                             <h5>App running slowly?</h5>
-                            <p>â€¢ Refresh the page (Ctrl+F5)<br>
-                               â€¢ Check your internet connection<br>
-                               â€¢ Try using a different browser</p>
+                            <p>&bull; Refresh the page (Ctrl+F5)<br>
+                               &bull; Check your internet connection<br>
+                               &bull; Try using a different browser</p>
                         </div>
                     </div>
                     
@@ -661,9 +708,9 @@
                         <div class="help-item">
                             <h5>Report an issue</h5>
                             <p>Found a bug or have a suggestion? We'd love to hear from you! Include:<br>
-                               â€¢ What you were trying to do<br>
-                               â€¢ What happened instead<br>
-                               â€¢ Browser and device information</p>
+                               &bull; What you were trying to do<br>
+                               &bull; What happened instead<br>
+                               &bull; Browser and device information</p>
                         </div>
                         
                         <div style="margin-top: 1.5rem; text-align: center;">
@@ -753,42 +800,9 @@
         </div>
     </div>
 
-    <!-- Settings Modal -->
-    <div id="settingsModal" class="modal" style="display: none;">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title"><i class="fas fa-cog"></i> Settings</h3>
-                <button class="close-modal" onclick="closeModal('settingsModal')">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="settings-section">
-                    <h4><i class="fas fa-palette"></i> Appearance</h4>
-                    <label class="checkbox-item">
-                        <input type="checkbox" id="darkModeToggle">
-                        <span class="checkmark"></span>
-                        Dark Mode
-                    </label>
-                </div>
-                <div class="settings-section">
-                    <h4><i class="fas fa-map"></i> Map Options</h4>
-                    <label class="checkbox-item">
-                        <input type="checkbox" id="showTrafficDefault">
-                        <span class="checkmark"></span>
-                        Show Traffic by Default
-                    </label>
-                    <label class="checkbox-item">
-                        <input type="checkbox" id="autoFindRoute" checked>
-                        <span class="checkmark"></span>
-                        Auto-find Route on Point Selection
-                    </label>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- Saved Routes Panel -->
+    <!-- Saved Routes Backdrop + Panel -->
+    <div id="savedRoutesBackdrop" class="saved-routes-backdrop" style="display: none;"></div>
     <div id="savedRoutesPanel" class="saved-routes-panel" style="display: none;">
         <div class="saved-routes-header">
             <h4><i class="fas fa-bookmark"></i> Saved Routes</h4>
@@ -895,9 +909,70 @@
         </div>
     </div>
 
+    <!-- Auth Modal (from homepage) -->
+    <div class="auth-modal" id="authModal">
+        <div class="auth-modal-content">
+            <button class="auth-modal-close" onclick="closeAuthModal()">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="auth-modal-header">
+                <div class="auth-modal-logo">
+                    <i class="fas fa-route"></i>
+                </div>
+                <h2 class="auth-modal-title">Welcome to Routely</h2>
+                <p class="auth-modal-subtitle">Sign in to save routes and access personalized features</p>
+            </div>
+            <div class="auth-tabs">
+                <button class="auth-tab active" id="loginTab" onclick="switchAuthTab('login')">Sign In</button>
+                <button class="auth-tab" id="registerTab" onclick="switchAuthTab('register')">Create Account</button>
+            </div>
+            <form class="auth-form" id="loginForm" onsubmit="handleLogin(event)">
+                <div class="auth-error" id="loginError"></div>
+                <div class="auth-form-group">
+                    <label class="auth-form-label" for="loginEmail">Email Address</label>
+                    <input type="email" class="auth-form-input" id="loginEmail" placeholder="Enter your email" required>
+                </div>
+                <div class="auth-form-group">
+                    <label class="auth-form-label" for="loginPassword">Password</label>
+                    <input type="password" class="auth-form-input" id="loginPassword" placeholder="Enter your password" required>
+                </div>
+                <button type="submit" class="auth-submit-btn">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Sign In
+                </button>
+            </form>
+            <form class="auth-form" id="registerForm" style="display: none;" onsubmit="handleRegister(event)">
+                <div class="auth-error" id="registerError"></div>
+                <div class="auth-form-group">
+                    <label class="auth-form-label" for="registerName">Full Name</label>
+                    <input type="text" class="auth-form-input" id="registerName" placeholder="Enter your name" required>
+                </div>
+                <div class="auth-form-group">
+                    <label class="auth-form-label" for="registerEmail">Email Address</label>
+                    <input type="email" class="auth-form-input" id="registerEmail" placeholder="Enter your email" required>
+                </div>
+                <div class="auth-form-group">
+                    <label class="auth-form-label" for="registerPassword">Password</label>
+                    <input type="password" class="auth-form-input" id="registerPassword" placeholder="Create a password (min 6 characters)" required minlength="6">
+                </div>
+                <div class="auth-form-group">
+                    <label class="auth-form-label" for="registerConfirmPassword">Confirm Password</label>
+                    <input type="password" class="auth-form-input" id="registerConfirmPassword" placeholder="Confirm your password" required>
+                </div>
+                <button type="submit" class="auth-submit-btn">
+                    <i class="fas fa-user-plus"></i>
+                    Create Account
+                </button>
+            </form>
+            <div class="auth-footer">
+                By continuing, you agree to Routely's <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+            </div>
+        </div>
+    </div>
+
     <!-- Map page JavaScript -->
-    <script src="{{ url_for('static', filename='js/map-page.js') }}">
-    </script>
+    <script src="{{ url_for('static', filename='js/auth.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/map-page.js') }}"></script>
 
 </body>
 </html>

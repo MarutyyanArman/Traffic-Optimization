@@ -14,6 +14,7 @@
                 this.currentHour = 8;
                 this.currentDayType = 'weekday';
                 this.routeOptions = [];
+                this.tripHistory = [];
                 this.selectedRouteIndex = 0;
                 this.simulationInterval = null;
                 this.isSimulating = false;
@@ -21,26 +22,521 @@
                 this.init();
             }
 
+            initializeAddressSearch() {
+                const startInput = document.getElementById('startPoint');
+                const endInput = document.getElementById('endPoint');
+                const startSuggestions = document.getElementById('startSuggestions');
+                const endSuggestions = document.getElementById('endSuggestions');
+
+                if (!startInput || !endInput || !startSuggestions || !endSuggestions) {
+                    return;
+                }
+
+                const search = async (query, target) => {
+                    if (!query || query.trim().length < 3) {
+                        target.innerHTML = '';
+                        return;
+                    }
+
+                    try {
+                        const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5`;
+                        const resp = await fetch(url, {
+                            headers: {
+                                'Accept': 'application/json'
+                            }
+                        });
+                        if (!resp.ok) {
+                            target.innerHTML = '';
+                            return;
+                        }
+                        const results = await resp.json();
+                        if (!Array.isArray(results) || results.length === 0) {
+                            target.innerHTML = '';
+                            return;
+                        }
+
+                        target.innerHTML = results.map(r => `
+                            <div class="address-suggestion-item" data-lat="${r.lat}" data-lon="${r.lon}">
+                                ${r.display_name}
+                            </div>
+                        `).join('');
+
+                        target.querySelectorAll('.address-suggestion-item').forEach(item => {
+                            item.addEventListener('click', () => {
+                                const lat = parseFloat(item.getAttribute('data-lat'));
+                                const lon = parseFloat(item.getAttribute('data-lon'));
+                                const label = item.textContent.trim();
+
+                                if (target === startSuggestions) {
+                                    startInput.value = label;
+                                    this.setStartPoint(L.latLng(lat, lon));
+                                } else {
+                                    endInput.value = label;
+                                    this.setEndPoint(L.latLng(lat, lon));
+                                }
+
+                                target.innerHTML = '';
+                            });
+                        });
+                    } catch (e) {
+                        console.error('Address search error', e);
+                        target.innerHTML = '';
+                    }
+                };
+
+                let startTimeout = null;
+                startInput.addEventListener('input', () => {
+                    clearTimeout(startTimeout);
+                    const q = startInput.value;
+                    startTimeout = setTimeout(() => search(q, startSuggestions), 300);
+                });
+
+                let endTimeout = null;
+                endInput.addEventListener('input', () => {
+                    clearTimeout(endTimeout);
+                    const q = endInput.value;
+                    endTimeout = setTimeout(() => search(q, endSuggestions), 300);
+                });
+
+                // Hide suggestions when clicking outside
+                document.addEventListener('click', (e) => {
+                    if (!startSuggestions.contains(e.target) && e.target !== startInput) {
+                        startSuggestions.innerHTML = '';
+                    }
+                    if (!endSuggestions.contains(e.target) && e.target !== endInput) {
+                        endSuggestions.innerHTML = '';
+                    }
+                });
+            }
+
+            async addTripToHistory(startLatLng, endLatLng) {
+                const startInput = document.getElementById('startPoint');
+                const endInput = document.getElementById('endPoint');
+
+                const startLabel = startInput && startInput.value
+                    ? startInput.value
+                    : `Location (${startLatLng.lat.toFixed(4)}, ${startLatLng.lng.toFixed(4)})`;
+                const endLabel = endInput && endInput.value
+                    ? endInput.value
+                    : `Location (${endLatLng.lat.toFixed(4)}, ${endLatLng.lng.toFixed(4)})`;
+
+                // Build a "simulated" timestamp string based on the current
+                // slider hour (this.currentHour) so that personal analytics
+                // can reliably use that hour, independent of server/browser
+                // timezone differences.
+                const now = new Date();
+                const year = now.getFullYear();
+                const month = String(now.getMonth() + 1).padStart(2, '0');
+                const day = String(now.getDate()).padStart(2, '0');
+                const hour = String(this.currentHour).padStart(2, '0');
+                const simulatedCreatedAt = `${year}-${month}-${day}T${hour}:00:00`;
+
+                const entry = {
+                    id: Date.now(),
+                    time: new Date().toLocaleString(),
+                    start: { lat: startLatLng.lat, lng: startLatLng.lng, label: startLabel },
+                    end: { lat: endLatLng.lat, lng: endLatLng.lng, label: endLabel },
+                    created_at: simulatedCreatedAt,
+                };
+
+                this.tripHistory.unshift(entry);
+
+                // Keep only the latest 20 trips in memory for fast UI
+                if (this.tripHistory.length > 20) {
+                    this.tripHistory = this.tripHistory.slice(0, 20);
+                }
+
+                // Persist trip to backend (SQL trip_history)
+                try {
+                    await fetch('/api/trips', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            start_lat: startLatLng.lat,
+                            start_lng: startLatLng.lng,
+                            start_label: startLabel,
+                            end_lat: endLatLng.lat,
+                            end_lng: endLatLng.lng,
+                            end_label: endLabel,
+                            created_at: simulatedCreatedAt,
+                        })
+                    });
+                } catch (e) {
+                    console.warn('Failed to persist trip history', e);
+                }
+            }
+
+            clearTripHistory() {
+                this.tripHistory = [];
+                const body = document.getElementById('tripHistoryBody');
+                if (body) {
+                    body.innerHTML = '<div class="stats-loading">No trips yet. Use Find Route to add trips.</div>';
+                }
+            }
+
+            async openTripHistoryModal() {
+                const modal = document.getElementById('tripHistoryModal');
+                const body = document.getElementById('tripHistoryBody');
+                if (!modal || !body) return;
+
+                body.innerHTML = '<div class="stats-loading">Loading your recent trips...</div>';
+
+                try {
+                    const resp = await fetch('/api/trips');
+                    const data = await resp.json();
+                    if (!data.success || !Array.isArray(data.trips) || data.trips.length === 0) {
+                        body.innerHTML = '<div class="stats-loading">No trips yet. Use Find Route to add trips.</div>';
+                    } else {
+                        // Use only the latest 20 trips for the modal
+                        const trips = data.trips.slice(0, 20);
+                        this.tripHistory = trips.map(t => ({
+                            id: t.id,
+                            time: new Date(t.created_at).toLocaleString(),
+                            start: t.start,
+                            end: t.end
+                        }));
+
+                        const itemsHtml = this.tripHistory.map(trip => {
+                            const startText = trip.start.label || `(${trip.start.lat.toFixed(4)}, ${trip.start.lng.toFixed(4)})`;
+                            const endText = trip.end.label || `(${trip.end.lat.toFixed(4)}, ${trip.end.lng.toFixed(4)})`;
+                            return `
+                                <div class="trip-history-item">
+                                    <div class="trip-history-main">
+                                        <div class="trip-history-route">
+                                            <span class="trip-history-label">From:</span>
+                                            <span class="trip-history-value">${startText}</span>
+                                        </div>
+                                        <div class="trip-history-route">
+                                            <span class="trip-history-label">To:</span>
+                                            <span class="trip-history-value">${endText}</span>
+                                        </div>
+                                    </div>
+                                    <div class="trip-history-meta">${trip.time}</div>
+                                </div>
+                            `;
+                        }).join('');
+
+                        body.innerHTML = `<div class="trip-history-list">${itemsHtml}</div>`;
+                    }
+                } catch (e) {
+                    console.error('Error loading trips from API', e);
+                    body.innerHTML = '<div class="stats-loading">Failed to load trips.</div>';
+                }
+
+                modal.style.display = 'flex';
+            }
+
+            async openPersonalAnalyticsModal() {
+                const modal = document.getElementById('personalAnalyticsModal');
+                const body = document.getElementById('personalAnalyticsBody');
+                if (!modal || !body) return;
+
+                body.innerHTML = '<div class="stats-loading">Loading your trip analytics...</div>';
+                modal.style.display = 'flex';
+
+                try {
+                    const resp = await fetch('/api/trips');
+                    const data = await resp.json();
+                    if (!data.success || !Array.isArray(data.trips) || data.trips.length === 0) {
+                        body.innerHTML = '<div class="stats-loading">No trips found. Start using Find Route to build your history.</div>';
+                        return;
+                    }
+
+                    const trips = data.trips;
+
+                    // Aggregate stats
+                    const totalTrips = trips.length;
+                    const byDow = new Array(7).fill(0); // 0-6
+                    const byHour = new Array(24).fill(0);
+                    const startCounts = {};
+                    const endCounts = {};
+
+                    trips.forEach(t => {
+                        if (t.created_at) {
+                            // Prefer to parse the hour directly from the
+                            // ISO-like string we stored from the frontend
+                            // (e.g. "2025-12-06T21:00:00"), so that the
+                            // chart reflects the simulated slider time
+                            // exactly and is not shifted by timezone.
+                            let dow = null;
+                            let hour = null;
+
+                            if (typeof t.created_at === 'string' && t.created_at.length >= 13) {
+                                const hourStr = t.created_at.slice(11, 13);
+                                const parsedHour = parseInt(hourStr, 10);
+                                if (!Number.isNaN(parsedHour) && parsedHour >= 0 && parsedHour <= 23) {
+                                    hour = parsedHour;
+                                }
+                            }
+
+                            // For day-of-week we can still fall back to
+                            // Date parsing; it is less critical if this is
+                            // off by timezone compared to the exact hour.
+                            try {
+                                const d = new Date(t.created_at);
+                                if (!Number.isNaN(d.getTime())) {
+                                    dow = d.getDay();
+                                }
+                            } catch (e) {
+                                dow = null;
+                            }
+
+                            if (dow !== null && dow >= 0 && dow <= 6) {
+                                byDow[dow]++;
+                            }
+                            if (hour !== null) {
+                                byHour[hour]++;
+                            }
+                        }
+
+                        const sLabel = (t.start && t.start.label) || 'Unknown start';
+                        const eLabel = (t.end && t.end.label) || 'Unknown destination';
+                        startCounts[sLabel] = (startCounts[sLabel] || 0) + 1;
+                        endCounts[eLabel] = (endCounts[eLabel] || 0) + 1;
+                    });
+
+                    const dowLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+                    const topStarts = Object.entries(startCounts)
+                        .sort((a, b) => b[1] - a[1])
+                        .slice(0, 3);
+                    const topEnds = Object.entries(endCounts)
+                        .sort((a, b) => b[1] - a[1])
+                        .slice(0, 3);
+
+                    const maxDow = Math.max(...byDow, 1);
+                    const maxHour = Math.max(...byHour, 1);
+
+                    const dowBars = dowLabels.map((label, i) => {
+                        const v = byDow[i];
+                        const pct = Math.round((v / maxDow) * 100);
+                        return `
+                            <div class="pa-bar-row">
+                                <span class="pa-bar-label">${label}</span>
+                                <div class="pa-bar-track">
+                                    <div class="pa-bar-fill" style="width: ${pct}%;"></div>
+                                </div>
+                                <span class="pa-bar-value">${v}</span>
+                            </div>
+                        `;
+                    }).join('');
+
+                    const hourBars = byHour.map((v, h) => {
+                        const pct = Math.round((v / maxHour) * 100);
+                        const label = `${h.toString().padStart(2, '0')}:00`;
+                        return `
+                            <div class="pa-bar-row">
+                                <span class="pa-bar-label">${label}</span>
+                                <div class="pa-bar-track">
+                                    <div class="pa-bar-fill" style="width: ${pct}%;"></div>
+                                </div>
+                                <span class="pa-bar-value">${v}</span>
+                            </div>
+                        `;
+                    }).join('');
+
+                    const topStartsHtml = topStarts.map(([label, count]) => `
+                        <div class="pa-list-item">
+                            <span class="pa-list-label">${label}</span>
+                            <span class="pa-list-value">${count}</span>
+                        </div>
+                    `).join('');
+
+                    const topEndsHtml = topEnds.map(([label, count]) => `
+                        <div class="pa-list-item">
+                            <span class="pa-list-label">${label}</span>
+                            <span class="pa-list-value">${count}</span>
+                        </div>
+                    `).join('');
+
+                    body.innerHTML = `
+                        <div class="pa-summary-grid">
+                            <div class="pa-summary-card">
+                                <div class="pa-summary-label">Total Trips</div>
+                                <div class="pa-summary-value">${totalTrips}</div>
+                            </div>
+                            <div class="pa-summary-card">
+                                <div class="pa-summary-label">Unique Start Locations</div>
+                                <div class="pa-summary-value">${Object.keys(startCounts).length}</div>
+                            </div>
+                            <div class="pa-summary-card">
+                                <div class="pa-summary-label">Unique Destinations</div>
+                                <div class="pa-summary-value">${Object.keys(endCounts).length}</div>
+                            </div>
+                        </div>
+
+                        <div class="pa-section">
+                            <h4>Trips by Day of Week</h4>
+                            <div class="pa-bars">${dowBars}</div>
+                        </div>
+
+                        <div class="pa-section">
+                            <h4>Trips by Hour of Day</h4>
+                            <div class="pa-bars">${hourBars}</div>
+                        </div>
+
+                        <div class="pa-section pa-two-column">
+                            <div>
+                                <h4>Top Start Locations</h4>
+                                <div class="pa-list">${topStartsHtml || '<div class="stats-loading">No data</div>'}</div>
+                            </div>
+                            <div>
+                                <h4>Top Destinations</h4>
+                                <div class="pa-list">${topEndsHtml || '<div class="stats-loading">No data</div>'}</div>
+                            </div>
+                        </div>
+                    `;
+                } catch (e) {
+                    console.error('Error loading personal analytics', e);
+                    body.innerHTML = '<div class="stats-loading">Failed to load analytics.</div>';
+                }
+            }
+
+            async reverseGeocode(latlng) {
+                try {
+                    const url = `https://nominatim.openstreetmap.org/reverse?lat=${latlng.lat}&lon=${latlng.lng}&format=json&addressdetails=1`;
+                    const response = await fetch(url, {
+                        headers: {
+                            'Accept': 'application/json'
+                        }
+                    });
+                    if (!response.ok) return null;
+                    const data = await response.json();
+                    if (!data || !data.address) return data && data.display_name ? data.display_name : null;
+
+                    const addr = data.address;
+                    const streetParts = [addr.road, addr.house_number].filter(Boolean);
+                    if (streetParts.length > 0) {
+                        return streetParts.join(' ');
+                    }
+                    return data.display_name || null;
+                } catch (e) {
+                    console.error('reverseGeocode error', e);
+                    return null;
+                }
+            }
+
+            async setInputAddressFromLatLng(inputId, latlng, fallbackLabel) {
+                const input = document.getElementById(inputId);
+                if (!input) return;
+
+                // Set a quick fallback first
+                input.value = fallbackLabel;
+
+                const address = await this.reverseGeocode(latlng);
+                if (address) {
+                    input.value = address;
+                }
+            }
+
             init() {
                 console.log("ðŸš€ Initializing Routely...");
+                this.liveTrafficEnabled = true;
                 this.initializeMap();
                 this.initializeTheme();
                 this.bindEventListeners();
                 this.setCurrentTime();
+                
+                // Initialize address search/autocomplete for Route Controls
+                this.initializeAddressSearch();
+                
+                // Check for route parameter in URL and load it
+                this.checkUrlForSavedRoute();
+            }
+            
+            checkUrlForSavedRoute() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const routeId = urlParams.get('route');
+                
+                if (routeId) {
+                    console.log("Loading saved route from URL:", routeId);
+                    // Wait for map to fully initialize, then load the route
+                    setTimeout(() => {
+                        this.loadSavedRoute(routeId);
+                        // Clean up URL without reloading
+                        window.history.replaceState({}, document.title, window.location.pathname);
+                    }, 1500);
+                }
+            }
+            
+            async loadSavedRoute(routeId) {
+                try {
+                    console.log("Loading saved route:", routeId);
+                    const response = await axios.get(`/saved-route/${routeId}`);
+                    if (response.data.success) {
+                        const route = response.data.route;
+                        
+                        // Clear existing route
+                        this.clearRoute();
+                        
+                        // Set start and end markers if available
+                        if (route.start_point) {
+                            const startLatLng = L.latLng(route.start_point.lat, route.start_point.lng);
+                            this.setStartPoint(startLatLng);
+                        }
+                        if (route.end_point) {
+                            const endLatLng = L.latLng(route.end_point.lat, route.end_point.lng);
+                            this.setEndPoint(endLatLng);
+                        }
+                        
+                        // Draw the route on map
+                        this.drawSavedRoute(route);
+                        
+                        this.showNotification(`Loaded route: ${route.name}`, 'success');
+                    } else {
+                        this.showNotification('Failed to load route: ' + response.data.error, 'error');
+                    }
+                } catch (error) {
+                    console.error('Error loading saved route:', error);
+                    this.showNotification('Error loading route', 'error');
+                }
+            }
+            
+            drawSavedRoute(route) {
+                const routeData = route.route_data;
+                let coords = [];
+                
+                if (routeData.recommended_route && routeData.recommended_route.route_coords) {
+                    // Smart plan route
+                    coords = routeData.recommended_route.route_coords.map(p => [p[0], p[1]]);
+                } else if (routeData.route) {
+                    // Regular route
+                    coords = routeData.route.map(p => [p[0], p[1]]);
+                }
+                
+                if (coords.length > 0) {
+                    // Clear existing routes in routeLayer
+                    this.routeLayer.clearLayers();
+                    
+                    // Draw saved route
+                    const routeLine = L.polyline(coords, {
+                        color: '#FF6B35',
+                        weight: 6,
+                        opacity: 0.9
+                    }).addTo(this.routeLayer);
+                    
+                    // Fit map to show the route
+                    if (coords.length > 1) {
+                        this.map.fitBounds(routeLine.getBounds(), { padding: [50, 50] });
+                    }
+                }
             }
 
             initializeMap() {
-                console.log("ðŸ—ºï¸ Initializing Routely Map...");
+                console.log("Initializing Routely Map...");
                 
                 try {
                     // Initialize Leaflet map
                     this.map = L.map('map', {
-                        zoomControl: false
+                        zoomControl: false,
+                        zoomSnap: 0.25,
+                        zoomDelta: 0.25,
+                        wheelPxPerZoomLevel: 20
                     }).setView([40.183, 44.515], 13);
                     
-                    // Tile layer URLs
-                    this.lightTileUrl = 'https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png';
-                    this.darkTileUrl = 'https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png';
+                    // Tile layer URLs - CARTO Voyager (modern, colorful style)
+                    this.lightTileUrl = 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
+                    this.darkTileUrl = 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
                     
                     // Add tile layer based on current theme
                     const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
@@ -49,17 +545,14 @@
                         maxZoom: 19
                     }).addTo(this.map);
 
-                    // Add zoom control
-                    L.control.zoom({
-                        position: 'topright'
-                    }).addTo(this.map);
-
                     // Create layers
                     this.markersLayer = L.layerGroup().addTo(this.map);
                     this.routeLayer = L.layerGroup().addTo(this.map);
                     
-                    // Load congestion data automatically on map init
-                    this.loadCongestionData();
+                    // Load congestion data automatically on map init (if live traffic enabled)
+                    if (this.liveTrafficEnabled) {
+                        this.loadCongestionData();
+                    }
                     
                     console.log("âœ… Map initialized successfully");
                     
@@ -74,6 +567,10 @@
                     // Add click event to map
                     this.map.on('click', (e) => {
                         this.handleMapClick(e);
+                    });
+                    
+                    this.map.on('zoomend', () => {
+                        this.adjustRoadPolylineWeights();
                     });
                     
                 } catch (error) {
@@ -134,13 +631,6 @@
                 this.currentPlanData = null;
             }
             
-            openSettingsModal() {
-                const modal = document.getElementById('settingsModal');
-                modal.style.display = 'flex';
-                const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-                document.getElementById('darkModeToggle').checked = isDark;
-            }
-            
             openPredictionsModal() {
                 const modal = document.getElementById('predictionsModal');
                 if (!modal) return;
@@ -180,7 +670,7 @@
                         <label class="checkbox-item">
                             <input type="checkbox" value="${rt.type}">
                             <span class="checkmark"></span>
-                            ${rt.type} · ${rt.description} (${rt.speed_limit} km/h)
+                            ${rt.type} · ${rt.description}
                         </label>
                     `).join('');
 
@@ -372,11 +862,8 @@
             }
 
             resetPredictionsModal() {
-                // Reset time window selects to their default values
-                const fromSelect = document.getElementById('travelTimeFrom');
-                const toSelect = document.getElementById('travelTimeTo');
-                if (fromSelect) fromSelect.value = '8';
-                if (toSelect) toSelect.value = '18';
+                // Reset time window selects to their default dynamic values
+                this.initializeSmartPlannerTimeSelectors();
 
                 // Reset day type radio to weekday
                 const weekdayRadio = document.querySelector('input[name="plannerDayType"][value="weekday"]');
@@ -452,11 +939,25 @@
             
             toggleSavedRoutesPanel() {
                 const panel = document.getElementById('savedRoutesPanel');
-                if (panel.style.display === 'none') { panel.style.display = 'block'; this.loadSavedRoutes(); }
-                else { panel.style.display = 'none'; }
+                const backdrop = document.getElementById('savedRoutesBackdrop');
+                const isHidden = panel.style.display === 'none' || panel.style.display === '';
+
+                if (isHidden) {
+                    panel.style.display = 'block';
+                    if (backdrop) backdrop.style.display = 'block';
+                    this.loadSavedRoutes();
+                } else {
+                    panel.style.display = 'none';
+                    if (backdrop) backdrop.style.display = 'none';
+                }
             }
             
-            closeSavedRoutesPanel() { document.getElementById('savedRoutesPanel').style.display = 'none'; }
+            closeSavedRoutesPanel() {
+                const panel = document.getElementById('savedRoutesPanel');
+                const backdrop = document.getElementById('savedRoutesBackdrop');
+                panel.style.display = 'none';
+                if (backdrop) backdrop.style.display = 'none';
+            }
             
             async loadSavedRoutes() {
                 const listDiv = document.getElementById('savedRoutesList');
@@ -723,9 +1224,9 @@
                 this.startMarker = this.createMarker(latlng, 'start', '#10b981', 'A');
                 this.markersLayer.addLayer(this.startMarker);
 
-                // Update input field
-                document.getElementById('startPoint').value = 
-                    `Location (${latlng.lat.toFixed(4)}, ${latlng.lng.toFixed(4)})`;
+                // Update input field with address if possible
+                const fallback = `Location (${latlng.lat.toFixed(4)}, ${latlng.lng.toFixed(4)})`;
+                this.setInputAddressFromLatLng('startPoint', latlng, fallback);
                 
                 this.showNotification("Start point set", "success");
             }
@@ -740,9 +1241,9 @@
                 this.endMarker = this.createMarker(latlng, 'end', '#ef4444', 'B');
                 this.markersLayer.addLayer(this.endMarker);
 
-                // Update input field
-                document.getElementById('endPoint').value = 
-                    `Location (${latlng.lat.toFixed(4)}, ${latlng.lng.toFixed(4)})`;
+                // Update input field with address if possible
+                const fallback = `Location (${latlng.lat.toFixed(4)}, ${latlng.lng.toFixed(4)})`;
+                this.setInputAddressFromLatLng('endPoint', latlng, fallback);
                 
                 this.showNotification("Destination set", "success");
             }
@@ -784,6 +1285,10 @@
                     if (this.routeOptions.length > 0) {
                         this.displayRouteOptions();
                         this.selectRoute(0);
+
+                        // Record trip in history
+                        this.addTripToHistory(startLatLng, endLatLng);
+
                         this.showNotification(`Found ${this.routeOptions.length} route options!`, "success");
                     } else {
                         this.showNotification("No routes found", "warning");
@@ -841,7 +1346,7 @@
                                     <i class="fas fa-route" style="color: ${accentColor}"></i>
                                     ${name}
                                 </span>
-                                <span class="route-option-badge" style="background: ${accentColor}20; color: ${accentColor}; border: 1px solid ${accentColor}40;">${index === 0 ? 'â˜… Best' : ''}</span>
+                                <span class="route-option-badge" style="background: ${accentColor}20; color: ${accentColor}; border: 1px solid ${accentColor}40;">${index === 0 ? '★ Best' : ''}</span>
                             </div>
                             <div class="route-option-stats">
                                 <div class="route-stat">
@@ -865,6 +1370,7 @@
                 }).join('');
                 
                 panel.style.display = 'block';
+                panel.classList.remove('collapsed');
                 
                 // Bind click events to route options
                 list.querySelectorAll('.route-option-item').forEach(item => {
@@ -950,6 +1456,7 @@
                 const panel = document.getElementById('routeOptionsPanel');
                 if (panel) {
                     panel.style.display = 'none';
+                    panel.classList.remove('collapsed');
                 }
                 
                 // Reset route options
@@ -1117,7 +1624,7 @@
                                 <div class="label">Avg Congestion</div>
                             </div>
                             <div class="stat-card-modal">
-                                <div class="value">${stats.avg_speed?.toFixed(1) || 38} km/h</div>
+                                <div class="value" title="${stats.avg_speed_by_congestion ? `Light Traffic: ${stats.avg_speed_by_congestion.low || 0} km/h\nModerate Traffic: ${stats.avg_speed_by_congestion.medium || 0} km/h\nHeavy Traffic: ${stats.avg_speed_by_congestion.high || 0} km/h` : ''}" style="cursor: help;">${stats.avg_speed_kmh?.toFixed(1) || 38} km/h</div>
                                 <div class="label">Avg Speed</div>
                             </div>
                         </div>
@@ -1127,26 +1634,26 @@
                             <div class="congestion-bar">
                                 <div class="congestion-color" style="background: #10b981;"></div>
                                 <div class="congestion-label">Free Flow</div>
-                                <div class="congestion-progress"><div class="congestion-fill" style="width: ${stats.congestion_distribution?.free_flow || 25}%; background: #10b981;"></div></div>
-                                <div class="congestion-percent">${stats.congestion_distribution?.free_flow || 25}%</div>
+                                <div class="congestion-progress"><div class="congestion-fill" style="width: ${stats.congestion_distribution?.free_flow ?? 0}%; background: #10b981;"></div></div>
+                                <div class="congestion-percent">${stats.congestion_distribution?.free_flow ?? 0}%</div>
                             </div>
                             <div class="congestion-bar">
                                 <div class="congestion-color" style="background: #f59e0b;"></div>
                                 <div class="congestion-label">Moderate</div>
-                                <div class="congestion-progress"><div class="congestion-fill" style="width: ${stats.congestion_distribution?.moderate || 35}%; background: #f59e0b;"></div></div>
-                                <div class="congestion-percent">${stats.congestion_distribution?.moderate || 35}%</div>
+                                <div class="congestion-progress"><div class="congestion-fill" style="width: ${stats.congestion_distribution?.moderate ?? 0}%; background: #f59e0b;"></div></div>
+                                <div class="congestion-percent">${stats.congestion_distribution?.moderate ?? 0}%</div>
                             </div>
                             <div class="congestion-bar">
                                 <div class="congestion-color" style="background: #ef4444;"></div>
                                 <div class="congestion-label">Heavy</div>
-                                <div class="congestion-progress"><div class="congestion-fill" style="width: ${stats.congestion_distribution?.heavy || 25}%; background: #ef4444;"></div></div>
-                                <div class="congestion-percent">${stats.congestion_distribution?.heavy || 25}%</div>
+                                <div class="congestion-progress"><div class="congestion-fill" style="width: ${stats.congestion_distribution?.heavy ?? 0}%; background: #ef4444;"></div></div>
+                                <div class="congestion-percent">${stats.congestion_distribution?.heavy ?? 0}%</div>
                             </div>
                             <div class="congestion-bar">
                                 <div class="congestion-color" style="background: #dc2626;"></div>
                                 <div class="congestion-label">Severe</div>
-                                <div class="congestion-progress"><div class="congestion-fill" style="width: ${stats.congestion_distribution?.severe || 15}%; background: #dc2626;"></div></div>
-                                <div class="congestion-percent">${stats.congestion_distribution?.severe || 15}%</div>
+                                <div class="congestion-progress"><div class="congestion-fill" style="width: ${stats.congestion_distribution?.severe ?? 0}%; background: #dc2626;"></div></div>
+                                <div class="congestion-percent">${stats.congestion_distribution?.severe ?? 0}%</div>
                             </div>
                         </div>
                     `;
@@ -1436,43 +1943,70 @@
             bindEventListeners() {
                 console.log("ðŸ”— Binding event listeners...");
                 
-                // Theme toggle
-                document.getElementById('themeToggle').addEventListener('click', () => this.toggleTheme());
+                // Theme toggle (button may not exist on map page)
+                const themeToggleBtn = document.getElementById('themeToggle');
+                if (themeToggleBtn) {
+                    themeToggleBtn.addEventListener('click', () => this.toggleTheme());
+                }
+
+                // Header Settings dropdown toggles
+                const darkThemeToggle = document.getElementById('darkThemeToggle');
+                const liveTrafficToggle = document.getElementById('liveTrafficToggle');
+                const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+                if (darkThemeToggle) {
+                    darkThemeToggle.checked = currentTheme === 'dark';
+                    darkThemeToggle.addEventListener('change', (e) => {
+                        const enabled = e.target.checked;
+                        const newTheme = enabled ? 'dark' : 'light';
+                        document.documentElement.setAttribute('data-theme', newTheme);
+                        localStorage.setItem('routely-theme', newTheme);
+                        this.setMapTheme(newTheme);
+                    });
+                }
+                if (liveTrafficToggle) {
+                    liveTrafficToggle.checked = this.liveTrafficEnabled;
+                    liveTrafficToggle.addEventListener('change', (e) => {
+                        this.liveTrafficEnabled = e.target.checked;
+                        if (this.liveTrafficEnabled) {
+                            this.loadCongestionData();
+                        } else if (this.roadLayer) {
+                            this.roadLayer.clearLayers();
+                        }
+                    });
+                }
+
+                // Quick actions (custom zoom buttons may be removed)
+                const zoomInBtn = document.getElementById('zoomInBtn');
+                if (zoomInBtn) {
+                    zoomInBtn.addEventListener('click', () => {
+                        if (this.map) this.map.zoomIn();
+                    });
+                }
                 
-                // Quick actions
-                document.getElementById('zoomInBtn').addEventListener('click', () => {
-                    if (this.map) this.map.zoomIn();
-                });
-                
-                document.getElementById('zoomOutBtn').addEventListener('click', () => {
-                    if (this.map) this.map.zoomOut();
-                });
+                const zoomOutBtn = document.getElementById('zoomOutBtn');
+                if (zoomOutBtn) {
+                    zoomOutBtn.addEventListener('click', () => {
+                        if (this.map) this.map.zoomOut();
+                    });
+                }
                 
                 // Header buttons
                 document.getElementById('predictionsToggle').addEventListener('click', () => this.openPredictionsModal());
-                
-                document.getElementById('settingsToggle').addEventListener('click', () => this.openSettingsModal());
                 
                 // Smart Travel Planner
                 document.getElementById('getPredictionsBtn').addEventListener('click', () => this.getSmartTravelPlan());
                 document.getElementById('saveRouteBtn').addEventListener('click', () => this.saveCurrentRoute());
                 
-                // Saved Routes
-                document.getElementById('showSavedRoutesBtn').addEventListener('click', () => this.toggleSavedRoutesPanel());
-                document.getElementById('closeSavedRoutes').addEventListener('click', () => this.closeSavedRoutesPanel());
-                
-                // Settings modal - dark mode toggle
-                document.getElementById('darkModeToggle').addEventListener('change', (e) => {
-                    if (e.target.checked) {
-                        document.documentElement.setAttribute('data-theme', 'dark');
-                        localStorage.setItem('routely-theme', 'dark');
-                        this.setMapTheme('dark');
-                    } else {
-                        document.documentElement.setAttribute('data-theme', 'light');
-                        localStorage.setItem('routely-theme', 'light');
-                        this.setMapTheme('light');
-                    }
-                });
+                // Saved Routes (header button may not exist on this page)
+                const showSavedRoutesBtn = document.getElementById('showSavedRoutesBtn');
+                if (showSavedRoutesBtn) {
+                    showSavedRoutesBtn.addEventListener('click', () => this.toggleSavedRoutesPanel());
+                }
+
+                const closeSavedRoutesBtn = document.getElementById('closeSavedRoutes');
+                if (closeSavedRoutesBtn) {
+                    closeSavedRoutesBtn.addEventListener('click', () => this.closeSavedRoutesPanel());
+                }
                 
                 // Close predictions modal on background click
                 document.getElementById('predictionsModal').addEventListener('click', (e) => {
@@ -1480,9 +2014,6 @@
                         this.resetPredictionsModal();
                         closeModal('predictionsModal');
                     }
-                });
-                document.getElementById('settingsModal').addEventListener('click', (e) => {
-                    if (e.target.id === 'settingsModal') closeModal('settingsModal');
                 });
                 
                 // Panel toggle
@@ -1506,23 +2037,40 @@
                     });
                 }
                 
-                // Map point selection buttons
-                document.getElementById('setStartPointBtn').addEventListener('click', () => {
-                    this.isSettingStartPoint = true;
-                    this.isSettingEndPoint = false;
-                    this.showNotification("Click on the map to set start point", "info");
-                });
-                
-                document.getElementById('setEndPointBtn').addEventListener('click', () => {
-                    this.isSettingEndPoint = true;
-                    this.isSettingStartPoint = false;
-                    this.showNotification("Click on the map to set destination", "info");
-                });
+                // Map point selection buttons (optional, may not exist if UI is simplified)
+                const setStartBtn = document.getElementById('setStartPointBtn');
+                if (setStartBtn) {
+                    setStartBtn.addEventListener('click', () => {
+                        this.isSettingStartPoint = true;
+                        this.isSettingEndPoint = false;
+                        this.showNotification("Click on the map to set start point", "info");
+                    });
+                }
+
+                const setEndBtn = document.getElementById('setEndPointBtn');
+                if (setEndBtn) {
+                    setEndBtn.addEventListener('click', () => {
+                        this.isSettingEndPoint = true;
+                        this.isSettingStartPoint = false;
+                        this.showNotification("Click on the map to set destination", "info");
+                    });
+                }
                 
                 // Route buttons
                 document.getElementById('clearRouteBtn').addEventListener('click', () => this.clearRoute());
                 document.getElementById('switchPointsBtn').addEventListener('click', () => this.switchStartEnd());
-                document.getElementById('findRouteBtn').addEventListener('click', () => this.findOptimalRoute());
+
+                const findRouteBtn = document.getElementById('findRouteBtn');
+                if (findRouteBtn) {
+                    findRouteBtn.addEventListener('click', () => {
+                        // Require login before calculating routes
+                        if (typeof getCurrentUser === 'function' && !getCurrentUser()) {
+                            this.showNotification("Please sign in to find routes.", "warning");
+                            return;
+                        }
+                        this.findOptimalRoute();
+                    });
+                }
                 
                 // Time buttons
                 document.getElementById('useCurrentTimeBtn').addEventListener('click', () => {
@@ -1565,10 +2113,23 @@
                     });
                 });
                 
-                // Close route options panel
-                document.getElementById('closeRouteOptions').addEventListener('click', () => {
-                    document.getElementById('routeOptionsPanel').style.display = 'none';
-                });
+                // Close route options panel (collapse instead of hiding completely)
+                const routeOptionsPanel = document.getElementById('routeOptionsPanel');
+                const closeRouteOptionsBtn = document.getElementById('closeRouteOptions');
+                const routeOptionsHeader = document.querySelector('#routeOptionsPanel .route-options-header');
+                
+                if (closeRouteOptionsBtn && routeOptionsPanel) {
+                    closeRouteOptionsBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        routeOptionsPanel.classList.add('collapsed');
+                    });
+                }
+                
+                if (routeOptionsHeader && routeOptionsPanel) {
+                    routeOptionsHeader.addEventListener('click', () => {
+                        routeOptionsPanel.classList.remove('collapsed');
+                    });
+                }
                 
                 // Close modals on background click
                 ['statsModal', 'patternsModal', 'analyticsModal'].forEach(modalId => {
@@ -1593,6 +2154,90 @@
                 document.getElementById('showHelpBtn').addEventListener('click', () => this.showHelp());
                 
                 console.log("âœ… All event listeners bound!");
+                
+                // Initialize Smart Planner time window selects
+                this.initializeSmartPlannerTimeSelectors();
+            }
+
+            initializeSmartPlannerTimeSelectors() {
+                const fromSelect = document.getElementById('travelTimeFrom');
+                const toSelect = document.getElementById('travelTimeTo');
+                if (!fromSelect || !toSelect) {
+                    return;
+                }
+
+                const formatHourLabel = (hour) => {
+                    const period = hour < 12 ? 'AM' : 'PM';
+                    const hour12 = hour % 12 === 0 ? 12 : hour % 12;
+                    return `${hour12}:00 ${period}`;
+                };
+
+                const populateSelect = (select, startHour, endHour, preferredHour = null) => {
+                    select.innerHTML = '';
+                    for (let h = startHour; h <= endHour; h++) {
+                        const option = document.createElement('option');
+                        option.value = String(h);
+                        option.textContent = formatHourLabel(h);
+                        select.appendChild(option);
+                    }
+                    if (preferredHour !== null && preferredHour >= startHour && preferredHour <= endHour) {
+                        select.value = String(preferredHour);
+                    }
+                };
+
+                // Default window 08:00 -> 18:00
+                const defaultFrom = 8;
+                const defaultTo = 18;
+
+                // From: all hours 0-23
+                populateSelect(fromSelect, 0, 23, defaultFrom);
+
+                // To: only hours after selected From
+                const updateToOptions = () => {
+                    const fromHour = parseInt(fromSelect.value, 10);
+                    const start = Math.min(Math.max(fromHour + 1, 1), 23);
+                    populateSelect(toSelect, start, 23, defaultTo);
+                };
+
+                fromSelect.addEventListener('change', updateToOptions);
+
+                // Initialize To based on default From
+                updateToOptions();
+                toSelect.value = String(defaultTo);
+            }
+
+            getZoomAdjustedWeight(baseWeight) {
+                if (!this.map) {
+                    return baseWeight * 0.8;
+                }
+
+                const zoom = this.map.getZoom();
+                const baseZoom = 13;
+                let scale = 1 + (zoom - baseZoom) * 0.25;
+
+                if (scale < 0.15) {
+                    scale = 0.15;
+                } else if (scale > 1.6) {
+                    scale = 1.6;
+                }
+
+                return baseWeight * scale * 0.8;
+            }
+
+            adjustRoadPolylineWeights() {
+                if (!this.map || !this.roadLayer) {
+                    return;
+                }
+
+                this.roadLayer.eachLayer(layer => {
+                    if (layer instanceof L.Polyline) {
+                        const baseWeight = layer.options.baseWeight || layer.options.weight || 3;
+                        const newWeight = this.getZoomAdjustedWeight(baseWeight);
+                        layer.setStyle({
+                            weight: newWeight
+                        });
+                    }
+                });
             }
 
             async loadCongestionData() {
@@ -1612,10 +2257,12 @@
                     
                     // Add each road segment to the map with color based on congestion
                     roadData.forEach(road => {
+                        const baseWeight = road.weight || 3;
                         const polyline = L.polyline(road.coords, {
                             color: road.color,
-                            weight: road.weight,
-                            opacity: 0.8
+                            weight: this.getZoomAdjustedWeight(baseWeight),
+                            opacity: 0.8,
+                            baseWeight: baseWeight
                         }).addTo(this.roadLayer);
                     });
                     
@@ -2162,6 +2809,25 @@
                 width: 320px;
                 max-height: 400px;
                 overflow: hidden;
+            }
+            
+            .route-options-panel.collapsed {
+                height: 44px;
+                max-height: 44px;
+                cursor: pointer;
+            }
+            
+            .route-options-panel.collapsed .route-options-header {
+                border-bottom: none;
+                padding: 0.75rem 1rem;
+            }
+            
+            .route-options-panel.collapsed .route-options-list {
+                display: none;
+            }
+            
+            .route-options-panel.collapsed .close-panel-btn {
+                display: none;
             }
             
             .route-options-header {
@@ -2743,9 +3409,10 @@
             
             /* Saved Routes Panel */
             .saved-routes-panel {
-                position: absolute;
-                top: 100px;
-                right: 90px;
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
                 z-index: 1001;
                 background: rgba(255, 255, 255, 0.95);
                 backdrop-filter: blur(20px);

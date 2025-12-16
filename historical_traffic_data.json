@@ -2,503 +2,503 @@
   "hourly_patterns": {
     "8": [
       {
-        "timestamp": "2025-11-27T16:05:10.348199",
-        "avg_congestion": 0.8017337046721605,
+        "timestamp": "2025-12-06T17:41:11.699686",
+        "avg_congestion": 0.9273226644753377,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-11-27T16:05:42.280772",
-        "avg_congestion": 0.8016158570520419,
+        "timestamp": "2025-12-06T17:42:08.940624",
+        "avg_congestion": 0.9270989902784027,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-11-27T16:12:26.146850",
-        "avg_congestion": 0.803083202450698,
+        "timestamp": "2025-12-06T17:43:58.389315",
+        "avg_congestion": 0.9253376028148921,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-11-27T16:22:04.599249",
-        "avg_congestion": 0.8032502460008765,
+        "timestamp": "2025-12-06T17:44:40.762421",
+        "avg_congestion": 0.9275850339549506,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-11-28T03:23:33.964128",
-        "avg_congestion": 0.8030270970773052,
+        "timestamp": "2025-12-06T17:46:04.697359",
+        "avg_congestion": 0.926893116209219,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-11-28T15:41:36.419821",
-        "avg_congestion": 0.8014296923298738,
+        "timestamp": "2025-12-06T17:48:37.093296",
+        "avg_congestion": 0.9276149406104064,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-11-28T15:41:42.121977",
-        "avg_congestion": 0.8049218947286562,
+        "timestamp": "2025-12-06T17:53:46.973516",
+        "avg_congestion": 0.926481245801121,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-11-28T15:47:51.709814",
-        "avg_congestion": 0.8029936987178634,
+        "timestamp": "2025-12-06T17:54:16.801066",
+        "avg_congestion": 0.9272864442701286,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-11-28T15:48:18.020706",
-        "avg_congestion": 0.7999854659186376,
+        "timestamp": "2025-12-06T17:54:20.077451",
+        "avg_congestion": 0.928418270277003,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-11-28T16:01:50.172956",
-        "avg_congestion": 0.4895644071549499,
-        "day_type": "weekend"
+        "timestamp": "2025-12-06T18:23:56.382777",
+        "avg_congestion": 0.9277177000601187,
+        "day_type": "weekday"
       },
       {
-        "timestamp": "2025-11-28T18:10:01.702761",
-        "avg_congestion": 0.7989950452701772,
+        "timestamp": "2025-12-06T20:11:58.765254",
+        "avg_congestion": 0.9285093311396727,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-11-28T18:10:18.651716",
-        "avg_congestion": 0.8005660155264119,
+        "timestamp": "2025-12-06T20:13:39.110802",
+        "avg_congestion": 0.9260662882957007,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-11-28T18:10:35.497025",
-        "avg_congestion": 0.8002549685796737,
+        "timestamp": "2025-12-06T20:15:58.133508",
+        "avg_congestion": 0.9277212287734203,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-11-28T18:15:06.206340",
-        "avg_congestion": 0.8031053743720171,
+        "timestamp": "2025-12-06T20:18:38.038936",
+        "avg_congestion": 0.926708835627164,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-11-28T18:18:14.486874",
-        "avg_congestion": 0.8034701284726128,
+        "timestamp": "2025-12-06T20:21:31.161858",
+        "avg_congestion": 0.9285886686484589,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-11-28T18:20:14.656043",
-        "avg_congestion": 0.8008016254099263,
+        "timestamp": "2025-12-06T21:09:39.764389",
+        "avg_congestion": 0.9261654773112578,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-11-28T18:26:20.417052",
-        "avg_congestion": 0.8034250774247561,
+        "timestamp": "2025-12-06T21:12:56.897383",
+        "avg_congestion": 0.926998007265393,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-11-28T18:30:51.361946",
-        "avg_congestion": 0.8025820167363269,
+        "timestamp": "2025-12-06T21:16:56.380906",
+        "avg_congestion": 0.9285079084841087,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-11-28T22:45:49.559970",
-        "avg_congestion": 0.8031591773573596,
+        "timestamp": "2025-12-06T21:24:20.057625",
+        "avg_congestion": 0.9271153605048909,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-11-28T22:56:38.505674",
-        "avg_congestion": 0.8059071283019699,
+        "timestamp": "2025-12-06T21:28:23.948780",
+        "avg_congestion": 0.927369168857847,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-11-28T23:00:17.416668",
-        "avg_congestion": 0.8042076380979887,
+        "timestamp": "2025-12-06T21:31:06.597720",
+        "avg_congestion": 0.9262626670864049,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-11-28T23:00:19.753381",
-        "avg_congestion": 0.8016102898240742,
+        "timestamp": "2025-12-06T21:31:47.322595",
+        "avg_congestion": 0.9273505355285128,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-11-28T23:01:54.642645",
-        "avg_congestion": 0.8023205158053194,
+        "timestamp": "2025-12-06T21:32:35.336099",
+        "avg_congestion": 0.926943513664852,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-11-28T23:06:40.886761",
-        "avg_congestion": 0.8027216749267189,
+        "timestamp": "2025-12-06T21:33:14.708445",
+        "avg_congestion": 0.9258892618737895,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-11-28T23:15:44.484967",
-        "avg_congestion": 0.8048890773159693,
+        "timestamp": "2025-12-06T21:38:13.248956",
+        "avg_congestion": 0.9265122928291429,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-11-28T23:18:52.816677",
-        "avg_congestion": 0.48660235374662186,
-        "day_type": "weekend"
+        "timestamp": "2025-12-06T21:39:48.716534",
+        "avg_congestion": 0.925446542582404,
+        "day_type": "weekday"
       },
       {
-        "timestamp": "2025-11-28T23:38:50.714319",
-        "avg_congestion": 0.8048451116164097,
+        "timestamp": "2025-12-06T21:42:19.798822",
+        "avg_congestion": 0.9270728113915955,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-11-28T23:43:55.440859",
-        "avg_congestion": 0.8034935932928987,
+        "timestamp": "2025-12-06T21:44:37.363993",
+        "avg_congestion": 0.92588646136862,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-11-28T23:50:17.678060",
-        "avg_congestion": 0.799821001388686,
+        "timestamp": "2025-12-06T21:46:18.001068",
+        "avg_congestion": 0.9265176192152277,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-11-28T23:59:27.536081",
-        "avg_congestion": 0.8032084378311815,
+        "timestamp": "2025-12-06T21:47:10.077146",
+        "avg_congestion": 0.9270154266453368,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-11-29T00:04:08.721010",
-        "avg_congestion": 0.8070786380453621,
+        "timestamp": "2025-12-06T21:49:03.006997",
+        "avg_congestion": 0.9267250443088786,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-11-29T00:09:32.363119",
-        "avg_congestion": 0.8015830533981817,
+        "timestamp": "2025-12-06T21:49:31.899116",
+        "avg_congestion": 0.927274025066686,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-11-29T00:13:58.610146",
-        "avg_congestion": 0.8045056561761573,
+        "timestamp": "2025-12-06T21:49:52.492698",
+        "avg_congestion": 0.9273229403466882,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-11-29T00:21:27.371063",
-        "avg_congestion": 0.8013483250065578,
+        "timestamp": "2025-12-06T21:50:10.401928",
+        "avg_congestion": 0.9264763668116263,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-11-29T00:27:56.020740",
-        "avg_congestion": 0.8014561867462601,
+        "timestamp": "2025-12-06T21:50:44.625603",
+        "avg_congestion": 0.9258854711756166,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-11-29T00:38:48.582126",
-        "avg_congestion": 0.802089706728394,
+        "timestamp": "2025-12-06T21:50:46.594685",
+        "avg_congestion": 0.9269766233431413,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-11-29T00:57:39.752780",
-        "avg_congestion": 0.804615693638143,
+        "timestamp": "2025-12-06T21:52:25.279392",
+        "avg_congestion": 0.9256038228762601,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-11-29T00:58:25.850163",
-        "avg_congestion": 0.8019061039774138,
+        "timestamp": "2025-12-06T21:52:26.768074",
+        "avg_congestion": 0.9266599274552965,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-11-29T01:07:04.202266",
-        "avg_congestion": 0.8002174789241584,
+        "timestamp": "2025-12-06T21:52:39.017064",
+        "avg_congestion": 0.9258564002130059,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-11-29T01:08:28.932038",
-        "avg_congestion": 0.8050726620089138,
+        "timestamp": "2025-12-06T21:54:34.023415",
+        "avg_congestion": 0.9258403682872045,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-11-29T01:14:31.066917",
-        "avg_congestion": 0.8025086990851535,
+        "timestamp": "2025-12-06T21:54:35.446225",
+        "avg_congestion": 0.9248573172508257,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-11-29T01:29:42.929711",
-        "avg_congestion": 0.8004879714947151,
+        "timestamp": "2025-12-06T21:54:44.320601",
+        "avg_congestion": 0.924961345868146,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-11-29T01:30:15.624268",
-        "avg_congestion": 0.4895753943489506,
-        "day_type": "weekend"
+        "timestamp": "2025-12-06T21:56:05.336288",
+        "avg_congestion": 0.92764120105316,
+        "day_type": "weekday"
       },
       {
-        "timestamp": "2025-11-29T01:35:56.560150",
-        "avg_congestion": 0.8032404688419587,
+        "timestamp": "2025-12-06T21:57:04.064154",
+        "avg_congestion": 0.9276573739241053,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-11-29T13:14:01.969583",
-        "avg_congestion": 0.8038723857828394,
+        "timestamp": "2025-12-06T22:00:19.384313",
+        "avg_congestion": 0.9258935813951117,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-11-29T14:45:32.312489",
-        "avg_congestion": 0.8025178340452526,
+        "timestamp": "2025-12-06T22:03:47.892781",
+        "avg_congestion": 0.9270115607336499,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-11-29T14:51:43.731052",
-        "avg_congestion": 0.7991833949220651,
+        "timestamp": "2025-12-06T22:06:02.869723",
+        "avg_congestion": 0.9259487193533709,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-11-29T14:52:45.233798",
-        "avg_congestion": 0.8004004056690399,
+        "timestamp": "2025-12-06T22:06:14.547257",
+        "avg_congestion": 0.9252014847551648,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-12-01T14:50:48.511457",
-        "avg_congestion": 0.7980497233038756,
+        "timestamp": "2025-12-06T22:06:21.353991",
+        "avg_congestion": 0.9262348383274136,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-12-01T14:52:09.177352",
-        "avg_congestion": 0.801488445584877,
+        "timestamp": "2025-12-06T22:06:23.780987",
+        "avg_congestion": 0.9278359285201069,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-12-01T15:12:07.926271",
-        "avg_congestion": 0.8043746639779746,
+        "timestamp": "2025-12-06T22:07:22.644505",
+        "avg_congestion": 0.9269209781362701,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-12-01T18:48:06.151077",
-        "avg_congestion": 0.8033919062383879,
+        "timestamp": "2025-12-06T22:07:24.976069",
+        "avg_congestion": 0.9271505358270592,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-12-01T19:01:09.909879",
-        "avg_congestion": 0.8059898761930341,
+        "timestamp": "2025-12-06T22:10:31.603739",
+        "avg_congestion": 0.9286909530618517,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-12-01T19:12:27.957467",
-        "avg_congestion": 0.7999049092754636,
+        "timestamp": "2025-12-06T22:10:33.964628",
+        "avg_congestion": 0.9269144858099035,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-12-01T21:16:17.384889",
-        "avg_congestion": 0.8035639306210565,
+        "timestamp": "2025-12-06T22:11:01.138826",
+        "avg_congestion": 0.9274351526857685,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-12-01T21:33:09.739774",
-        "avg_congestion": 0.806292999238098,
+        "timestamp": "2025-12-06T22:11:04.617675",
+        "avg_congestion": 0.929144854942797,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-12-01T21:35:15.419238",
-        "avg_congestion": 0.8014882956192337,
+        "timestamp": "2025-12-06T22:16:41.888921",
+        "avg_congestion": 0.9264263687582145,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-12-01T22:08:15.143589",
-        "avg_congestion": 0.803527642030463,
+        "timestamp": "2025-12-06T22:17:06.508267",
+        "avg_congestion": 0.9262251324608407,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-12-01T22:12:52.515644",
-        "avg_congestion": 0.803504709708855,
+        "timestamp": "2025-12-06T22:20:27.361080",
+        "avg_congestion": 0.927440866140007,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-12-01T22:22:48.260955",
-        "avg_congestion": 0.8039837947956383,
+        "timestamp": "2025-12-06T22:24:46.025342",
+        "avg_congestion": 0.9272027556793083,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-12-01T22:22:53.041925",
-        "avg_congestion": 0.8026432447393911,
+        "timestamp": "2025-12-07T18:11:41.962092",
+        "avg_congestion": 0.925515225416596,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-12-01T22:23:23.018686",
-        "avg_congestion": 0.8015916512010474,
+        "timestamp": "2025-12-07T18:12:11.303173",
+        "avg_congestion": 0.925961897351028,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-12-01T22:29:36.376432",
-        "avg_congestion": 0.8040351295107319,
+        "timestamp": "2025-12-07T18:15:35.861179",
+        "avg_congestion": 0.9266371897176322,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-12-01T22:31:22.183651",
-        "avg_congestion": 0.8032060498901987,
+        "timestamp": "2025-12-07T18:15:47.606857",
+        "avg_congestion": 0.9248808833926945,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-12-01T22:43:07.152503",
-        "avg_congestion": 0.7991551394919264,
+        "timestamp": "2025-12-07T18:23:14.367946",
+        "avg_congestion": 0.9254317220116,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-12-01T23:05:32.858598",
-        "avg_congestion": 0.799807883018116,
+        "timestamp": "2025-12-07T18:24:32.566658",
+        "avg_congestion": 0.9267862062334272,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-12-01T23:11:31.116354",
-        "avg_congestion": 0.8020068653571062,
+        "timestamp": "2025-12-07T18:28:43.368811",
+        "avg_congestion": 0.9279986545454026,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-12-01T23:18:46.913072",
-        "avg_congestion": 0.7999882968563887,
+        "timestamp": "2025-12-07T18:32:19.273282",
+        "avg_congestion": 0.9254279841691474,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-12-01T23:19:17.656836",
-        "avg_congestion": 0.8034275040711787,
+        "timestamp": "2025-12-07T18:43:43.605747",
+        "avg_congestion": 0.9270075525450935,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-12-01T23:28:49.902036",
-        "avg_congestion": 0.8002765574136851,
+        "timestamp": "2025-12-07T18:44:02.933842",
+        "avg_congestion": 0.9276774677208756,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-12-01T23:35:52.413964",
-        "avg_congestion": 0.8009455926752376,
+        "timestamp": "2025-12-07T18:45:11.022469",
+        "avg_congestion": 0.9271087510469741,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-12-01T23:41:00.297120",
-        "avg_congestion": 0.8017446704751138,
+        "timestamp": "2025-12-07T18:45:16.621814",
+        "avg_congestion": 0.9279110648309469,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-12-01T23:57:29.201839",
-        "avg_congestion": 0.8035090110943546,
+        "timestamp": "2025-12-07T18:46:02.953241",
+        "avg_congestion": 0.9262298650363633,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-12-02T00:00:54.555142",
-        "avg_congestion": 0.8050401083661949,
+        "timestamp": "2025-12-07T18:48:13.934811",
+        "avg_congestion": 0.9270149670693908,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-12-02T00:06:14.611063",
-        "avg_congestion": 0.8039407975473872,
+        "timestamp": "2025-12-07T18:48:49.207795",
+        "avg_congestion": 0.9297819852114803,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-12-02T00:12:05.689452",
-        "avg_congestion": 0.8024772114172357,
+        "timestamp": "2025-12-07T18:49:42.290364",
+        "avg_congestion": 0.9244104694880558,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-12-02T00:17:08.397291",
-        "avg_congestion": 0.8009839796192755,
+        "timestamp": "2025-12-07T18:54:53.039156",
+        "avg_congestion": 0.9265330615934048,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-12-02T00:23:18.258721",
-        "avg_congestion": 0.8033362310254774,
+        "timestamp": "2025-12-07T18:55:46.163151",
+        "avg_congestion": 0.9264617790980985,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-12-02T00:31:38.159854",
-        "avg_congestion": 0.8000096762060024,
+        "timestamp": "2025-12-07T18:58:51.798998",
+        "avg_congestion": 0.9274106549477598,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-12-02T00:40:18.449567",
-        "avg_congestion": 0.7988536346473414,
+        "timestamp": "2025-12-07T19:01:14.821129",
+        "avg_congestion": 0.9290504907171173,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-12-02T00:40:46.429728",
-        "avg_congestion": 0.7992379727978031,
+        "timestamp": "2025-12-07T19:01:19.421829",
+        "avg_congestion": 0.9272058076526631,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-12-02T00:51:00.843336",
-        "avg_congestion": 0.8052018682517911,
+        "timestamp": "2025-12-09T14:16:19.182759",
+        "avg_congestion": 0.9280764663070444,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-12-02T00:58:49.703215",
-        "avg_congestion": 0.4883815823881549,
-        "day_type": "weekend"
+        "timestamp": "2025-12-09T14:16:59.064106",
+        "avg_congestion": 0.9263102376661038,
+        "day_type": "weekday"
       },
       {
-        "timestamp": "2025-12-02T11:13:46.050421",
-        "avg_congestion": 0.8031234698254046,
+        "timestamp": "2025-12-09T14:19:01.675240",
+        "avg_congestion": 0.9272425217561324,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-12-02T12:04:34.750068",
-        "avg_congestion": 0.8005139910280832,
+        "timestamp": "2025-12-09T14:23:19.797621",
+        "avg_congestion": 0.927669377514291,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-12-02T18:03:24.940450",
-        "avg_congestion": 0.7994827265021449,
+        "timestamp": "2025-12-09T14:30:50.941951",
+        "avg_congestion": 0.9262956341613162,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-12-02T18:05:27.480034",
-        "avg_congestion": 0.8015613699041528,
+        "timestamp": "2025-12-09T14:31:45.273467",
+        "avg_congestion": 0.9273619756548797,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-12-02T18:11:14.807764",
-        "avg_congestion": 0.8007355524870242,
+        "timestamp": "2025-12-09T14:37:22.466021",
+        "avg_congestion": 0.9282329446163475,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-12-02T19:07:52.250171",
-        "avg_congestion": 0.799884515827657,
+        "timestamp": "2025-12-10T14:18:19.884622",
+        "avg_congestion": 0.9296346295503339,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-12-02T19:13:48.359738",
-        "avg_congestion": 0.7997666395998402,
+        "timestamp": "2025-12-10T18:54:10.633221",
+        "avg_congestion": 0.9261131784657377,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-12-02T19:15:37.108361",
-        "avg_congestion": 0.8034956650595795,
+        "timestamp": "2025-12-12T18:28:15.471199",
+        "avg_congestion": 0.9270347996875683,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-12-02T21:45:02.823063",
-        "avg_congestion": 0.8050918397501892,
+        "timestamp": "2025-12-12T18:29:18.771030",
+        "avg_congestion": 0.9247491443392857,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-12-02T21:46:24.071175",
-        "avg_congestion": 0.8022369357411857,
+        "timestamp": "2025-12-12T18:33:55.017653",
+        "avg_congestion": 0.9243445377166418,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-12-02T21:50:35.107044",
-        "avg_congestion": 0.8036926105914665,
+        "timestamp": "2025-12-12T18:34:01.679253",
+        "avg_congestion": 0.927703853205813,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-12-02T21:58:21.019171",
-        "avg_congestion": 0.8047846338772539,
+        "timestamp": "2025-12-17T00:15:25.139582",
+        "avg_congestion": 0.928088602450395,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-12-02T22:03:07.798145",
-        "avg_congestion": 0.8025140300395823,
+        "timestamp": "2025-12-17T00:15:27.305056",
+        "avg_congestion": 0.9261348016542134,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-12-03T13:47:16.995865",
-        "avg_congestion": 0.8006216459515635,
+        "timestamp": "2025-12-17T00:17:45.325292",
+        "avg_congestion": 0.9271743534230165,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-12-03T13:50:42.004650",
-        "avg_congestion": 0.842730676915984,
+        "timestamp": "2025-12-17T00:29:57.692209",
+        "avg_congestion": 0.9252977289766272,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-12-03T13:53:03.428848",
-        "avg_congestion": 0.8532320436256002,
+        "timestamp": "2025-12-17T00:30:02.447422",
+        "avg_congestion": 0.9287270695489989,
         "day_type": "weekday"
       },
       {
-        "timestamp": "2025-12-03T14:02:08.597069",
-        "avg_congestion": 0.852992757890835,
+        "timestamp": "2025-12-17T00:32:15.394867",
+        "avg_congestion": 0.9292412515306273,
         "day_type": "weekday"
       }
     ],
@@ -536,6 +536,351 @@
       {
         "timestamp": "2025-11-28T23:17:38.085631",
         "avg_congestion": 0.8367514395925276,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T16:39:41.793172",
+        "avg_congestion": 0.8962948045371424,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T18:00:01.484237",
+        "avg_congestion": 0.8945986893421383,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T18:00:29.064387",
+        "avg_congestion": 0.8963880507911615,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T18:03:05.793266",
+        "avg_congestion": 0.8960377963212747,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T18:11:38.485375",
+        "avg_congestion": 0.8964648463355057,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T18:11:39.563322",
+        "avg_congestion": 0.6430843370921407,
+        "day_type": "weekend"
+      },
+      {
+        "timestamp": "2025-12-04T18:11:41.753082",
+        "avg_congestion": 0.8960955377760431,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T18:13:58.657648",
+        "avg_congestion": 0.8963905918086816,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T18:20:09.833724",
+        "avg_congestion": 0.895751811805491,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T18:21:28.726992",
+        "avg_congestion": 0.8962191544727646,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T18:21:44.702482",
+        "avg_congestion": 0.8992188555778616,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-05T18:03:08.484279",
+        "avg_congestion": 0.8952528453622736,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-05T18:16:49.367447",
+        "avg_congestion": 0.8953966359374018,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-05T18:17:54.515630",
+        "avg_congestion": 0.8971399975100931,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-05T18:18:43.721635",
+        "avg_congestion": 0.8958525575257129,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-05T18:19:03.761201",
+        "avg_congestion": 0.8965629366696045,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-05T18:19:07.424109",
+        "avg_congestion": 0.8987500513007113,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-05T18:19:36.873961",
+        "avg_congestion": 0.8970742447787441,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-05T18:23:11.822086",
+        "avg_congestion": 0.8978214925891776,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-05T18:26:18.611772",
+        "avg_congestion": 0.8960225672302491,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-05T18:27:15.940225",
+        "avg_congestion": 0.8981667505553965,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-05T18:27:49.184601",
+        "avg_congestion": 0.8962898933184795,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-05T18:28:02.445970",
+        "avg_congestion": 0.8960040323248718,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-05T18:33:26.085816",
+        "avg_congestion": 0.8984874571086394,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-05T18:33:50.995333",
+        "avg_congestion": 0.8942901169634202,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-05T18:34:48.056193",
+        "avg_congestion": 0.8974852004041585,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-05T18:35:15.862707",
+        "avg_congestion": 0.8998447906142165,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-05T18:38:52.862067",
+        "avg_congestion": 0.8950551985344114,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-05T18:39:54.953393",
+        "avg_congestion": 0.8948992611477197,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-05T18:40:09.096395",
+        "avg_congestion": 0.8949864828905781,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-05T18:42:41.007669",
+        "avg_congestion": 0.899381702657179,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-05T18:47:01.933551",
+        "avg_congestion": 0.8949465654636025,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-05T18:57:30.898421",
+        "avg_congestion": 0.6429391645987256,
+        "day_type": "weekend"
+      },
+      {
+        "timestamp": "2025-12-05T18:59:44.111521",
+        "avg_congestion": 0.8962719975672764,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-07T18:11:43.660524",
+        "avg_congestion": 0.8967509376871214,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-07T18:11:59.642320",
+        "avg_congestion": 0.8970419605616509,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-07T18:13:48.858091",
+        "avg_congestion": 0.8974988571689182,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-07T18:13:56.278359",
+        "avg_congestion": 0.8941374798388365,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-07T18:14:00.478276",
+        "avg_congestion": 0.8954386150254356,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-07T18:14:12.339626",
+        "avg_congestion": 0.8965163780967975,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-07T18:14:21.248016",
+        "avg_congestion": 0.8975430223021148,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-07T18:14:23.440963",
+        "avg_congestion": 0.8961352585758169,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-07T18:15:38.172816",
+        "avg_congestion": 0.8973521373117167,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-07T18:15:41.002737",
+        "avg_congestion": 0.8958836207443135,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-07T18:17:44.497471",
+        "avg_congestion": 0.8958531343687154,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-07T18:23:15.588371",
+        "avg_congestion": 0.894489035322729,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-07T18:24:33.645941",
+        "avg_congestion": 0.8953257550176174,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-07T18:25:44.462584",
+        "avg_congestion": 0.8970426334466072,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-07T18:28:44.819712",
+        "avg_congestion": 0.897764082494031,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-07T18:28:50.067035",
+        "avg_congestion": 0.897415516604144,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-07T18:28:51.178281",
+        "avg_congestion": 0.89454868596097,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-07T18:28:53.496128",
+        "avg_congestion": 0.8990822502046388,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-07T18:31:40.987062",
+        "avg_congestion": 0.8961606290838955,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-07T18:32:19.678553",
+        "avg_congestion": 0.8952515017630699,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-07T18:37:51.758397",
+        "avg_congestion": 0.8974193637119079,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-07T18:43:46.588355",
+        "avg_congestion": 0.8955069144519272,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-07T18:43:53.513230",
+        "avg_congestion": 0.8956513963724446,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-07T18:44:05.258708",
+        "avg_congestion": 0.8956655357645775,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-07T18:48:18.450236",
+        "avg_congestion": 0.8981491569857094,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-07T18:48:51.518758",
+        "avg_congestion": 0.8988099830008747,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-07T18:49:03.592158",
+        "avg_congestion": 0.8958792349044801,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-07T18:49:24.783147",
+        "avg_congestion": 0.8988020766425721,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-07T18:54:55.354727",
+        "avg_congestion": 0.8971147942843515,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-07T18:55:16.407709",
+        "avg_congestion": 0.8997269304310336,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-07T18:56:23.819921",
+        "avg_congestion": 0.896102800711846,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-07T18:58:53.785667",
+        "avg_congestion": 0.8947848486954477,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-12T18:28:17.143749",
+        "avg_congestion": 0.8964521620383333,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-12T18:33:57.357289",
+        "avg_congestion": 0.8951609306926993,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-12T18:34:14.347811",
+        "avg_congestion": 0.8967642695220454,
         "day_type": "weekday"
       }
     ],
@@ -634,6 +979,66 @@
         "timestamp": "2025-12-02T19:40:44.446869",
         "avg_congestion": 0.6380353242478656,
         "day_type": "weekend"
+      },
+      {
+        "timestamp": "2025-12-04T16:05:34.450377",
+        "avg_congestion": 0.8972476526452328,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T16:39:44.784118",
+        "avg_congestion": 0.8985905877017567,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T18:11:50.125463",
+        "avg_congestion": 0.8950456732323216,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T18:13:59.180357",
+        "avg_congestion": 0.8991678535376489,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-05T19:02:11.031062",
+        "avg_congestion": 0.897248117481695,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-05T19:02:34.085535",
+        "avg_congestion": 0.8970084010917074,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-05T19:02:45.730222",
+        "avg_congestion": 0.8985543877172165,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-05T19:03:01.725261",
+        "avg_congestion": 0.8965381609363251,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-05T19:18:57.215737",
+        "avg_congestion": 0.8964167492344973,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-05T19:23:15.955710",
+        "avg_congestion": 0.8970258107581373,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-05T19:31:43.861548",
+        "avg_congestion": 0.8966812763553421,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-05T19:39:04.879265",
+        "avg_congestion": 0.8988914174358237,
+        "day_type": "weekday"
       }
     ],
     "12": [
@@ -680,6 +1085,21 @@
       {
         "timestamp": "2025-12-02T12:07:20.577496",
         "avg_congestion": 0.6345511539603329,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T16:05:55.803857",
+        "avg_congestion": 0.6435629269416095,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T16:39:23.780965",
+        "avg_congestion": 0.6441628692099182,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T18:12:41.039628",
+        "avg_congestion": 0.6444092461510926,
         "day_type": "weekday"
       }
     ],
@@ -737,6 +1157,61 @@
       {
         "timestamp": "2025-11-29T01:34:42.370164",
         "avg_congestion": 0.4905796331570775,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T14:46:21.416551",
+        "avg_congestion": 0.5572586094303196,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T15:03:25.897576",
+        "avg_congestion": 0.5603419701317331,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T15:34:42.427218",
+        "avg_congestion": 0.5619174115574775,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T15:35:17.589915",
+        "avg_congestion": 0.5573939900960293,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T15:35:19.173389",
+        "avg_congestion": 0.5583791521504475,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T15:37:08.349766",
+        "avg_congestion": 0.5585675178762771,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T15:41:05.735287",
+        "avg_congestion": 0.5572557921236138,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T15:47:52.493203",
+        "avg_congestion": 0.720800529695122,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T15:47:55.733271",
+        "avg_congestion": 0.7174020688841823,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T16:39:32.819358",
+        "avg_congestion": 0.7187968283653728,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T18:12:50.315638",
+        "avg_congestion": 0.7188325717278998,
         "day_type": "weekday"
       }
     ],
@@ -825,6 +1300,91 @@
         "timestamp": "2025-12-03T13:54:14.390466",
         "avg_congestion": 0.2323306242672643,
         "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T14:46:25.594489",
+        "avg_congestion": 0.23596802150030183,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T14:46:27.233754",
+        "avg_congestion": 0.2373791953606618,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T14:55:39.510062",
+        "avg_congestion": 0.24004040252175596,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T14:55:40.376383",
+        "avg_congestion": 0.2350463948952937,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T15:01:14.977302",
+        "avg_congestion": 0.24230914190998346,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T15:04:14.010676",
+        "avg_congestion": 0.2355087549313922,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T15:04:15.700617",
+        "avg_congestion": 0.24031329204465174,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T15:37:13.699673",
+        "avg_congestion": 0.23859819103935903,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T15:37:15.287046",
+        "avg_congestion": 0.23690893925967677,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T15:37:27.834332",
+        "avg_congestion": 0.2396105092028415,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T15:47:36.434588",
+        "avg_congestion": 0.07737123410789708,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T15:47:39.798009",
+        "avg_congestion": 0.07776380247649473,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T18:12:14.312629",
+        "avg_congestion": 0.07723846717348,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-07T18:24:41.782529",
+        "avg_congestion": 0.07791766034862287,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-07T18:24:43.370191",
+        "avg_congestion": 0.07813071811517038,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-07T18:25:00.462815",
+        "avg_congestion": 0.07739662668933195,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-07T18:25:09.317397",
+        "avg_congestion": 0.07828523737610053,
+        "day_type": "weekday"
       }
     ],
     "4": [
@@ -866,6 +1426,21 @@
       {
         "timestamp": "2025-11-29T01:35:41.208128",
         "avg_congestion": 0.18410931199614386,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T15:41:12.839839",
+        "avg_congestion": 0.23831175272995436,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T15:41:13.580343",
+        "avg_congestion": 0.24186187988792884,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T18:12:17.010702",
+        "avg_congestion": 0.07787437069044303,
         "day_type": "weekday"
       }
     ],
@@ -929,6 +1504,16 @@
         "timestamp": "2025-11-29T01:35:08.819563",
         "avg_congestion": 0.6342171510652236,
         "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T16:39:26.783750",
+        "avg_congestion": 0.6461924369147191,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T18:12:44.323665",
+        "avg_congestion": 0.6451801642677417,
+        "day_type": "weekday"
       }
     ],
     "20": [
@@ -976,6 +1561,31 @@
         "timestamp": "2025-12-02T19:04:18.800446",
         "avg_congestion": 0.48883001178061153,
         "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T16:39:47.783760",
+        "avg_congestion": 0.5950552112857925,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T18:11:53.134186",
+        "avg_congestion": 0.5935877349901889,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T18:11:53.197655",
+        "avg_congestion": 0.5976475908085495,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-05T20:25:44.572150",
+        "avg_congestion": 0.5927177759216874,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-06T20:23:22.288993",
+        "avg_congestion": 0.5959780160673774,
+        "day_type": "weekday"
       }
     ],
     "22": [
@@ -1007,6 +1617,81 @@
       {
         "timestamp": "2025-12-02T22:03:06.866310",
         "avg_congestion": 0.4887984841539386,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T16:05:43.309963",
+        "avg_congestion": 0.25168636408871653,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T16:39:53.781043",
+        "avg_congestion": 0.24985254516961888,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T18:11:59.007917",
+        "avg_congestion": 0.2510137075892502,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-05T22:30:02.763974",
+        "avg_congestion": 0.25102033910555993,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-05T22:50:21.249264",
+        "avg_congestion": 0.2513028522470034,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-06T22:06:16.249896",
+        "avg_congestion": 0.25082406208120195,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-06T22:07:13.391074",
+        "avg_congestion": 0.2506706688999714,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-06T22:10:35.642392",
+        "avg_congestion": 0.24918563130307242,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-06T22:11:07.506323",
+        "avg_congestion": 0.24929580465484963,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-06T22:17:04.065316",
+        "avg_congestion": 0.2518209306676175,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-06T22:20:31.237250",
+        "avg_congestion": 0.25179177424995863,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-06T22:24:48.467330",
+        "avg_congestion": 0.25109806328639517,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-07T18:44:09.472842",
+        "avg_congestion": 0.2510142178671617,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-07T18:44:12.440005",
+        "avg_congestion": 0.2512349675459112,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-07T18:45:11.878281",
+        "avg_congestion": 0.25070952308173633,
         "day_type": "weekday"
       }
     ],
@@ -1100,6 +1785,301 @@
         "timestamp": "2025-12-03T13:55:58.823568",
         "avg_congestion": 0.882806596266332,
         "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T14:34:50.684096",
+        "avg_congestion": 0.8938001219698019,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T14:34:51.273399",
+        "avg_congestion": 0.8918565371773244,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T14:49:20.877223",
+        "avg_congestion": 0.893670753352728,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T14:49:21.552628",
+        "avg_congestion": 0.8941364385280391,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T14:49:43.895138",
+        "avg_congestion": 0.893423274145207,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T14:49:44.794578",
+        "avg_congestion": 0.8927760055746711,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T14:54:42.076827",
+        "avg_congestion": 0.8965617947770872,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T14:55:45.654867",
+        "avg_congestion": 0.8921661457647534,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T14:55:46.385288",
+        "avg_congestion": 0.8941804867296165,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T15:48:03.634170",
+        "avg_congestion": 0.8952539898542251,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T15:48:06.152808",
+        "avg_congestion": 0.895048225425135,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T16:05:28.906452",
+        "avg_congestion": 0.8944314216940321,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T16:39:38.786490",
+        "avg_congestion": 0.8987132248580129,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T17:01:33.611903",
+        "avg_congestion": 0.8970946677874598,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T17:01:45.691665",
+        "avg_congestion": 0.898079280271107,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T17:01:58.365521",
+        "avg_congestion": 0.8965003672874362,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T17:05:01.460138",
+        "avg_congestion": 0.8962975552558433,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T17:05:22.601764",
+        "avg_congestion": 0.8941846985198095,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T17:06:04.453159",
+        "avg_congestion": 0.8969082345658799,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T17:10:23.035365",
+        "avg_congestion": 0.8956295580449202,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T17:13:08.933011",
+        "avg_congestion": 0.8982460387300034,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T17:13:38.543442",
+        "avg_congestion": 0.8969109723117107,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T17:13:52.503446",
+        "avg_congestion": 0.8963279866261805,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T17:14:07.796413",
+        "avg_congestion": 0.8952483068400222,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T17:16:16.047213",
+        "avg_congestion": 0.8956911333607933,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T17:17:01.797429",
+        "avg_congestion": 0.8957876856067901,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T17:24:35.047438",
+        "avg_congestion": 0.8968451179830669,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T17:25:04.017742",
+        "avg_congestion": 0.8972677833444679,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T17:25:38.804677",
+        "avg_congestion": 0.896226925833278,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T17:25:51.656111",
+        "avg_congestion": 0.896474547660991,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T17:26:03.907430",
+        "avg_congestion": 0.8970343830704638,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T17:27:25.699364",
+        "avg_congestion": 0.8946760693826408,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T17:27:58.454862",
+        "avg_congestion": 0.8970291520911111,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T17:28:28.896328",
+        "avg_congestion": 0.8940112449258306,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T17:28:41.529096",
+        "avg_congestion": 0.8948798301103175,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T17:30:21.633960",
+        "avg_congestion": 0.894746189186082,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T17:30:52.315363",
+        "avg_congestion": 0.8969126762302636,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T17:54:57.398091",
+        "avg_congestion": 0.8962936086627487,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T17:55:09.373361",
+        "avg_congestion": 0.8976654242452067,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T17:59:56.617342",
+        "avg_congestion": 0.8972276892389691,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T18:11:45.669411",
+        "avg_congestion": 0.8981462788596374,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T18:13:16.312715",
+        "avg_congestion": 0.8984322486248587,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-05T17:57:58.642450",
+        "avg_congestion": 0.8959436421809134,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-05T17:59:00.259325",
+        "avg_congestion": 0.8974824482111539,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-05T18:02:31.585908",
+        "avg_congestion": 0.8979003158532749,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-06T17:28:24.458773",
+        "avg_congestion": 0.8985317175629407,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-06T17:34:07.187232",
+        "avg_congestion": 0.898600710629773,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-06T17:35:30.104904",
+        "avg_congestion": 0.8989390952236639,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-06T17:35:42.894525",
+        "avg_congestion": 0.8966590301942863,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-06T17:36:41.901483",
+        "avg_congestion": 0.8973967747017493,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-06T17:49:15.204163",
+        "avg_congestion": 0.8971662886738613,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-06T17:53:54.247874",
+        "avg_congestion": 0.8977751607093161,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-06T17:54:18.497409",
+        "avg_congestion": 0.8968242745743698,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-06T22:17:07.016967",
+        "avg_congestion": 0.896002137138951,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-06T22:20:35.256368",
+        "avg_congestion": 0.8964833347107716,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-06T22:20:37.625900",
+        "avg_congestion": 0.6441061977721082,
+        "day_type": "weekend"
+      },
+      {
+        "timestamp": "2025-12-06T22:24:14.848843",
+        "avg_congestion": 0.8949194221931834,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-06T22:24:21.163787",
+        "avg_congestion": 0.8967289986211501,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-06T22:24:27.032731",
+        "avg_congestion": 0.8960811496125705,
+        "day_type": "weekday"
       }
     ],
     "14": [
@@ -1152,6 +2132,91 @@
         "timestamp": "2025-11-29T14:54:06.362670",
         "avg_congestion": 0.6382085017041771,
         "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T14:11:14.544525",
+        "avg_congestion": 0.6767623370259704,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T14:18:08.252850",
+        "avg_congestion": 0.6791247594739209,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T14:18:39.197404",
+        "avg_congestion": 0.6792088833854771,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T14:19:12.797411",
+        "avg_congestion": 0.7040366816369045,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T14:22:48.936375",
+        "avg_congestion": 0.7093878104997026,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T14:26:28.860655",
+        "avg_congestion": 0.7098400134226887,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T14:27:02.643503",
+        "avg_congestion": 0.7074843648316984,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T14:46:14.204522",
+        "avg_congestion": 0.7087094955938412,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T14:49:40.619548",
+        "avg_congestion": 0.7092457303511162,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T14:55:33.711005",
+        "avg_congestion": 0.7089102492210486,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T14:55:50.147412",
+        "avg_congestion": 0.7095501514180959,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T16:39:29.788183",
+        "avg_congestion": 0.723322842005631,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T18:12:47.024480",
+        "avg_congestion": 0.7228491320537833,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-09T14:16:20.848083",
+        "avg_congestion": 0.7190631077385189,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-09T14:18:22.383357",
+        "avg_congestion": 0.7214861519930458,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-09T14:18:29.342394",
+        "avg_congestion": 0.7220198288243732,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-09T14:19:03.364757",
+        "avg_congestion": 0.7234030755940173,
+        "day_type": "weekday"
       }
     ],
     "2": [
@@ -1199,6 +2264,141 @@
         "timestamp": "2025-12-02T19:40:46.656068",
         "avg_congestion": 0.2228903784193037,
         "day_type": "weekend"
+      },
+      {
+        "timestamp": "2025-12-03T15:14:50.063521",
+        "avg_congestion": 0.232979825376881,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-03T16:23:58.990071",
+        "avg_congestion": 0.23311083689055406,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-03T16:24:05.293057",
+        "avg_congestion": 0.23102777204477573,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T14:22:35.497582",
+        "avg_congestion": 0.23989554113385705,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T14:22:36.816773",
+        "avg_congestion": 0.24167277589219244,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T14:29:09.159508",
+        "avg_congestion": 0.23641652826864978,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T14:29:10.767593",
+        "avg_congestion": 0.23732992931808386,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T14:54:49.235473",
+        "avg_congestion": 0.23996559318980368,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T14:54:50.324605",
+        "avg_congestion": 0.2383509986819071,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T15:41:22.293146",
+        "avg_congestion": 0.23757526215716251,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T15:41:24.539849",
+        "avg_congestion": 0.23981973570386636,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T15:42:22.766963",
+        "avg_congestion": 0.23970866975487853,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T16:40:05.778674",
+        "avg_congestion": 0.07830157572960564,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T18:12:11.016670",
+        "avg_congestion": 0.07872165802081242,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-05T18:02:39.999593",
+        "avg_congestion": 0.07782520519179288,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-05T18:19:18.225096",
+        "avg_congestion": 0.07833557614703977,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-05T18:19:21.089431",
+        "avg_congestion": 0.07724556050746124,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-05T18:33:44.479474",
+        "avg_congestion": 0.07751495336505024,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-07T18:14:42.963501",
+        "avg_congestion": 0.07822639614149131,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-07T18:14:45.357338",
+        "avg_congestion": 0.07775417273262958,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-07T18:14:57.823211",
+        "avg_congestion": 0.07832517149920205,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-07T18:56:36.223976",
+        "avg_congestion": 0.0786848241314812,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-07T18:56:47.053127",
+        "avg_congestion": 0.0785622644670683,
+        "day_type": "weekend"
+      },
+      {
+        "timestamp": "2025-12-07T18:56:47.333499",
+        "avg_congestion": 0.07789319591638968,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-07T18:57:02.601781",
+        "avg_congestion": 0.0783566638551713,
+        "day_type": "weekend"
+      },
+      {
+        "timestamp": "2025-12-07T18:57:09.585513",
+        "avg_congestion": 0.07943217530286105,
+        "day_type": "weekend"
+      },
+      {
+        "timestamp": "2025-12-07T18:57:17.607944",
+        "avg_congestion": 0.07840894331253084,
+        "day_type": "weekend"
       }
     ],
     "23": [
@@ -1230,6 +2430,46 @@
       {
         "timestamp": "2025-11-28T23:17:52.762731",
         "avg_congestion": 0.49100235477879095,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T16:05:50.455036",
+        "avg_congestion": 0.25213727196207625,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T16:39:56.784768",
+        "avg_congestion": 0.2489765759376236,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T18:12:02.322860",
+        "avg_congestion": 0.25154764779076655,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-05T23:11:16.842512",
+        "avg_congestion": 0.249539934107319,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-05T23:32:01.943964",
+        "avg_congestion": 0.2526539166857929,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-05T23:41:09.698753",
+        "avg_congestion": 0.25275760458024726,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-06T00:00:16.363103",
+        "avg_congestion": 0.2976305940986724,
+        "day_type": "weekend"
+      },
+      {
+        "timestamp": "2025-12-06T00:00:17.182709",
+        "avg_congestion": 0.2509128432180233,
         "day_type": "weekday"
       }
     ],
@@ -1308,6 +2548,96 @@
         "timestamp": "2025-12-02T00:52:05.675487",
         "avg_congestion": 0.18275545695998502,
         "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T16:06:01.146202",
+        "avg_congestion": 0.07809922559838554,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T16:39:59.768919",
+        "avg_congestion": 0.07808687805551434,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T18:12:05.002643",
+        "avg_congestion": 0.07819009135781009,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-06T00:02:48.161513",
+        "avg_congestion": 0.07777703788117818,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-06T00:03:07.405072",
+        "avg_congestion": 0.0781679421116774,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-06T00:14:40.369481",
+        "avg_congestion": 0.07789229247012523,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-06T00:15:04.110163",
+        "avg_congestion": 0.07819855602041244,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-06T00:19:58.712098",
+        "avg_congestion": 0.07831380968931041,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-06T00:26:11.517800",
+        "avg_congestion": 0.07798745493131472,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-06T00:26:47.248993",
+        "avg_congestion": 0.07768365322108367,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-06T00:27:02.784980",
+        "avg_congestion": 0.07775563083126154,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-06T00:30:57.655349",
+        "avg_congestion": 0.07802643125459183,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-06T00:52:51.860614",
+        "avg_congestion": 0.07797657795562239,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-06T00:57:39.171342",
+        "avg_congestion": 0.07808361332564705,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-06T22:17:11.163924",
+        "avg_congestion": 0.07827204834218782,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-06T22:17:12.482551",
+        "avg_congestion": 0.07681027429895299,
+        "day_type": "weekend"
+      },
+      {
+        "timestamp": "2025-12-17T00:30:04.749968",
+        "avg_congestion": 0.07672376764277367,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-17T00:32:53.392281",
+        "avg_congestion": 0.07839859856029834,
+        "day_type": "weekday"
       }
     ],
     "7": [
@@ -1375,6 +2705,101 @@
         "timestamp": "2025-12-02T19:30:16.406566",
         "avg_congestion": 0.8038222101633337,
         "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-03T16:23:53.110479",
+        "avg_congestion": 0.8533505920823737,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T16:05:12.060074",
+        "avg_congestion": 0.8635487394329174,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T16:39:08.780423",
+        "avg_congestion": 0.8177410283851403,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T18:11:47.280911",
+        "avg_congestion": 0.8189401921040036,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T18:12:26.313113",
+        "avg_congestion": 0.8193902463488036,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-05T18:02:34.095697",
+        "avg_congestion": 0.8199416946927587,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-05T18:19:11.000274",
+        "avg_congestion": 0.8186148010513943,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-06T21:19:06.295574",
+        "avg_congestion": 0.8175661300589483,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-06T21:19:11.504240",
+        "avg_congestion": 0.8180137767401331,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-06T21:24:34.707831",
+        "avg_congestion": 0.8151793103520377,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-06T21:24:36.860186",
+        "avg_congestion": 0.8192742395685308,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-06T21:24:47.156151",
+        "avg_congestion": 0.816301530003261,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-06T22:17:05.701227",
+        "avg_congestion": 0.8179672411254297,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-06T22:20:34.061836",
+        "avg_congestion": 0.8143845964668889,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-07T18:25:45.643693",
+        "avg_congestion": 0.8201680536383775,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-07T18:25:48.902541",
+        "avg_congestion": 0.8202654687185196,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-07T18:43:54.998181",
+        "avg_congestion": 0.8176702333863836,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-07T18:43:57.224451",
+        "avg_congestion": 0.8164106720965082,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-07T18:56:29.826409",
+        "avg_congestion": 0.8137360208773265,
+        "day_type": "weekday"
       }
     ],
     "5": [
@@ -1406,6 +2831,36 @@
       {
         "timestamp": "2025-11-29T01:35:43.889323",
         "avg_congestion": 0.18453391162252752,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T15:35:11.608104",
+        "avg_congestion": 0.23582785285614316,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T15:35:13.265145",
+        "avg_congestion": 0.23585333835449673,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T16:04:51.016801",
+        "avg_congestion": 0.5482587083902203,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T16:04:56.994197",
+        "avg_congestion": 0.5466255490992207,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T16:39:00.279163",
+        "avg_congestion": 0.34404247073501043,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T18:12:20.316725",
+        "avg_congestion": 0.3472226230156569,
         "day_type": "weekday"
       }
     ],
@@ -1479,6 +2934,46 @@
         "timestamp": "2025-12-02T18:56:52.879581",
         "avg_congestion": 0.4875641805878123,
         "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-03T16:27:49.572863",
+        "avg_congestion": 0.5483903020726689,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-03T16:27:57.580692",
+        "avg_congestion": 0.5486141602781328,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T16:39:35.798456",
+        "avg_congestion": 0.7216690626914708,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T16:58:50.818514",
+        "avg_congestion": 0.7199053542443707,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T16:59:03.356851",
+        "avg_congestion": 0.7171586324696394,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T16:59:22.913798",
+        "avg_congestion": 0.7201248452876529,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T18:12:53.015675",
+        "avg_congestion": 0.7179804957169705,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-06T16:32:58.701420",
+        "avg_congestion": 0.7202828745114043,
+        "day_type": "weekday"
       }
     ],
     "9": [
@@ -1505,6 +3000,21 @@
       {
         "timestamp": "2025-11-28T23:17:10.766845",
         "avg_congestion": 0.8032465904375126,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T16:39:14.788635",
+        "avg_congestion": 0.9279858432660327,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T18:11:47.046900",
+        "avg_congestion": 0.9260347092964808,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T18:12:32.331959",
+        "avg_congestion": 0.9265525880414801,
         "day_type": "weekday"
       }
     ],
@@ -1548,6 +3058,16 @@
         "timestamp": "2025-12-02T12:08:00.850495",
         "avg_congestion": 0.48518248351163124,
         "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T16:39:17.773020",
+        "avg_congestion": 0.5939380913904672,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T18:12:35.016452",
+        "avg_congestion": 0.5948107424757425,
+        "day_type": "weekday"
       }
     ],
     "11": [
@@ -1580,6 +3100,16 @@
         "timestamp": "2025-12-02T11:08:39.450387",
         "avg_congestion": 0.6889163197655478,
         "day_type": "weekend"
+      },
+      {
+        "timestamp": "2025-12-04T16:39:20.792759",
+        "avg_congestion": 0.5925800322417161,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T18:12:38.343821",
+        "avg_congestion": 0.5951090816205893,
+        "day_type": "weekday"
       }
     ],
     "21": [
@@ -1616,6 +3146,121 @@
       {
         "timestamp": "2025-12-02T21:58:27.796746",
         "avg_congestion": 0.483966950532151,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-03T21:41:15.161225",
+        "avg_congestion": 0.5480457957098287,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T16:05:37.753755",
+        "avg_congestion": 0.5943908367140753,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T16:39:50.780802",
+        "avg_congestion": 0.5943807274050328,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T18:11:56.321524",
+        "avg_congestion": 0.5954005988293778,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-06T21:09:52.993418",
+        "avg_congestion": 0.5942809868014881,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-06T21:13:03.898335",
+        "avg_congestion": 0.5956071224824703,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-06T21:17:01.776351",
+        "avg_congestion": 0.5924629912108278,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-06T21:17:28.104409",
+        "avg_congestion": 0.5915974056630567,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-06T21:18:40.469318",
+        "avg_congestion": 0.5926618651851192,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-06T21:18:59.782753",
+        "avg_congestion": 0.5947389249103754,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-06T21:19:01.672092",
+        "avg_congestion": 0.5962313298081555,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-06T21:24:25.475028",
+        "avg_congestion": 0.5929261613780598,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-06T21:24:29.393261",
+        "avg_congestion": 0.5949782879857544,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-06T21:24:31.253940",
+        "avg_congestion": 0.5925291996005038,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-06T21:28:56.584480",
+        "avg_congestion": 0.5937231985560315,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-06T21:29:03.966671",
+        "avg_congestion": 0.5943113936977577,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-06T21:49:54.182674",
+        "avg_congestion": 0.5960325183816956,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-06T21:50:48.419033",
+        "avg_congestion": 0.5945115426654407,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-06T21:52:28.470421",
+        "avg_congestion": 0.5921656859871062,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-06T21:53:12.451032",
+        "avg_congestion": 0.5915100339524566,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-06T21:54:37.140571",
+        "avg_congestion": 0.5925895666032299,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-06T21:57:23.082863",
+        "avg_congestion": 0.595351097317778,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-06T21:57:29.450722",
+        "avg_congestion": 0.5950676188053621,
         "day_type": "weekday"
       }
     ],
@@ -1669,6 +3314,41 @@
         "timestamp": "2025-12-01T19:20:29.142325",
         "avg_congestion": 0.22252078380937365,
         "day_type": "weekend"
+      },
+      {
+        "timestamp": "2025-12-04T16:40:02.793270",
+        "avg_congestion": 0.07819558819851892,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T18:12:08.365401",
+        "avg_congestion": 0.07683067829754982,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-06T01:00:32.686336",
+        "avg_congestion": 0.07795598111159432,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-06T01:06:03.811865",
+        "avg_congestion": 0.07717074081029926,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-06T01:06:21.724960",
+        "avg_congestion": 0.07785879231181618,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-06T01:08:32.154777",
+        "avg_congestion": 0.07785096115383544,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-06T01:08:50.336053",
+        "avg_congestion": 0.07815265609640037,
+        "day_type": "weekday"
       }
     ],
     "6": [
@@ -1695,6 +3375,21 @@
       {
         "timestamp": "2025-11-29T01:35:47.190024",
         "avg_congestion": 0.48896677486058204,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T16:05:07.222561",
+        "avg_congestion": 0.5411026383442112,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T16:39:05.778382",
+        "avg_congestion": 0.5931174322483227,
+        "day_type": "weekday"
+      },
+      {
+        "timestamp": "2025-12-04T18:12:23.010885",
+        "avg_congestion": 0.5897161594945952,
         "day_type": "weekday"
       }
     ]

@@ -12,11 +12,11 @@ SPEED_LIMITS = {
     'tertiary': 40, 'tertiary_link': 30, 'residential': 30, 'unclassified': 40, 'service': 20
 }
 
-# Updated congestion weights for more realistic levels
+# Updated congestion weights for more realistic levels - lowered base values
 CONGESTION_WEIGHTS = {
-    'motorway': 0.15, 'motorway_link': 0.2, 'trunk': 0.25, 'trunk_link': 0.3,
-    'primary': 0.35, 'primary_link': 0.4, 'secondary': 0.45, 'secondary_link': 0.5,
-    'tertiary': 0.55, 'tertiary_link': 0.6, 'residential': 0.65, 'unclassified': 0.5, 'service': 0.7
+    'motorway': 0.10, 'motorway_link': 0.15, 'trunk': 0.20, 'trunk_link': 0.25,
+    'primary': 0.30, 'primary_link': 0.30, 'secondary': 0.35, 'secondary_link': 0.40,
+    'tertiary': 0.45, 'tertiary_link': 0.45, 'residential': 0.50, 'unclassified': 0.40, 'service': 0.55
 }
 
 DELAY_WEIGHTS = {
@@ -77,29 +77,62 @@ def enhanced_simulate_congestion(G, hour=None, day_type="weekday"):
     return G
 
 def get_realistic_congestion(edge_data, hour, day_type):
-    """Optimized congestion calculation with more realistic coefficients"""
+    """Optimized congestion calculation with more realistic time-based patterns"""
     road_type = edge_data.get('_road_type', 'residential')
     base = CONGESTION_WEIGHTS.get(road_type, 0.5)
     
     if hour is not None:
+        # Apply time-of-day congestion patterns
+        if 0 <= hour <= 4:  # Late night/early morning (minimal traffic)
+            # Force very low congestion during night hours
+            base = max(0.05, base * 0.15)  # Reduce to 15% of base value
+            # Add small random variation
+            base += random.uniform(-0.02, 0.04)
+            # Return early - night hours should be consistently low congestion
+            return max(0.03, min(0.15, base))  # Cap at 15% max congestion for night
+            
         if day_type == "weekday":
-            if 7 <= hour <= 9:    # Morning rush
-                base += random.uniform(0.25, 0.4)
-            elif 17 <= hour <= 19: # Evening rush
-                base += random.uniform(0.3, 0.45)
-            elif 12 <= hour <= 14: # Lunch time
-                base += random.uniform(0.1, 0.2)
-            elif 0 <= hour <= 5:   # Night - significantly reduced congestion
-                base -= random.uniform(0.25, 0.4)
-        else:  # Weekend
-            if 11 <= hour <= 16:   # Weekend daytime
+            if 8 <= hour <= 9:  # Peak morning rush hour (moved from 7-9)
+                base += random.uniform(0.45, 0.65)  # Maximum rush hour effect
+            elif hour == 7:  # Early rush hour
+                base += random.uniform(0.30, 0.45)  # Building up to peak
+            elif hour == 6:  # Early morning - moderate traffic
+                base += random.uniform(0.10, 0.20)  # Some yellow streets appearing
+            elif hour == 5:  # Very early morning - minimal traffic
+                base -= random.uniform(0.05, 0.15)  # Very few yellow streets
+            elif 17 <= hour <= 19:  # Evening rush hour
+                base += random.uniform(0.4, 0.55)  # Stronger evening rush
+            elif 12 <= hour <= 13:  # Lunch hour
                 base += random.uniform(0.15, 0.25)
-            elif 19 <= hour <= 22: # Weekend evening
+            elif 10 <= hour <= 11:  # Mid-morning
                 base += random.uniform(0.1, 0.2)
-            elif 0 <= hour <= 6:   # Weekend night - significantly reduced congestion
-                base -= random.uniform(0.2, 0.35)
+            elif 14 <= hour <= 16:  # Afternoon
+                base += random.uniform(0.2, 0.35)
+            elif 20 <= hour <= 21:  # Evening
+                base += random.uniform(0.1, 0.2)
+            elif 22 <= hour <= 23:  # Late evening
+                base -= random.uniform(0.15, 0.25)  # Reducing traffic
+        else:  # Weekend
+            if 11 <= hour <= 16:  # Weekend shopping/activities
+                base += random.uniform(0.2, 0.3)
+            elif 17 <= hour <= 20:  # Weekend evening
+                base += random.uniform(0.15, 0.25)
+            elif 9 <= hour <= 10:  # Weekend morning
+                base += random.uniform(0.05, 0.15)
+            elif 21 <= hour <= 23:  # Weekend late evening
+                base -= random.uniform(0.1, 0.2)
+            elif 5 <= hour <= 8:  # Weekend early morning
+                base -= random.uniform(0.15, 0.25)
     
+    # Apply small random variation
     base += random.uniform(-0.08, 0.08)
+    
+    # Apply special case for major vs minor roads during off-peak hours
+    if hour is not None and ((5 <= hour <= 6) or (21 <= hour <= 23)):
+        # Major roads retain more traffic in early morning/late night
+        if road_type in ['motorway', 'trunk', 'primary']:
+            base = max(base, 0.15)  # Ensure major roads have some minimal traffic
+    
     return max(0.05, min(0.95, base))
 
 def simulate_congestion(G, hour=None):

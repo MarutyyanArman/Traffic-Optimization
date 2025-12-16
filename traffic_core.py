@@ -19,35 +19,6 @@ logger = logging.getLogger(__name__)
 ox.settings.use_cache = True
 ox.settings.log_console = False
 
-# Load Yerevan road network with caching
-@lru_cache(maxsize=1)
-def load_road_network():
-    """Load and cache the road network"""
-    logger.info("Loading Yerevan road network...")
-    # Further expanded bounding box to include an even wider area of streets
-    north, south, east, west = 40.215, 40.155, 44.57, 44.47
-    
-    G = ox.graph_from_bbox(north, south, east, west, network_type="drive", simplify=True)
-    
-    # Precompute edge data for faster access
-    for u, v, k, data in G.edges(keys=True, data=True):
-        if 'length' not in data:
-            data['length'] = 100
-        data['congestion'] = random.uniform(0.1, 0.3)  # Lower base congestion
-        
-        # Precompute road type
-        road_type = data.get('highway', 'residential')
-        if isinstance(road_type, list):
-            data['_road_type'] = road_type[0] if road_type else 'residential'
-        else:
-            data['_road_type'] = road_type
-    
-    logger.info(f"Road network loaded: {len(G.nodes())} nodes, {len(G.edges())} edges")
-    return G
-
-# Initialize graph
-G = load_road_network()
-
 # ML model storage with thread safety
 MODELS_DIR = "ml_models"
 os.makedirs(MODELS_DIR, exist_ok=True)
@@ -587,12 +558,6 @@ def get_optimized_route(G, start_point, end_point, hour, day_type, avoid_road_ty
             'route_details': route_details,
             'summary': _generate_route_summary(route_details)
         }
-        
-    except Exception as e:
-        logger.error(f"Error in get_optimized_route: {str(e)}")
-        return None
-
-def calculate_time_score(travel_time, congestion, hour, max_travel_time):
     """Calculate a score for this time slot (higher is better)"""
     # Base score from travel time (lower time = higher score)
     time_score = 100 / (travel_time + 1)  # +1 to avoid division by zero
@@ -614,53 +579,6 @@ def calculate_time_score(travel_time, congestion, hour, max_travel_time):
     
     final_score = time_score - congestion_penalty - time_penalty + constraint_bonus
     return max(0, final_score)
-
-def generate_travel_recommendations(route_data, best_time, constraints):
-    """Generate smart recommendations based on the results"""
-    recommendations = []
-    
-    travel_time = route_data['total_time_min']
-    congestion = best_time['congestion_percent']
-    hour = best_time['hour']
-    
-    # Time-based recommendations
-    if hour >= 7 and hour <= 9:
-        recommendations.append("⏰ **Morning Rush Hour**: Consider leaving a bit earlier to avoid peak congestion")
-    elif hour >= 17 and hour <= 19:
-        recommendations.append("🌆 **Evening Rush**: This is the busiest time, but we found the best window")
-    elif hour <= 6 or hour >= 22:
-        recommendations.append("🌙 **Late Night Travel**: Roads are clear but ensure safe driving conditions")
-    
-    # Congestion-based recommendations
-    if congestion < 30:
-        recommendations.append("✅ **Excellent Conditions**: Very light traffic expected")
-    elif congestion < 50:
-        recommendations.append("👍 **Good Conditions**: Moderate traffic, smooth travel")
-    elif congestion < 70:
-        recommendations.append("⚠️ **Heavy Traffic**: Expect some delays, plan extra time")
-    else:
-        recommendations.append("🚨 **Very Heavy Traffic**: Significant delays expected")
-    
-    # Constraint-based feedback
-    max_time = constraints.get('max_travel_time')
-    if max_time and travel_time > max_time * 0.9:
-        recommendations.append(f"⏱️ **Close to Time Limit**: Travel time ({travel_time:.1f}min) is near your maximum ({max_time}min)")
-    
-    avoided_roads = constraints.get('avoid_road_types', [])
-    if avoided_roads:
-        used_roads = list(route_data['road_types_used'].keys())
-        actually_avoided = set(avoided_roads) - set(used_roads)
-        if actually_avoided:
-            recommendations.append(f"🛣️ **Successfully Avoided**: {', '.join(actually_avoided)}")
-    
-    # Efficiency tips
-    if travel_time > 30:
-        recommendations.append("💡 **Long Trip Tip**: Consider breaking the journey or checking for rest stops")
-    
-    if len(route_data['route_details']) > 20:
-        recommendations.append("🔄 **Complex Route**: Many turns involved, pay attention to navigation")
-    
-    return recommendations
 
 def get_road_types_available():
     """Get list of available road types for the constraint system"""

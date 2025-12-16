@@ -257,6 +257,12 @@ body {
     box-shadow: var(--shadow-glass);
 }
 
+.brand-logo-img {
+    max-height: 120px;
+    width: auto;
+    display: block;
+}
+
 .brand-name {
     font-size: 4rem;
     font-weight: var(--font-weight-bold);

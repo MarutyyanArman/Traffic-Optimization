@@ -24,6 +24,7 @@ async function loadSavedRoutes() {
 
 // Display saved routes in the UI
 function displaySavedRoutes() {
+
     const container = document.getElementById('savedRoutesList');
     if (!container) return;
 
@@ -43,6 +44,9 @@ function displaySavedRoutes() {
         const createdDate = new Date(route.created_at).toLocaleDateString();
         const routeTypeIcon = getRouteTypeIcon(route.type);
         const routeColor = getRouteTypeColor(route.type);
+
+        const fromLabel = getRouteEndpointLabel(route, 'start');
+        const toLabel = getRouteEndpointLabel(route, 'end');
         
         html += `
             <div class="saved-route-item" data-route-id="${route.id}">
@@ -51,6 +55,10 @@ function displaySavedRoutes() {
                         <div class="saved-route-name">
                             <span class="route-type-icon" style="color: ${routeColor}">${routeTypeIcon}</span>
                             ${route.name}
+                        </div>
+                        <div class="saved-route-addresses">
+                            <div class="saved-route-address-line">From: ${fromLabel}</div>
+                            <div class="saved-route-address-line">To: ${toLabel}</div>
                         </div>
                         <div class="saved-route-meta">
                             <span class="route-type">${formatRouteType(route.type)}</span>
@@ -99,7 +107,30 @@ function getRouteTime(route) {
     return 'N/A';
 }
 
+function getRouteEndpointLabel(route, which) {
+    // which: 'start' or 'end'
+    const key = which + '_point';
+    const pt = route[key];
+
+    // Check for stored label if backend provides it
+    if (pt && pt.label) {
+        return pt.label;
+    }
+
+    // Fallback to coordinates if present
+    if (pt && pt.lat != null && pt.lng != null) {
+        const lat = Number(pt.lat);
+        const lng = Number(pt.lng);
+        if (!Number.isNaN(lat) && !Number.isNaN(lng)) {
+            return `(${lat.toFixed(4)}, ${lng.toFixed(4)})`;
+        }
+    }
+
+    return 'N/A';
+}
+
 function getRouteDistance(route) {
+
     if (route.route_data.recommended_route && route.route_data.recommended_route.total_distance_km) {
         return route.route_data.recommended_route.total_distance_km + ' km';
     } else if (route.route_data.summary && route.route_data.summary.total_distance_km) {

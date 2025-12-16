@@ -16,27 +16,36 @@ DELAY_WEIGHTS = {
 }
 
 def get_realistic_speed(edge_data, congestion):
-    """Optimized speed calculation with smoother congestion impact"""
+    """Enhanced speed calculation for more realistic speed-congestion relationships"""
     road_type = edge_data.get('_road_type', 'residential')
     base_speed_kmh = SPEED_LIMITS.get(road_type, 30)
     
-    # Smoother, more realistic speed reduction based on congestion
-    # At 0% congestion: 95% of speed limit (free flow)
-    # At 30% congestion: ~75% of speed limit
-    # At 60% congestion: ~50% of speed limit  
-    # At 90%+ congestion: ~25% of speed limit (heavy traffic)
+    # Much more realistic speed reduction based on congestion level
+    # Very late night (0-4am): 98-100% of speed limit - almost empty roads
+    # Low congestion (< 15%): 90-98% of speed limit - free flow conditions
+    # Moderate congestion (15-40%): 70-90% of speed limit
+    # Heavy congestion (40-70%): 40-70% of speed limit
+    # Severe congestion (70%+): 20-40% of speed limit - stop and go traffic
     
-    if congestion < 0.15:  # Very low congestion (night time, early morning)
-        speed_reduction = 0.95 - (congestion * 0.5)  # 95% to 92.5%
+    if congestion < 0.05:  # Empty roads (very late night)
+        speed_reduction = 0.98 + ((0.05 - congestion) * 0.4)  # 98-100% of limit
+    elif congestion < 0.15:  # Very low congestion (night, early morning)
+        speed_reduction = 0.90 + ((0.15 - congestion) * 0.53)  # 90-98% of limit
     elif congestion < 0.4:  # Low to moderate congestion
-        speed_reduction = 0.92 - (congestion * 0.6)  # ~92% to 68%
-    elif congestion < 0.7:  # Moderate to high congestion
-        speed_reduction = 0.80 - (congestion * 0.9)  # ~68% to 37%
-    else:  # Heavy congestion
-        speed_reduction = 0.50 - (congestion * 0.3)  # ~37% to 23%
+        speed_reduction = 0.70 + ((0.4 - congestion) * 0.8)  # 70-90% of limit
+    elif congestion < 0.7:  # Moderate to heavy congestion
+        speed_reduction = 0.40 + ((0.7 - congestion) * 1.0)  # 40-70% of limit
+    else:  # Severe congestion (70%+)
+        speed_reduction = 0.20 + ((0.95 - min(0.95, congestion)) * 0.2 / 0.25)  # 20-40% of limit
     
-    effective_speed_kmh = base_speed_kmh * max(0.20, speed_reduction)  # Minimum 20% of speed limit
-    effective_speed_kmh = max(8, effective_speed_kmh)  # Absolute minimum 8 km/h
+    # Apply road type adjustments - highways maintain better speeds even in congestion
+    if road_type in ['motorway', 'trunk']:
+        speed_reduction = min(1.0, speed_reduction * 1.15)  # Highways maintain better flow
+    elif road_type in ['residential', 'service']:
+        speed_reduction = max(0.1, speed_reduction * 0.9)  # Local streets slow down more
+    
+    effective_speed_kmh = base_speed_kmh * max(0.15, speed_reduction)  # Minimum 15% of speed limit
+    effective_speed_kmh = max(5, effective_speed_kmh)  # Absolute minimum 5 km/h in worst jams
     
     return effective_speed_kmh / 3.6  # Convert to m/s
 
@@ -68,10 +77,16 @@ def realistic_weight(u, v, d):
     return travel_time
 
 def get_color(congestion):
-    """Optimized color calculation - updated thresholds for more realistic coloring"""
-    if congestion < 0.3:    # Low congestion (0-30%)
+    """More granular color mapping for improved visualization of congestion levels"""
+    if congestion < 0.15:   # Very low congestion (0-15%)
         return "#4CAF50"    # Green
-    elif congestion < 0.6:  # Medium congestion (30-60%)
+    elif congestion < 0.35: # Low to moderate congestion (15-35%)
+        return "#8BC34A"    # Light green
+    elif congestion < 0.5:  # Moderate congestion (35-50%)
+        return "#FFC107"    # Amber
+    elif congestion < 0.65: # Moderate to high congestion (50-65%)
         return "#FF9800"    # Orange
-    else:                   # High congestion (60%+)
+    elif congestion < 0.8:  # High congestion (65-80%)
         return "#F44336"    # Red
+    else:                   # Severe congestion (80%+)
+        return "#D32F2F"    # Deep red

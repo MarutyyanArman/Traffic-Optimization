@@ -263,30 +263,33 @@ def get_multiple_routes(G, start_point, end_point, hour=8, day_type="weekday"):
         # Fastest
         try:
             fastest = min(routes, key=get_time)
-            fastest["name"] = "Fastest Route"
-            fastest["color"] = "#2563eb"
-            fastest["icon"] = "⚡"
-            final_routes["fastest"] = fastest
+            fastest_route = dict(fastest)
+            fastest_route["name"] = "Fastest"
+            fastest_route["color"] = "#2563eb"
+            fastest_route["icon"] = "⚡"
+            final_routes["fastest"] = fastest_route
         except ValueError:
             pass
 
         # Shortest
         try:
             shortest = min(routes, key=get_distance)
-            shortest["name"] = "Shortest Route"
-            shortest["color"] = "#10b981"
-            shortest["icon"] = "📏"
-            final_routes["shortest"] = shortest
+            shortest_route = dict(shortest)
+            shortest_route["name"] = "Shortest"
+            shortest_route["color"] = "#10b981"
+            shortest_route["icon"] = "📏"
+            final_routes["shortest"] = shortest_route
         except ValueError:
             pass
 
         # Least congested
         try:
             least = min(routes, key=get_congestion)
-            least["name"] = "Least Congested"
-            least["color"] = "#8b5cf6"
-            least["icon"] = "😌"
-            final_routes["least_congested"] = least
+            least_route = dict(least)
+            least_route["name"] = "Least Congested"
+            least_route["color"] = "#8b5cf6"
+            least_route["icon"] = "😌"
+            final_routes["least_congested"] = least_route
         except ValueError:
             pass
 

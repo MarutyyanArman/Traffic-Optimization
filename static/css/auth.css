@@ -1,0 +1,636 @@
+/**
+ * Authentication Styles for Routely
+ */
+
+/* Auth Section Container */
+.auth-section {
+    position: fixed;
+    top: 20px;
+    right: 80px;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Sign In Button */
+.sign-in-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+}
+
+.sign-in-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.4);
+}
+
+.sign-in-btn i {
+    font-size: 16px;
+}
+
+/* User Profile Section */
+.user-profile-section {
+    position: relative;
+    display: none;
+}
+
+ .user-avatar-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 14px;
+    min-width: 44px;
+    min-height: 32px;
+    background: #e5e7eb;          /* light grey background */
+    border: none;
+    border-radius: 999px;         /* rounded rectangle / pill, not circle */
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: none;             /* remove green glow */
+    color: #111827;               /* dark text for ID */
+    font-weight: 600;
+}
+
+.user-avatar-btn i {
+    color: inherit;
+    font-size: 20px;
+}
+
+/* User Dropdown */
+.user-dropdown {
+    position: absolute;
+    top: calc(100% + 12px);
+    right: 0;
+    min-width: 280px;
+    background: var(--card-bg, #1e293b);
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    z-index: 1000;
+    overflow: hidden;
+}
+
+.user-profile-section:hover .user-dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.user-dropdown-header {
+    padding: 20px;
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+    text-align: center;
+}
+
+.user-dropdown-avatar {
+    width: 60px;
+    height: 60px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 12px;
+}
+
+.user-dropdown-avatar i {
+    font-size: 28px;
+}
+
+.user-dropdown-name {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.user-dropdown-id {
+    font-size: 12px;
+    opacity: 0.8;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 4px 12px;
+    border-radius: 20px;
+    display: inline-block;
+    margin-bottom: 4px;
+}
+
+.user-dropdown-email {
+    font-size: 13px;
+    opacity: 0.9;
+}
+
+.user-dropdown-body {
+    padding: 12px;
+}
+
+.user-dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    color: var(--text-primary, #e2e8f0);
+    text-decoration: none;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    border: none;
+    background: none;
+    width: 100%;
+    font-size: 14px;
+}
+
+.user-dropdown-item:hover {
+    background: var(--hover-bg, rgba(59, 130, 246, 0.1));
+}
+
+.user-dropdown-item i {
+    width: 20px;
+    text-align: center;
+    color: #64748b;
+}
+
+.user-dropdown-divider {
+    height: 1px;
+    background: var(--border-color, #334155);
+    margin: 8px 0;
+}
+
+.logout-btn {
+    color: #ef4444 !important;
+}
+
+.logout-btn i {
+    color: #ef4444 !important;
+}
+
+/* Auth Modal */
+.auth-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    padding: 20px;
+}
+
+.auth-modal-content {
+    background: var(--card-bg, #1e293b);
+    border-radius: 16px;
+    width: 100%;
+    max-width: 420px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+    overflow: hidden;
+    animation: modalSlideIn 0.3s ease;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.auth-modal-header {
+    padding: 24px 24px 0;
+    text-align: center;
+}
+
+.auth-modal-logo {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+}
+
+.auth-modal-logo i {
+    font-size: 28px;
+    color: white;
+}
+
+.auth-modal-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-primary, #f8fafc);
+    margin-bottom: 8px;
+}
+
+.auth-modal-subtitle {
+    font-size: 14px;
+    color: var(--text-secondary, #94a3b8);
+}
+
+.auth-modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 36px;
+    height: 36px;
+    background: var(--hover-bg, rgba(255, 255, 255, 0.1));
+    border: none;
+    border-radius: 50%;
+    color: var(--text-secondary, #94a3b8);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.auth-modal-close:hover {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+}
+
+/* Auth Tabs */
+.auth-tabs {
+    display: flex;
+    margin: 24px 24px 0;
+    background: var(--hover-bg, rgba(0, 0, 0, 0.2));
+    border-radius: 10px;
+    padding: 4px;
+}
+
+.auth-tab {
+    flex: 1;
+    padding: 12px;
+    background: none;
+    border: none;
+    border-radius: 8px;
+    color: var(--text-secondary, #94a3b8);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.auth-tab.active {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+}
+
+/* Auth Forms */
+.auth-form {
+    padding: 24px;
+}
+
+.auth-form-group {
+    margin-bottom: 16px;
+}
+
+.auth-form-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary, #94a3b8);
+    margin-bottom: 8px;
+}
+
+.auth-form-input {
+    width: 100%;
+    padding: 14px 16px;
+    background: var(--input-bg, rgba(0, 0, 0, 0.2));
+    border: 2px solid var(--border-color, #334155);
+    border-radius: 10px;
+    color: var(--text-primary, #f8fafc);
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.auth-form-input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+}
+
+.auth-form-input::placeholder {
+    color: var(--text-muted, #64748b);
+}
+
+.auth-submit-btn {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.auth-submit-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.4);
+}
+
+.auth-submit-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+/* Auth Error */
+.auth-error {
+    display: none;
+    padding: 12px 16px;
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: 8px;
+    color: #ef4444;
+    font-size: 13px;
+    margin-bottom: 16px;
+}
+
+/* Auth Footer */
+.auth-footer {
+    padding: 16px 24px 24px;
+    text-align: center;
+    font-size: 13px;
+    color: var(--text-secondary, #94a3b8);
+}
+
+.auth-footer a {
+    color: #3b82f6;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.auth-footer a:hover {
+    text-decoration: underline;
+}
+
+/* Notification */
+.auth-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 16px 24px;
+    background: var(--card-bg, #1e293b);
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 10001;
+    opacity: 0;
+    transform: translateX(100%);
+    transition: all 0.3s ease;
+}
+
+.auth-notification.show {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.auth-notification.success {
+    border-left: 4px solid #10b981;
+}
+
+.auth-notification.success i {
+    color: #10b981;
+}
+
+.auth-notification.error {
+    border-left: 4px solid #ef4444;
+}
+
+.auth-notification.error i {
+    color: #ef4444;
+}
+
+.auth-notification.info {
+    border-left: 4px solid #3b82f6;
+}
+
+.auth-notification.info i {
+    color: #3b82f6;
+}
+
+.auth-notification i {
+    font-size: 20px;
+}
+
+.auth-notification span {
+    color: var(--text-primary, #f8fafc);
+    font-size: 14px;
+}
+
+/* Light theme overrides */
+[data-theme="light"] .auth-modal-content,
+[data-theme="light"] .user-dropdown,
+[data-theme="light"] .auth-notification {
+    background: #ffffff;
+}
+
+[data-theme="light"] .auth-form-input {
+    background: #f1f5f9;
+    border-color: #e2e8f0;
+    color: #1e293b;
+}
+
+[data-theme="light"] .auth-tabs {
+    background: #f1f5f9;
+}
+
+[data-theme="light"] .user-dropdown-item {
+    color: #334155;
+}
+
+[data-theme="light"] .user-dropdown-item:hover {
+    background: #f1f5f9;
+}
+
+/* Saved Routes Modal */
+.saved-routes-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    padding: 20px;
+}
+
+.saved-routes-modal .modal-content {
+    background: var(--card-bg, #1e293b);
+    border-radius: 16px;
+    width: 100%;
+    max-width: 600px;
+    max-height: 80vh;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+    overflow: hidden;
+    animation: modalSlideIn 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.saved-routes-modal .modal-header {
+    padding: 20px 24px;
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.saved-routes-modal .modal-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.saved-routes-modal .close-modal {
+    width: 36px;
+    height: 36px;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    border-radius: 50%;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.saved-routes-modal .close-modal:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+.saved-routes-modal .saved-routes-container {
+    flex: 1;
+    overflow-y: auto;
+    max-height: 50vh;
+}
+
+.saved-routes-modal .saved-routes-list {
+    min-height: 200px;
+}
+
+/* Light theme for saved routes modal */
+[data-theme="light"] .saved-routes-modal .modal-content {
+    background: #ffffff;
+}
+
+[data-theme="light"] .saved-routes-modal .saved-route-item {
+    background: #f8fafc !important;
+    border-color: #e2e8f0 !important;
+}
+
+/* Delete Confirmation Modal */
+.delete-confirm-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 10001;
+    padding: 20px;
+}
+
+.delete-confirm-modal .modal-content {
+    background: var(--card-bg, #1e293b);
+    border-radius: 16px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+    overflow: hidden;
+    animation: modalSlideIn 0.3s ease;
+}
+
+.delete-confirm-modal .modal-header {
+    padding: 16px 20px;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.delete-confirm-modal .modal-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.delete-confirm-modal .close-modal {
+    width: 32px;
+    height: 32px;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    border-radius: 50%;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.delete-confirm-modal .close-modal:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.delete-confirm-modal .btn-cancel:hover {
+    background: var(--card-bg, #475569) !important;
+}
+
+.delete-confirm-modal .btn-delete:hover {
+    background: #dc2626 !important;
+}
+
+/* Light theme for delete modal */
+[data-theme="light"] .delete-confirm-modal .modal-content {
+    background: #ffffff;
+}

@@ -221,27 +221,29 @@ def generate_travel_recommendations(route_data, best_time, constraints):
     hour = best_time['hour']
     
     # Time-based recommendations
-    if hour >= 7 and hour <= 9:
-        recommendations.append("⏰ **Morning Rush Hour**: Consider leaving a bit earlier to avoid peak congestion")
+    if hour >= 8 and hour <= 9:
+        recommendations.append("<strong>Peak Morning Rush Hour</strong>: Consider leaving a bit earlier to avoid peak congestion")
+    elif hour == 7:
+        recommendations.append("<strong>Early Morning Rush</strong>: Traffic is building but not yet at peak levels")
     elif hour >= 17 and hour <= 19:
-        recommendations.append("🌆 **Evening Rush**: This is the busiest time, but we found the best window")
+        recommendations.append("<strong>Evening Rush</strong>: This is the busiest time, but we found the best window")
     elif hour <= 6 or hour >= 22:
-        recommendations.append("🌙 **Late Night Travel**: Roads are clear but ensure safe driving conditions")
+        recommendations.append("<strong>Late Night Travel</strong>: Roads are clear but ensure safe driving conditions")
     
     # Congestion-based recommendations
     if congestion < 30:
-        recommendations.append("✅ **Excellent Conditions**: Very light traffic expected")
+        recommendations.append("<strong>Excellent Conditions</strong>: Very light traffic expected")
     elif congestion < 50:
-        recommendations.append("👍 **Good Conditions**: Moderate traffic, smooth travel")
+        recommendations.append("<strong>Good Conditions</strong>: Moderate traffic, smooth travel")
     elif congestion < 70:
-        recommendations.append("⚠️ **Heavy Traffic**: Expect some delays, plan extra time")
+        recommendations.append("<strong>Heavy Traffic</strong>: Expect some delays, plan extra time")
     else:
-        recommendations.append("🚨 **Very Heavy Traffic**: Significant delays expected")
+        recommendations.append("<strong>Very Heavy Traffic</strong>: Significant delays expected")
     
     # Constraint-based feedback
     max_time = constraints.get('max_travel_time')
     if max_time and travel_time > max_time * 0.9:
-        recommendations.append(f"⏱️ **Close to Time Limit**: Travel time ({travel_time:.1f}min) is near your maximum ({max_time}min)")
+        recommendations.append(f"<strong>Close to Time Limit</strong>: Travel time ({travel_time:.1f}min) is near your maximum ({max_time}min)")
     
     avoided_roads = constraints.get('avoid_road_types', [])
     if avoided_roads:
